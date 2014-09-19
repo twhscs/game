@@ -3,7 +3,6 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2i;
-import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
@@ -48,17 +47,17 @@ public class Game {
     initialize();
     
     // main loop
-    while(window.isOpen()) {
+    while (window.isOpen()) {
       window.clear(Color.BLACK);
       window.draw(player.getSprite());
       window.display();
       
       // event handling
-      for(Event event : window.pollEvents()) {
-        if(event.type == Event.Type.CLOSED) {
+      for (Event event : window.pollEvents()) {
+        if (event.type == Event.Type.CLOSED) {
           // user clicked window close (x) button
           window.close();
-        } else if(event.type == Event.Type.KEY_PRESSED) {
+        } else if (event.type == Event.Type.KEY_PRESSED) {
           KeyEvent keyEv = event.asKeyEvent();
           switch(keyEv.key) {
             case W:
@@ -72,7 +71,6 @@ public class Game {
               break;
             case D:
               player.move(Direction.EAST);
-              break;
           }
         }
       }

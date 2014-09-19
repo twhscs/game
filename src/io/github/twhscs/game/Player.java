@@ -1,12 +1,12 @@
 package io.github.twhscs.game;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * 
