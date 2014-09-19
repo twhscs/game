@@ -33,7 +33,7 @@ public class Player {
   public Player() {
     Texture playerTex = new Texture();
     try {
-      playerTex.loadFromFile(Paths.get("player.png"));
+      playerTex.loadFromFile(Paths.get("resources/player.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
