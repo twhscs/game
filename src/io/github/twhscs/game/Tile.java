@@ -31,5 +31,21 @@ public enum Tile {
   public static int getSize() {
     return tileSize;
   }
+  
+  public static boolean getCanWalkOn(Tile t) {
+    boolean able = false;
+    switch(t) {
+      case WATER:
+        able = false;
+        break;
+      case SAND:
+        able = true;
+        break;
+      case GRASS:
+        able = true;
+        break;
+    }
+    return able;
+  }
 }
 

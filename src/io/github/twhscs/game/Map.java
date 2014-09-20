@@ -74,9 +74,15 @@ public class Map implements Drawable {
     mapVertexArray.draw(target, newStates);
   }
   
+  public Tile getTile(Location l) {
+    Vector2i position = l.getPosition();
+    Tile t = tileArray[position.x][position.y];
+    return t;
+  }
+  
   public boolean isValidLocation(Location l) {
     Vector2i coordinates = l.getPosition();
     return ((coordinates.x >= 0) && (coordinates.y >= 0) 
-        && (coordinates.x < mapDimensions.x) && (coordinates.y < mapDimensions.y));
+        && (coordinates.x < mapDimensions.x) && (coordinates.y < mapDimensions.y) && Tile.getCanWalkOn(getTile(l)));
   }
 }
