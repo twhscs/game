@@ -2,71 +2,70 @@ package io.github.twhscs.game;
 
 import org.jsfml.system.Vector2i;
 
-/**
- * 
- * @author Robert
- *
- */
-
-public class Location {
+public class Location implements Cloneable {
+  private Vector2i locPosition = new Vector2i(0, 0);
+  private Direction locDirection;
   
-  /**
-   * x y coordinates storing position
-   */
-  private Vector2i position = new Vector2i(0, 0);
-  
-  /**
-   * Direction facing
-   */
-  private Direction facing = Direction.SOUTH;
-  
-  /**
-   * create new location at x y
-   * @param x starting position
-   * @param y starting position
-   */
   public Location(int x, int y) {
-    position = new Vector2i(x, y);
+    this(x, y, Direction.SOUTH);
   }
   
-  /**
-   * get x coordinate
-   * @return x
-   */
-  public int getX() {
-    return position.x;
+  public Location(int x, int y, Direction d) {
+    locPosition = new Vector2i(x, y);
+    locDirection = d;
   }
-  
-  /**
-   * get y coordinate
-   * @return y
-   */
-  public int getY() {
-    return position.y;
+
+  public Vector2i getPosition() {
+    return locPosition;
   }
-  
-  /**
-   * get direction facing
-   * @return direction
-   */
+
   public Direction getDirection() {
-    return facing;
+    return locDirection;
+  }
+
+  public void setPosition(Vector2i newPosition) {
+    locPosition = newPosition;
   }
   
-  /**
-   * update position
-   * @param x new x
-   * @param y new y
-   */
-  public void setPosition(int x, int y) {
-    position = new Vector2i(x, y);
+  public void setDirection(Direction newDirection) {
+    locDirection = newDirection;
   }
   
-  /**
-   * update direction
-   * @param dir new direction
-   */
-  public void setDirection(Direction dir) {
-    facing = dir;
+  public void addPosition(Vector2i position) {
+    locPosition = Vector2i.add(locPosition, position);
+  }
+  
+  public void subtractPosition(Vector2i position) {
+    locPosition = Vector2i.sub(locPosition, position);
+  }
+  
+  Location getRelativeLocation(Direction d) {
+    Location thisLocation = this;
+    Location newLocation = new Location(0, 0);
+    try {
+      newLocation = thisLocation.clone();
+    } catch(CloneNotSupportedException ex) {
+      ex.printStackTrace();
+    }
+    
+    switch(d) {
+      case NORTH:
+        newLocation.subtractPosition(new Vector2i(0, 1));
+        break;
+      case SOUTH:
+        newLocation.addPosition(new Vector2i(0, 1));
+        break;
+      case EAST:
+        newLocation.addPosition(new Vector2i(1, 0));
+        break;
+      case WEST:
+        newLocation.subtractPosition(new Vector2i(1, 0));
+        break;
+    }
+    return newLocation;
+  }
+  
+  protected Location clone() throws CloneNotSupportedException {
+    return (Location) super.clone();
   }
 }

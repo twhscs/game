@@ -1,87 +1,97 @@
 package io.github.twhscs.game;
 
-import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
-import org.jsfml.window.event.KeyEvent;
 
-/**
- * 
- * @author Robert
- *
- */
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class Game {
-  
-  /**
-   * main window where everything is drawn to
-   */
-  private RenderWindow window = new RenderWindow();
-  
-  /**
-   * window title
-   */
-  private final String windowTitle = "Game";
-  
-  /**
-   * screen resolution (width, height)
-   */
-  private final Vector2i screenResolution = new Vector2i(640, 480);
-  
-  /**
-   * local player
-   */
-  private Player player = new Player();
+public class Game { 
+  private RenderWindow renderWindow = new RenderWindow();
+  private final String renderWindowTitle = "Game";
+  private final Vector2i renderWindowDimensions = new Vector2i(640, 480);
+  private Player player;
+  private ArrayList<Map> maps = new ArrayList<Map>();
   
   public static void main(String[] args) {
-    Game g = new Game(); // create temporary object of self
-    g.run(); // invoke run
+    Game g = new Game();
+    g.run();
   }
   
-  /**
-   * start running game
-   */
-  public void run() {
-    initialize();
+  public Map getRandomMap() {
+    Collections.shuffle(maps);
+    return maps.get(0);
+  }
+  
+  public void handleInitialization() {
+    renderWindow.create(new VideoMode(renderWindowDimensions.x, renderWindowDimensions.y), 
+                                                                       renderWindowTitle);
+    player = new Player();
+
+    maps.add(new Map(10, 10, Tile.SAND));
+    maps.add(new Map (5, 4, Tile.WATER));
+    maps.add(new Map(15, 20, Tile.GRASS));
     
-    // main loop
-    while (window.isOpen()) {
-      window.clear(Color.BLACK);
-      window.draw(player.getSprite());
-      window.display();
-      
-      // event handling
-      for (Event event : window.pollEvents()) {
-        if (event.type == Event.Type.CLOSED) {
-          // user clicked window close (x) button
-          window.close();
-        } else if (event.type == Event.Type.KEY_PRESSED) {
-          KeyEvent keyEv = event.asKeyEvent();
-          switch(keyEv.key) {
+    player.changeMap(getRandomMap());
+  }
+  
+  public void run() {
+    handleInitialization();
+    while (renderWindow.isOpen()) {
+      handleInput();
+      handleLogic();
+      handleDrawing();
+    }
+  }
+  
+  public void handleInput() {
+    for (Event event : renderWindow.pollEvents()) {
+      switch(event.type) {
+        case CLOSED:
+          renderWindow.close();
+          break;
+        case KEY_PRESSED:
+          switch(event.asKeyEvent().key) {
             case W:
+            case UP:
               player.move(Direction.NORTH);
               break;
             case S:
+            case DOWN:
               player.move(Direction.SOUTH);
               break;
             case A:
+            case LEFT:
               player.move(Direction.WEST);
               break;
             case D:
+            case RIGHT:
               player.move(Direction.EAST);
+              break;
+            case N:
+              player.resetLocation();
+              player.changeMap(getRandomMap());
+              break;
+            default:
+              break;
           }
-        }
+          break;
+        default:
+          break;
       }
     }
   }
   
-  /**
-   * configure settings once at startup
-   */
-  public void initialize() {
-    window.create(new VideoMode(screenResolution.x, screenResolution.y), windowTitle);
+  public void handleLogic() {
+    
   }
-
+  
+  public void handleDrawing() {
+    renderWindow.clear();
+    renderWindow.draw(player.getMap());
+    renderWindow.draw(player);
+    renderWindow.display();
+  }
 }
