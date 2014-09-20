@@ -8,6 +8,11 @@ import org.jsfml.window.event.Event;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The main class of the game. Contains the main loop and pieces everything together.
+ * @author Robert
+ *
+ */
 public class Game { 
   private RenderWindow renderWindow = new RenderWindow();
   private final String renderWindowTitle = "Game";

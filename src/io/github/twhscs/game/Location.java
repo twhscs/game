@@ -2,6 +2,11 @@ package io.github.twhscs.game;
 
 import org.jsfml.system.Vector2i;
 
+/**
+ * Contains a position and direction.
+ * @author Robert
+ *
+ */
 public class Location implements Cloneable {
   private Vector2i locPosition = new Vector2i(0, 0);
   private Direction locDirection;
@@ -44,7 +49,7 @@ public class Location implements Cloneable {
     Location newLocation = new Location(0, 0);
     try {
       newLocation = thisLocation.clone();
-    } catch(CloneNotSupportedException ex) {
+    } catch (CloneNotSupportedException ex) {
       ex.printStackTrace();
     }
     
@@ -62,6 +67,7 @@ public class Location implements Cloneable {
         newLocation.subtractPosition(new Vector2i(1, 0));
         break;
     }
+    newLocation.setDirection(d);
     return newLocation;
   }
   

@@ -14,6 +14,11 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+/**
+ * A map or level for the player to interact in. Can be created manually or procedurally.
+ * @author Robert
+ *
+ */
 public class Map implements Drawable {
   private Vector2i mapDimensions = new Vector2i(0, 0);
   private Tile[][] tileArray;

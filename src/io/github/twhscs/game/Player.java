@@ -1,5 +1,8 @@
 package io.github.twhscs.game;
 
+import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundBuffer;
+import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderStates;
@@ -12,24 +15,35 @@ import org.jsfml.system.Vector2i;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+/**
+ * The player (user) playing the game.
+ * @author Robert
+ *
+ */
 public class Player implements Drawable {
   private Location playerLoc;
   private Texture playerSpritesheetTexture = new Texture();
   private Sprite playerSprite = new Sprite();
   private Map currentMap;
   private final Vector2i playerSize = new Vector2i(32, 48);
-  private int animationCounter = 0;
+  private PlayerAction currentAction = PlayerAction.NONE;
+  private Location newPlayerLoc;
+  private int frameCounter = 0;
+  private final float animationSpeed = 20.f;
   private int animationFrame = 0;
-  private boolean animated = false;
+  private SoundBuffer cannotMoveBuffer = new SoundBuffer();
+  private Sound cannotMove = new Sound();
   
   public Player() {
     playerLoc = new Location(0, 0);
     try {
       playerSpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
+      cannotMoveBuffer.loadFromFile(Paths.get("resources/stuck.wav"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
     playerSprite = new Sprite(playerSpritesheetTexture);
+    cannotMove.setBuffer(cannotMoveBuffer);
   }
   
   public void changeMap(Map m) {
@@ -41,11 +55,15 @@ public class Player implements Drawable {
   }
   
   public void move(Direction d) {
-    Location newLoc = playerLoc.getRelativeLocation(d);
-    if(currentMap.isValidLocation(newLoc)) {
-      animated = true;
-      playerLoc = newLoc;
+    if (currentAction == PlayerAction.NONE) {
+      Location newLoc = playerLoc.getRelativeLocation(d);
       playerLoc.setDirection(d);
+      if (currentMap.isValidLocation(newLoc)) {
+        currentAction = PlayerAction.MOVING;
+        newPlayerLoc = newLoc;
+      } else if (cannotMove.getStatus() != SoundSource.Status.PLAYING) {
+        cannotMove.play();
+      }
     }
   }
   
@@ -55,40 +73,76 @@ public class Player implements Drawable {
   
   public IntRect getTextureCoords() {
     IntRect textureCoordsRect = new IntRect(0, 0, 0, 0);
-    int animationAddition = animationFrame * 32;
     switch(playerLoc.getDirection()) {
       case NORTH:
-        textureCoordsRect = new IntRect(0 + animationAddition, 144, playerSize.x, playerSize.y);
+        textureCoordsRect = new IntRect(0 + (animationFrame * 32), 144, playerSize.x, playerSize.y);
         break;
       case SOUTH:
-        textureCoordsRect = new IntRect(0 + animationAddition, 0, playerSize.x, playerSize.y);
+        textureCoordsRect = new IntRect(0 + (animationFrame * 32), 0, playerSize.x, playerSize.y);
         break;
       case EAST:
-        textureCoordsRect = new IntRect(0 + animationAddition, 96, playerSize.x, playerSize.y);
+        textureCoordsRect = new IntRect(0 + (animationFrame * 32), 96, playerSize.x, playerSize.y);
         break;
       case WEST:
-        textureCoordsRect = new IntRect(0 + animationAddition, 48, playerSize.x, playerSize.y);
+        textureCoordsRect = new IntRect(0 + (animationFrame * 32), 48, playerSize.x, playerSize.y);
         break;
     }
     return textureCoordsRect;
   }
   
   public void draw(RenderTarget target, RenderStates states) {
-    if (animated) {
-      animationCounter++;
-      if (animationCounter >= 10) {
-        animationCounter = 0;
-        animationFrame++;
-        if (animationFrame >= 4) {
-          animationFrame = 0;
-          animated = false;
+    
+    
+    
+    Vector2f spritePosition = new Vector2f(0, 0);
+    Vector2i currentPlayerPosition = playerLoc.getPosition();
+    if (currentAction == PlayerAction.MOVING) {
+      if (frameCounter >= animationSpeed) {
+        frameCounter = 0;
+        currentAction = PlayerAction.NONE;
+        playerLoc = newPlayerLoc;
+        newPlayerLoc = null;
+        Vector2i newPlayerPosition = playerLoc.getPosition();
+        spritePosition = new Vector2f(newPlayerPosition.x, newPlayerPosition.y);
+        animationFrame = 0;
+      } else {
+        float additionX = 0.0f;
+        float additionY = 0.0f;
+        switch(playerLoc.getDirection()) {
+          case NORTH:
+            additionY = -(1.0f / animationSpeed) * (frameCounter);
+            break;
+          case SOUTH:
+            additionY = (1.0f / animationSpeed) * (frameCounter);
+            break;
+          case EAST:
+            additionX = (1.0f / animationSpeed) * (frameCounter);
+            break;
+          case WEST:
+            additionX = -(1.0f / animationSpeed) * (frameCounter);
+            break;
         }
+        float change = Math.abs(additionX + additionY);
+        if (change >= 0.f && change < .25f) {
+          animationFrame = 0;
+        } else if (change >= .25f && change < .5f) {
+          animationFrame = 1;
+        } else if (change >= .5f && change < .75f) {
+          animationFrame = 2;
+        } else if (change >= .75f && change <= 1.0f) {
+          animationFrame = 3;
+        }
+        spritePosition = new Vector2f(currentPlayerPosition.x + additionX, currentPlayerPosition.y + additionY);
       }
+      frameCounter++;
+    } else {
+      spritePosition = new Vector2f(currentPlayerPosition.x, currentPlayerPosition.y);
     }
-    Vector2i playerPosition = playerLoc.getPosition();
-    Direction playerDirection = playerLoc.getDirection();
+    
     playerSprite.setPosition(
-        new Vector2f((playerPosition.x * playerSize.x), (playerPosition.y * playerSize.x) - (playerSize.y - playerSize.x)));
+        new Vector2f(spritePosition.x * playerSize.x, 
+            (spritePosition.y * playerSize.x) - (playerSize.y - playerSize.x)));
+    
     playerSprite.setTextureRect(getTextureCoords());
     RenderStates newStates = new RenderStates(playerSpritesheetTexture);
     playerSprite.draw(target, newStates);

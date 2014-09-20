@@ -2,10 +2,15 @@ package io.github.twhscs.game;
 
 import org.jsfml.system.Vector2f;
 
+/**
+ * Map tiles for the Map class.
+ * @author Robert
+ *
+ */
 public enum Tile { 
   WATER, SAND, GRASS;
   
-  private final static int tileSize = 32;
+  private static final int tileSize = 32;
   
   public static Vector2f getTextureCoords(Tile t) {
     Vector2f textureCoordinates = new Vector2f(0, 0);
