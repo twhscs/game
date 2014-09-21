@@ -48,6 +48,7 @@ public class Map implements Drawable {
   }
   
   public void draw(RenderTarget target, RenderStates states) {
+    mapVertexArray.clear();
     final int tileSize = Tile.getSize();
     for (int i = 0; i < mapDimensions.x; i++) {
       for (int j = 0; j < mapDimensions.y; j++) {

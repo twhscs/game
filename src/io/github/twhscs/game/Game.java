@@ -33,6 +33,7 @@ public class Game {
   public void handleInitialization() {
     renderWindow.create(new VideoMode(renderWindowDimensions.x, renderWindowDimensions.y), 
                                                                        renderWindowTitle);
+    renderWindow.setFramerateLimit(60);
     player = new Player();
 
     maps.add(new Map(10, 10, Tile.SAND));
