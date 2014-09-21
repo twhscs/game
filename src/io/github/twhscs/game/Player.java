@@ -33,6 +33,7 @@ public class Player implements Drawable {
   private int animationFrame = 0;
   private SoundBuffer cannotMoveBuffer = new SoundBuffer();
   private Sound cannotMove = new Sound();
+  private Vector2f tempPosition = new Vector2f(0, 0); // DIRTY HACK
   
   public Player() {
     playerLoc = new Location(0, 0);
@@ -61,7 +62,7 @@ public class Player implements Drawable {
       if (currentMap.isValidLocation(newLoc)) {
         currentAction = PlayerAction.MOVING;
         newPlayerLoc = newLoc;
-      } else if (cannotMove.getStatus() != SoundSource.Status.PLAYING) {
+      } else if (cannotMove.getStatus() == SoundSource.Status.STOPPED) {
         cannotMove.play();
       }
     }
@@ -90,11 +91,9 @@ public class Player implements Drawable {
     return textureCoordsRect;
   }
   
-  public void draw(RenderTarget target, RenderStates states) {
-    
-    
-    
-    Vector2f spritePosition = new Vector2f(0, 0);
+  public void update() {
+    // this is a dirty hack and should be fixed asap
+    tempPosition = new Vector2f(0, 0);
     Vector2i currentPlayerPosition = playerLoc.getPosition();
     if (currentAction == PlayerAction.MOVING) {
       if (frameCounter >= animationSpeed) {
@@ -103,7 +102,7 @@ public class Player implements Drawable {
         playerLoc = newPlayerLoc;
         newPlayerLoc = null;
         Vector2i newPlayerPosition = playerLoc.getPosition();
-        spritePosition = new Vector2f(newPlayerPosition.x, newPlayerPosition.y);
+        tempPosition = new Vector2f(newPlayerPosition.x, newPlayerPosition.y);
         animationFrame = 0;
       } else {
         float additionX = 0.0f;
@@ -132,16 +131,18 @@ public class Player implements Drawable {
         } else if (change >= .75f && change <= 1.0f) {
           animationFrame = 3;
         }
-        spritePosition = new Vector2f(currentPlayerPosition.x + additionX, currentPlayerPosition.y + additionY);
+        tempPosition = new Vector2f(currentPlayerPosition.x + additionX, currentPlayerPosition.y + additionY);
       }
       frameCounter++;
     } else {
-      spritePosition = new Vector2f(currentPlayerPosition.x, currentPlayerPosition.y);
+      tempPosition = new Vector2f(currentPlayerPosition.x, currentPlayerPosition.y);
     }
-    
+  }
+  
+  public void draw(RenderTarget target, RenderStates states) {
     playerSprite.setPosition(
-        new Vector2f(spritePosition.x * playerSize.x, 
-            (spritePosition.y * playerSize.x) - (playerSize.y - playerSize.x)));
+        new Vector2f(tempPosition.x * playerSize.x, 
+            (tempPosition.y * playerSize.x) - (playerSize.y - playerSize.x)));
     
     playerSprite.setTextureRect(getTextureCoords());
     RenderStates newStates = new RenderStates(playerSpritesheetTexture);
