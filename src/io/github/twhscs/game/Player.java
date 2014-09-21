@@ -29,7 +29,7 @@ public class Player implements Drawable {
   private PlayerAction currentAction = PlayerAction.NONE;
   private Location newPlayerLoc;
   private int frameCounter = 0;
-  private final float animationSpeed = 20.f;
+  private final float animationSpeed = 15.f;
   private int animationFrame = 0;
   private SoundBuffer cannotMoveBuffer = new SoundBuffer();
   private Sound cannotMove = new Sound();

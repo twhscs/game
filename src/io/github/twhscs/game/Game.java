@@ -2,6 +2,8 @@ package io.github.twhscs.game;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2i;
+import org.jsfml.window.Keyboard;
+import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
@@ -58,36 +60,26 @@ public class Game {
         case CLOSED:
           renderWindow.close();
           break;
-        case KEY_PRESSED:
-          switch(event.asKeyEvent().key) {
-            case W:
-            case UP:
-              player.move(Direction.NORTH);
-              break;
-            case S:
-            case DOWN:
-              player.move(Direction.SOUTH);
-              break;
-            case A:
-            case LEFT:
-              player.move(Direction.WEST);
-              break;
-            case D:
-            case RIGHT:
-              player.move(Direction.EAST);
-              break;
-            case N:
-              player.resetLocation();
-              player.changeMap(getRandomMap());
-              break;
-            default:
-              break;
-          }
-          break;
         default:
           break;
       }
     }
+    
+    if(Keyboard.isKeyPressed(Key.W)) {
+      player.move(Direction.NORTH);
+    } else if(Keyboard.isKeyPressed(Key.S)) {
+      player.move(Direction.SOUTH);
+    } else if(Keyboard.isKeyPressed(Key.A)) {
+      player.move(Direction.WEST);
+    } else if(Keyboard.isKeyPressed(Key.D)) {
+      player.move(Direction.EAST);
+    }
+    
+    if(Keyboard.isKeyPressed(Key.N)) {
+      player.resetLocation();
+      player.changeMap(getRandomMap());
+    }
+    
   }
   
   public void handleLogic() {
