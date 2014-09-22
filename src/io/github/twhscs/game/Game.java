@@ -1,6 +1,7 @@
 package io.github.twhscs.game;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
@@ -15,10 +16,11 @@ import java.util.Collections;
 
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
- * @author Robert
+ * @author Robert, Kyle & Chris
  *
  */
 public class Game { 
+  private MainUI gameUI;
   private RenderWindow renderWindow = new RenderWindow();
   private final String renderWindowTitle = "Game";
   private final Vector2i renderWindowDimensions = new Vector2i(640, 480);
@@ -44,14 +46,15 @@ public class Game {
       renderWindow.setFramerateLimit(60);
     }
     player = new Player();
-    player.changeMap(new Map(10, 10, Tile.SAND));
+    player.changeMap(new Map(40, 40, Tile.SAND));
+    gameUI = new MainUI();
   }
   
   public void run() {
     handleInitialization();
     int framesDrawn = 0;
     float updateRate = 20.0f; // 20 hz ( i think)
-    long maxUpdates = 1; // ???
+    long maxUpdates = 1; // This is the maximum #/ times logic can update per frame
     Clock updateClock = new Clock();
     Clock frameClock = new Clock();
     updateClock.restart();
@@ -115,6 +118,7 @@ public class Game {
     renderWindow.clear();
     renderWindow.draw(player.getMap());
     renderWindow.draw(player);
+    renderWindow.draw(gameUI);
     renderWindow.draw(fpsCounter);
     renderWindow.display();
   }

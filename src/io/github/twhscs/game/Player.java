@@ -34,6 +34,7 @@ public class Player implements Drawable {
   private SoundBuffer cannotMoveBuffer = new SoundBuffer();
   private Sound cannotMove = new Sound();
   private Vector2f tempPosition = new Vector2f(0, 0); // DIRTY HACK
+  public static float health = 100f;
   
   public Player() {
     playerLoc = new Location(0, 0);
