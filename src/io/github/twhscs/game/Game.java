@@ -3,7 +3,7 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
@@ -11,9 +11,6 @@ import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -26,40 +23,28 @@ public class Game {
   private final String renderWindowTitle = "Game";
   private final Vector2i renderWindowDimensions = new Vector2i(640, 480);
   private Player player;
-  private ArrayList<Map> maps = new ArrayList<Map>();
-  private boolean windowFocused = true;
+  private boolean renderWindowFocused = true;
   private Font pixel = new Font();
   private int fps;
   private static boolean limitFPS = false;
+  private UITextElement fpsCounter;
   
   public static void main(String[] args) {
     Game g = new Game();
     g.run();
   }
   
-  public Map getRandomMap() {
-    Collections.shuffle(maps);
-    return maps.get(0);
-  }
-  
   public void handleInitialization() {
-    try {
-      pixel.loadFromFile(Paths.get("resources/kenpixel.ttf"));
-    } catch(IOException ex) {
-      ex.printStackTrace();
-    }
+    
     renderWindow.create(new VideoMode(renderWindowDimensions.x, renderWindowDimensions.y), 
                                                                     renderWindowTitle);
+    
+    fpsCounter = new UITextElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
     if(limitFPS) {
       renderWindow.setFramerateLimit(60);
     }
     player = new Player();
-
-    maps.add(new Map(10, 10, Tile.SAND));
-    maps.add(new Map (5, 4, Tile.WATER));
-    maps.add(new Map(15, 20, Tile.GRASS));
-    
-    player.changeMap(getRandomMap());
+    player.changeMap(new Map(10, 10, Tile.SAND));
   }
   
   public void run() {
@@ -85,6 +70,7 @@ public class Game {
       float elapsedTime = frameClock.getElapsedTime().asSeconds();
       if(elapsedTime >= 1.0f) {
         fps = (int) (framesDrawn / elapsedTime);
+        fpsCounter.updateString("FPS: " + fps);
         framesDrawn = 0;
         frameClock.restart();
       }
@@ -98,16 +84,16 @@ public class Game {
           renderWindow.close();
           break;
         case GAINED_FOCUS:
-          windowFocused = true;
+          renderWindowFocused = true;
           break;
         case LOST_FOCUS:
-          windowFocused = false;
+          renderWindowFocused = false;
         default:
           break;
       }
     }
     
-    if(windowFocused) {
+    if(renderWindowFocused) {
       if(Keyboard.isKeyPressed(Key.W)) {
         player.move(Direction.NORTH);
       } else if(Keyboard.isKeyPressed(Key.S)) {
@@ -116,11 +102,6 @@ public class Game {
         player.move(Direction.WEST);
       } else if(Keyboard.isKeyPressed(Key.D)) {
         player.move(Direction.EAST);
-      }
-      
-      if(Keyboard.isKeyPressed(Key.N)) {
-        player.resetLocation();
-        player.changeMap(getRandomMap());
       }
     }
     
@@ -131,14 +112,10 @@ public class Game {
   }
   
   public void handleDrawing() {
-    Text fpsCount = new Text("FPS: " + fps, pixel, 24);
-    fpsCount.setColor(Color.YELLOW);
-    fpsCount.setStyle(Text.BOLD);
-    fpsCount.setPosition(0, 0);
     renderWindow.clear();
     renderWindow.draw(player.getMap());
     renderWindow.draw(player);
-    renderWindow.draw(fpsCount);
+    renderWindow.draw(fpsCounter);
     renderWindow.display();
   }
 }
