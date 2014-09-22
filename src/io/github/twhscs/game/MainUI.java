@@ -20,14 +20,12 @@ public class MainUI implements Drawable {
     } catch (IOException ex) {
       ex.printStackTrace();
     }
-  }
-  public IntRect getTextureCoords() {
-    return new IntRect(((10 - (int)Player.health/10))*11, 0, 11, 11);
+    heartSprite = new Sprite(heartSpritesheetTexture);
   }
   public void draw(RenderTarget target, RenderStates states) {
-    heartSprite.setPosition(new Vector2f(0,0));
-    heartSprite.setTextureRect(getTextureCoords());
-    RenderStates newStates = new RenderStates(heartSpritesheetTexture);
-    heartSprite.draw(target, newStates);
+    heartSprite.setPosition(new Vector2f(target.getView().getSize().x/2 - 11,10));
+    heartSprite.setTextureRect(new IntRect(((int)Player.health)/10*11, 0, 11, 11));
+    heartSprite.setScale(new Vector2f(4,4));
+    heartSprite.draw(target, new RenderStates(heartSpritesheetTexture));
   }
 }
