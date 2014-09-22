@@ -45,6 +45,11 @@ public class Game {
     }
     player = new Player();
     player.changeMap(new Map(10, 10, Tile.SAND));
+    try {
+      Settings.grabSettings();
+    } catch(IOException ex) {
+      ex.printStackTrace();
+    }
   }
   
   public void run() {
