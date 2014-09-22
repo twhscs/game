@@ -23,6 +23,7 @@ public class Game {
   private final String renderWindowTitle = "Game";
   private final Vector2i renderWindowDimensions = new Vector2i(640, 480);
   private Player player;
+  private Camera camera;
   private boolean renderWindowFocused = true;
   private Font pixel = new Font();
   private int fps;
@@ -45,6 +46,7 @@ public class Game {
     }
     player = new Player();
     player.changeMap(new Map(10, 10, Tile.SAND));
+    camera = new Camera(renderWindow);
   }
   
   public void run() {
@@ -66,7 +68,6 @@ public class Game {
       }
       handleDrawing();
       framesDrawn++;
-      
       float elapsedTime = frameClock.getElapsedTime().asSeconds();
       if(elapsedTime >= 1.0f) {
         fps = (int) (framesDrawn / elapsedTime);
@@ -109,6 +110,7 @@ public class Game {
   
   public void handleLogic() {
     player.update();
+    Camera.MoveTo(player.getPosition(), 0.5f);
   }
   
   public void handleDrawing() {
