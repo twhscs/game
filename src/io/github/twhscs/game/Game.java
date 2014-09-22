@@ -1,6 +1,7 @@
 package io.github.twhscs.game;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
@@ -19,6 +20,7 @@ import java.util.Collections;
  *
  */
 public class Game { 
+  private MainUI gameUI;
   private RenderWindow renderWindow = new RenderWindow();
   private final String renderWindowTitle = "Game";
   private final Vector2i renderWindowDimensions = new Vector2i(640, 480);
@@ -45,6 +47,7 @@ public class Game {
     }
     player = new Player();
     player.changeMap(new Map(10, 10, Tile.SAND));
+    gameUI = new MainUI();
   }
   
   public void run() {
@@ -116,6 +119,7 @@ public class Game {
     renderWindow.draw(player.getMap());
     renderWindow.draw(player);
     renderWindow.draw(fpsCounter);
+    renderWindow.draw(gameUI);
     renderWindow.display();
   }
 }
