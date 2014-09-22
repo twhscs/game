@@ -1,5 +1,7 @@
 package io.github.twhscs.game;
 
+import java.io.IOException;
+
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RenderWindow;
@@ -10,8 +12,6 @@ import org.jsfml.window.Keyboard;
 import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
-
-import java.util.Collections;
 
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
@@ -36,20 +36,21 @@ public class Game {
   
   public void handleInitialization() {
     
-    renderWindow.create(new VideoMode(renderWindowDimensions.x, renderWindowDimensions.y), 
-                                                                    renderWindowTitle);
-    
-    fpsCounter = new UITextElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
-    if(limitFPS) {
-      renderWindow.setFramerateLimit(60);
-    }
-    player = new Player();
-    player.changeMap(new Map(10, 10, Tile.SAND));
     try {
       Settings.grabSettings();
     } catch(IOException ex) {
       ex.printStackTrace();
     }
+    limitFPS = Settings.List.get("limitfps").equals("true");
+    String[] resolution = Settings.List.get("resolution").split("x");
+    renderWindow.create(new VideoMode(Integer.parseInt(resolution[0]),Integer.parseInt(resolution[1])), renderWindowTitle);
+    
+    fpsCounter = new UITextElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
+    if(limitFPS) {
+      renderWindow.setFramerateLimit(Integer.parseInt(Settings.List.get("fps")));
+    }
+    player = new Player();
+    player.changeMap(new Map(10, 10, Tile.SAND));
   }
   
   public void run() {
