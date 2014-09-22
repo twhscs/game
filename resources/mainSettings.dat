@@ -1,0 +1,4 @@
+resolution:640x480
+vsync:true
+limitfps:true
+fps:60
