@@ -4,25 +4,66 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 
+/**
+ * Camera that can center on various objects.
+ * @author Robert
+ *
+ */
 public class Camera {
-  public int[] currentPos = {0,0};
-  private static RenderWindow window;
-  public Camera(RenderWindow newWindow) {
-    window = newWindow;
+  /**
+   * The window the camera is affecting.
+   */
+  private RenderWindow window;
+  /**
+   * The default view.
+   */
+  private View defaultView;
+  
+  /**
+   * Create a new camera for window w.
+   * @param w The window for which to create the camera.
+   */
+  public Camera(RenderWindow w) {
+    window = w;
+    defaultView = (View) window.getDefaultView();
   }
-  public static void SetWindow(RenderWindow newWindow) {
-    window = newWindow;
+  
+  /**
+   * Center the camera on the following position.
+   * @param pos The position to center the camera on.
+   * @param step Kyle ?
+   */
+  public void centerOn(Vector2f pos, float step) {
+    View newView = new View(vectorLerp(defaultView.getCenter(), pos, step), defaultView.getSize());
+    window.setView(newView);
   }
-  public static void MoveTo(Vector2f toLoc, float step) {
-    View defaultView = (View) window.getDefaultView();
-    View view = new View(vectorLerp(defaultView.getCenter(), toLoc, step), defaultView.getSize());
-    window.setView(view);
+  
+  /**
+   * Center the camera on the default view.
+   */
+  public void centerOnDefault() {
+    window.setView(defaultView);
   }
-  public static float Lerp(float x0, float x1, float m) {
+  
+  /**
+   * Kyle ?
+   * @param x0
+   * @param x1
+   * @param m
+   * @return
+   */
+  public float lerp(float x0, float x1, float m) {
     return x0 + m * (x1 - x0);
   }
-  public static Vector2f vectorLerp(Vector2f v0, Vector2f v1, float m) {
-    return new Vector2f(Lerp(v0.x, v1.x, m), Lerp(v0.y, v1.y, m));
+  
+  /**
+   * Kyle ?
+   * @param v0
+   * @param v1
+   * @param m
+   * @return
+   */
+  public Vector2f vectorLerp(Vector2f v0, Vector2f v1, float m) {
+    return new Vector2f(lerp(v0.x, v1.x, m), lerp(v0,y, v1.y, m));
   }
-  public static void Rotate(){}
 }

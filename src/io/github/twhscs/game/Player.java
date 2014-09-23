@@ -72,10 +72,6 @@ public class Player implements Drawable {
     playerLoc = new Location(0, 0);
   }
   
-  public Vector2f getPosition() {
-    return playerSprite.getPosition();
-  }
-  
   public IntRect getTextureCoords() {
     IntRect textureCoordsRect = new IntRect(0, 0, 0, 0);
     switch(playerLoc.getDirection()) {
