@@ -174,4 +174,12 @@ public class AnimatedSprite {
     IntRect textureCoordsRect = new IntRect(topX, topY, spriteSize.x, spriteSize.y);
     return textureCoordsRect;
   }
+  
+  /**
+   * Get the size of the sprite as a vector.
+   * @return An integer vector containing the sprite size.
+   */
+  public Vector2i getSpriteSize() {
+    return spriteSize;
+  }
 }
