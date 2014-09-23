@@ -17,11 +17,7 @@ import java.nio.file.Paths;
  * @author Robert
  *
  */
-public class Player implements Drawable {
-  /**
-   * The players location.
-   */
-  private Location playerLoc;
+public class Player extends Entity implements Drawable {
   /**
    * The texture for the sprite.
    */
@@ -53,7 +49,7 @@ public class Player implements Drawable {
    * @param y Starting y position.
    */
   public Player(int x, int y) {
-    playerLoc = new Location(x, y); // Create a new location at position x, y
+    entityLoc = new Location(x, y); // Create a new location at position x, y
     // Try to load sprite texture and 'stuck' sound
     try {
       playerSpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
@@ -64,7 +60,7 @@ public class Player implements Drawable {
     Sprite sprite = new Sprite(); // Create a new regular sprite
     sprite.setTexture(playerSpritesheetTexture); // Set the texture for the sprite
     // Create a new animated sprite from the regular sprite
-    playerSprite = new AnimatedSprite(sprite, playerLoc);
+    playerSprite = new AnimatedSprite(sprite, entityLoc);
     cannotMove.setBuffer(cannotMoveBuffer); // Set the sound object from the buffer (loading)
     
   }
@@ -102,10 +98,10 @@ public class Player implements Drawable {
        * Get the location relative to the current location
        * For example NORTH would return the location above the current location
        */
-      Location newLoc = playerLoc.getRelativeLocation(d);
+      Location newLoc = entityLoc.getRelativeLocation(d);
       if (currentMap.isValidLocation(newLoc)) { // Check if location exists
         currentAction = PlayerAction.MOVING; // Change player action to moving
-        playerLoc.setDirection(d); // Change player direction to new direction
+        entityLoc.setDirection(d); // Change player direction to new direction
         playerSprite.startWalkingAnimation(); // Begin animating the sprite
         // If the location is invalid, play a sound
       } else if (cannotMove.getStatus() == SoundSource.Status.STOPPED) {
@@ -122,9 +118,9 @@ public class Player implements Drawable {
       if (playerSprite.finishedAnimating()) { // If the animation is complete
         currentAction = PlayerAction.NONE; // Stop moving
         // Actually move the location
-        playerLoc = playerLoc.getRelativeLocation(playerLoc.getDirection());
+        entityLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
         // Update the sprite with the new location
-        playerSprite.updatePosition(playerLoc);
+        playerSprite.updatePosition(entityLoc);
       } else {
         playerSprite.animate(); // Proceed with the animation
       }
