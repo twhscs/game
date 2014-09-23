@@ -5,4 +5,12 @@ package io.github.twhscs.game;
  * @author Robert
  *
  */
-public enum InterfacePosition { TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, BOTTOM_CENTER, EXACT_CENTER }
+public enum InterfacePosition { 
+  TOP_LEFT, 
+  TOP_RIGHT, 
+  BOTTOM_LEFT, 
+  BOTTOM_RIGHT, 
+  TOP_CENTER, 
+  BOTTOM_CENTER, 
+  EXACT_CENTER;
+}

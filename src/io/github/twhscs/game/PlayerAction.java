@@ -1,7 +1,7 @@
 package io.github.twhscs.game;
 
 /**
- * Actions the Player can carry out.
+ * Potential actions the player can carry out.
  * @author Robert
  *
  */

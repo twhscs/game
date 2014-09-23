@@ -36,8 +36,8 @@ public class Game {
   /**
    * The UI element responsible for displaying the FPS on screen.
    */
-  private final UITextElement fpsUI = 
-      new UITextElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
+  private final TextUIElement fpsUI = 
+      new TextUIElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
   /**
    * Represents whether or not the user has the window opened and focused.
    */
@@ -64,7 +64,7 @@ public class Game {
    * Initializes the game and holds the main loop.
    */
   public void run() {
-    handleInitialization();
+    handleInitialization(); // Initial configuration of various things
     int framesDrawn = 0; // Count each frame that is drawn
     float updateRate = 20; // Limit the logic loop to update at 20Hz (times per second)
     Clock updateClock = new Clock(); // Clock used to restrict update loop to a fixed rate
@@ -73,14 +73,14 @@ public class Game {
     long nextUpdate = 
         updateClock.getElapsedTime().asMilliseconds(); // Calculate next update time in milliseconds
     while (window.isOpen()) { // Run main loop as long as window is open
-      handleInput();
+      handleInput(); // Process input
       long updateTime = 
           updateClock.getElapsedTime().asMilliseconds(); // Make note of the current update time
       while ((updateTime - nextUpdate) >= updateRate) { // Update loop
-        handleLogic();
+        handleLogic(); // Process fixed-time logic
         nextUpdate += updateRate;  // Computer next appropriate update time
       }
-      handleDrawing();
+      handleDrawing(); // Draw everything to the window
       framesDrawn++; // Increment; a frame has been drawn
       // Calculate how long it has been since last calculating FPS
       float elapsedTime = 

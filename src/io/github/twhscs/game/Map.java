@@ -20,70 +20,128 @@ import java.util.Arrays;
  *
  */
 public class Map implements Drawable {
-  private Vector2i mapDimensions = new Vector2i(0, 0);
+  /**
+   * The size (length, width) of the map.
+   */
+  private Vector2i dimensions = new Vector2i(0, 0);
+  /**
+   * An array containing all of the tiles in the map.
+   */
   private Tile[][] tileArray;
-  private Texture mapTilesheetTexture = new Texture();
-  private VertexArray mapVertexArray = new VertexArray();
+  /**
+   * The tilesheet texture.
+   */
+  private final Texture tilesheetTexture = new Texture();
+  /**
+   * The vertex array for the tile map.
+   * This is a streamlined way to draw many sprites at once.
+   * By using the vertex array instead of 100s of sprites, performance is greatly improved.
+   */
+  private final VertexArray vertexArray = new VertexArray();
   
+  /**
+   * Create a new map of specified size and tile type.
+   * @param l Map length.
+   * @param w Map width.
+   * @param t Default tile to auto-populate map.
+   */
   public Map(int l, int w, Tile t) {
-    mapDimensions = new Vector2i(l, w);
-    tileArray = new Tile[mapDimensions.x][mapDimensions.y];
+    dimensions = new Vector2i(l, w); // Update map dimensions
+    tileArray = new Tile[dimensions.x][dimensions.y]; // Create a new tile array with the new size
+    // Try to load the tilesheet file
     try {
-      mapTilesheetTexture.loadFromFile(Paths.get("resources/terrain.png"));
+      tilesheetTexture.loadFromFile(Paths.get("resources/terrain.png")); 
     } catch (IOException ex) {
       ex.printStackTrace();
     }
-    mapVertexArray.setPrimitiveType(PrimitiveType.QUADS);
-    initializeMap(t);
+    // Set the vertex array to use quads because the tiles are square
+    vertexArray.setPrimitiveType(PrimitiveType.QUADS); 
+    initializeMap(t); // Auto-populate the map with the specified tile
   }
   
+  /**
+   * Create a new map of specified size that defaults to grass.
+   * @param l Map length.
+   * @param w Map width.
+   */
   public Map(int l, int w) {
     this(l, w, Tile.GRASS);
   }
-
+  
+  /**
+   * Fill the entire map to the specified tile.
+   * @param initialTile The tile to populate the map with.
+   */
   public void initializeMap(Tile initialTile) {
+    /*
+     * Arrays.fill does not work with matrices 
+     * Therefore I have to loop through the outer level to fill the inner level
+     */
     for (Tile[] row : tileArray) {
-      Arrays.fill(row, initialTile);
+      Arrays.fill(row, initialTile); // Set each tile in the row to the specified tile
     }
   }
   
+  /**
+   * Draw the map onto the window.
+   */
   public void draw(RenderTarget target, RenderStates states) {
-    mapVertexArray.clear();
-    final int tileSize = Tile.getSize();
-    for (int i = 0; i < mapDimensions.x; i++) {
-      for (int j = 0; j < mapDimensions.y; j++) {
-        Tile tileType = tileArray[i][j];
-        Vector2f textureCoords = Tile.getTextureCoords(tileType);
+    vertexArray.clear(); // Empty the vertex array from the previous draw
+    final int tileSize = Tile.getSize(); // Grab the tile size
+    // Loop through every single tile in the map
+    for (int i = 0; i < dimensions.x; i++) {
+      for (int j = 0; j < dimensions.y; j++) {
+        Tile tileType = tileArray[i][j]; // Grab the current tile in the loop
+        // Grab the texture coordinates to render the tile
+        Vector2f textureCoords = Tile.getTextureCoords(tileType); 
         
-        mapVertexArray.add(new Vertex(
-            new Vector2f(i * tileSize, j * tileSize), textureCoords)); // top left
+        /*
+         * Add each corner of the tile to the vertex array
+         * Counter clock-wise motion
+         */
         
-        mapVertexArray.add(new Vertex(
+        vertexArray.add(new Vertex(
+            new Vector2f(i * tileSize, j * tileSize), textureCoords)); // Top-left
+        
+        vertexArray.add(new Vertex(
             new Vector2f(i * tileSize, (j * tileSize) + tileSize), 
-                Vector2f.add(textureCoords, new Vector2f(0, tileSize)))); // bottom left
+                Vector2f.add(textureCoords, new Vector2f(0, tileSize)))); // Bottom-left
         
-        mapVertexArray.add(new Vertex(
+        vertexArray.add(new Vertex(
             new Vector2f((i * tileSize) + tileSize, (j * tileSize) + tileSize), 
-                Vector2f.add(textureCoords, new Vector2f(tileSize, tileSize)))); // bottom right
+                Vector2f.add(textureCoords, new Vector2f(tileSize, tileSize)))); // Bottom-right
         
-        mapVertexArray.add(new Vertex(
+        vertexArray.add(new Vertex(
             new Vector2f((i * tileSize) + tileSize, j * tileSize), 
-                Vector2f.add(textureCoords, new Vector2f(tileSize, 0)))); // top right
+                Vector2f.add(textureCoords, new Vector2f(tileSize, 0)))); // Top-right
       }
     }
-    RenderStates newStates = new RenderStates(mapTilesheetTexture);
-    mapVertexArray.draw(target, newStates);
+    // Apply the texture to the vertex array
+    RenderStates newStates = new RenderStates(tilesheetTexture); 
+    vertexArray.draw(target, newStates); // Draw the vertex array
   }
   
+  /**
+   * Return the tile at the specified location.
+   * @param l The location of the tile to get.
+   * @return The tile at the specified location.
+   */
   public Tile getTile(Location l) {
-    Vector2i position = l.getPosition();
-    Tile t = tileArray[position.x][position.y];
-    return t;
+    Vector2i position = l.getPosition(); // Get the position from the location
+    Tile t = tileArray[position.x][position.y]; // Get the tile at this position
+    return t; // Return tile
   }
   
+  /**
+   * Determine whether or not the location fits within the map.
+   * @param l The location to test.
+   * @return If the location is valid.
+   */
   public boolean isValidLocation(Location l) {
-    Vector2i coordinates = l.getPosition();
+    Vector2i coordinates = l.getPosition(); // Get the position from the location
+    // Return true if the location is greater than 0, 0 and less than l, w
     return ((coordinates.x >= 0) && (coordinates.y >= 0) 
-        && (coordinates.x < mapDimensions.x) && (coordinates.y < mapDimensions.y) && Tile.getCanWalkOn(getTile(l)));
+        && (coordinates.x < dimensions.x) && (coordinates.y < dimensions.y) 
+        && Tile.getCanWalkOn(getTile(l)));
   }
 }
