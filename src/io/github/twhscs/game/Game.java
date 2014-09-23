@@ -47,6 +47,10 @@ public class Game {
    */
   private Camera camera;
   
+  private Map currentMap;
+  
+  
+  
   /**
    * Creates an instance of the game and runs it.
    * @param args Command line arguments passed in at run-time.
@@ -61,7 +65,10 @@ public class Game {
    */
   public void handleInitialization() {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
-    player.changeMap(new Map(10, 10, Tile.SAND));
+    currentMap = new Map(10, 10, Tile.SAND);
+    currentMap.addEntity(player);
+    currentMap.addEntity(new NonplayerCharacter(1, 0, "Bob", "npc1"));
+    currentMap.addEntity(new NonplayerCharacter(3, 2, "Joe", "npc2"));
     camera = new Camera(window);
     // window.setFramerateLimit(60);
   }
@@ -120,6 +127,15 @@ public class Game {
         case LOST_FOCUS:
           windowFocus = false; // Update windowFocus if the user unfocuses the window
           break;
+        case KEY_PRESSED:
+          switch(event.asKeyEvent().key) {
+            case E:
+              player.interact();
+              break;
+            default:
+              break;
+          }
+          break;
         default:
           break;
       }
@@ -148,7 +164,7 @@ public class Game {
    * Updates at a fixed rate (20Hz).
    */
   public void handleLogic() {
-    player.update();
+    currentMap.updateAllEntities();
   }
   
   /**
@@ -159,8 +175,8 @@ public class Game {
     window.clear(); // Wipe everything from the window
     // Draw each object like layers, background to foreground
     camera.centerOn(player.getAnimatedSprite()); // Draw everything relative to player, centering it
-    window.draw(player.getMap()); 
-    window.draw(player);
+    window.draw(currentMap); 
+    currentMap.drawAllEntities(window);
     camera.centerOnDefault(); // Stop drawing relative to the player
     window.draw(fpsUI);
     window.display(); // Show the window to the user

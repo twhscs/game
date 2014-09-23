@@ -4,6 +4,7 @@ import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Texture;
 import org.jsfml.graphics.Vertex;
 import org.jsfml.graphics.VertexArray;
@@ -12,7 +13,10 @@ import org.jsfml.system.Vector2i;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * A map or level for the player to interact in. Can be created manually or procedurally.
@@ -38,6 +42,10 @@ public class Map implements Drawable {
    * By using the vertex array instead of 100s of sprites, performance is greatly improved.
    */
   private final VertexArray vertexArray = new VertexArray();
+  /**
+   * All of the entities (NPCs) on the map.
+   */
+  private final ArrayList<Entity> entitiesOnMap = new ArrayList<Entity>();
   
   /**
    * Create a new map of specified size and tile type.
@@ -142,6 +150,37 @@ public class Map implements Drawable {
     // Return true if the location is greater than 0, 0 and less than l, w
     return ((coordinates.x >= 0) && (coordinates.y >= 0) 
         && (coordinates.x < dimensions.x) && (coordinates.y < dimensions.y) 
-        && Tile.getCanWalkOn(getTile(l)));
+        && Tile.getCanWalkOn(getTile(l)) && (getEntityatLocation(l) == null));
+  }
+  
+  public Entity getEntityatLocation(Location l) {
+    Iterator<Entity> it = entitiesOnMap.iterator();
+    while (it.hasNext()) {
+      Entity e = it.next();
+      if (e.getLocation().equals(l)) {
+        return e;
+      }
+    }
+    return null;
+  }
+  
+  public void addEntity(Entity e) {
+    if (getEntityatLocation(e.getLocation()) == null) {
+      e.setParentMap(this);
+      entitiesOnMap.add(e);
+    }
+  }
+  
+  public void drawAllEntities(RenderWindow w) {
+    for (Entity e : entitiesOnMap) {
+      w.draw(e);
+    }
+  }
+  
+  public void updateAllEntities() {
+    Collections.sort(entitiesOnMap);
+    for (Entity e : entitiesOnMap) {
+      e.update();
+    }
   }
 }

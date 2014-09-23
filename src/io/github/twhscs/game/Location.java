@@ -8,7 +8,7 @@ import org.jsfml.system.Vector2i;
  * @author Robert
  *
  */
-public class Location implements Cloneable {
+public class Location implements Cloneable, Comparable<Location> {
   /**
    * The vector position (x, y).
    */
@@ -157,5 +157,17 @@ public class Location implements Cloneable {
    */
   protected Location clone() throws CloneNotSupportedException {
     return (Location) super.clone();
+  }
+  
+  public boolean equals(Location l) {
+      return locPosition.equals(l.getPosition());
+  }
+  
+  public String toString() {
+    return "[" + locPosition.x + ", " + locPosition.y + "] Facing: " + locDirection;
+  }
+  
+  public int compareTo(Location l) {
+    return locPosition.y - l.getPosition().y;
   }
 }

@@ -3,9 +3,6 @@ package io.github.twhscs.game;
 import org.jsfml.audio.Sound;
 import org.jsfml.audio.SoundBuffer;
 import org.jsfml.audio.SoundSource;
-import org.jsfml.graphics.Drawable;
-import org.jsfml.graphics.RenderStates;
-import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
@@ -17,19 +14,11 @@ import java.nio.file.Paths;
  * @author Robert
  *
  */
-public class Player extends Entity implements Drawable {
+public class Player extends Entity {
   /**
    * The texture for the sprite.
    */
-  private final Texture playerSpritesheetTexture = new Texture();
-  /**
-   * The player sprite that supports animation.
-   */
-  private final AnimatedSprite playerSprite;
-  /**
-   * The map the player is currently on.
-   */
-  private Map currentMap;
+  private final Texture entitySpritesheetTexture = new Texture();
   /**
    * The action the player is currently performing.
    */
@@ -52,17 +41,16 @@ public class Player extends Entity implements Drawable {
     entityLoc = new Location(x, y); // Create a new location at position x, y
     // Try to load sprite texture and 'stuck' sound
     try {
-      playerSpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
+      entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
       cannotMoveBuffer.loadFromFile(Paths.get("resources/stuck.wav"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
     Sprite sprite = new Sprite(); // Create a new regular sprite
-    sprite.setTexture(playerSpritesheetTexture); // Set the texture for the sprite
+    sprite.setTexture(entitySpritesheetTexture); // Set the texture for the sprite
     // Create a new animated sprite from the regular sprite
-    playerSprite = new AnimatedSprite(sprite, entityLoc);
+    entitySprite = new AnimatedSprite(sprite, entityLoc);
     cannotMove.setBuffer(cannotMoveBuffer); // Set the sound object from the buffer (loading)
-    
   }
   
   /**
@@ -73,43 +61,28 @@ public class Player extends Entity implements Drawable {
   }
   
   /**
-   * Change the map the player is on.
-   * @param m The new map.
-   */
-  public void changeMap(Map m) {
-    currentMap = m;
-  }
-  
-  /**
-   * Get the map the player is currently on.
-   * @return The map the player is on.
-   */
-  public Map getMap() {
-    return currentMap;
-  }
-  
-  /**
    * Move the player in the specified direction.
    * @param d The direction to move the player.
    */
   public void move(Direction d) {
-    if (currentAction == PlayerAction.NONE) { // If the player is not doing anything
+    // If the player is not doing anything and no animation is playing
+    if (currentAction == PlayerAction.NONE && entitySprite.finishedAnimating()) {
       /*
        * Get the location relative to the current location
        * For example NORTH would return the location above the current location
        */
       Location newLoc = entityLoc.getRelativeLocation(d);
       entityLoc.setDirection(d); // Change player direction to new direction
-      if (currentMap.isValidLocation(newLoc)) { // Check if location exists
+      if (parentMap.isValidLocation(newLoc)) { // Check if location exists
         currentAction = PlayerAction.MOVING; // Change player action to moving
-        playerSprite.startAnimation(AnimationType.WALKING); // Begin animating the sprite
+        entitySprite.startAnimation(AnimationType.WALKING); // Begin animating the sprite
         // If the location is invalid, play a sound
       } else if (cannotMove.getStatus() == SoundSource.Status.STOPPED) {
         /*
          *  Play the stationary walk animation.
          *  It looks like the player is trying to move but they cannot
          */
-        playerSprite.startAnimation(AnimationType.STATIONARY_WALK); 
+        entitySprite.startAnimation(AnimationType.STATIONARY_WALK); 
         cannotMove.play(); // Play an annoying sound effect
       }
     }
@@ -120,16 +93,16 @@ public class Player extends Entity implements Drawable {
    */
   public void update() {
     if (currentAction == PlayerAction.MOVING) { // If the player is moving
-      if (playerSprite.finishedAnimating()) { // If the animation is complete
+      if (entitySprite.finishedAnimating()) { // If the animation is complete
         currentAction = PlayerAction.NONE; // Stop moving
         // Actually move the location
         entityLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
         // Update the sprite with the new location
-        playerSprite.updatePosition(entityLoc);
+        entitySprite.updatePosition(entityLoc);
       }
     }
     // Update the animation, if there is no current animation this call will be ignored
-    playerSprite.animate();
+    entitySprite.animate();
   }
   
   /**
@@ -137,14 +110,16 @@ public class Player extends Entity implements Drawable {
    * @return Animated sprite.
    */
   public AnimatedSprite getAnimatedSprite() {
-    return playerSprite;
+    return entitySprite;
   }
   
-  /**
-   * Draw the player on the screen.
-   */
-  public void draw(RenderTarget target, RenderStates states) {
-    // Get the animated sprite and draw it
-    playerSprite.getSprite().draw(target, states); 
+  public void interact() {
+    Location interactLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
+    Entity e = parentMap.getEntityatLocation(interactLoc);
+    if (e != null && e instanceof NonplayerCharacter) {
+      System.out.println("YAYAYA");
+      NonplayerCharacter NPC = (NonplayerCharacter) e;
+      NPC.move(Direction.SOUTH);
+    }
   }
 }

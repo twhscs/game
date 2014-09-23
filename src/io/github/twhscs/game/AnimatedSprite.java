@@ -52,6 +52,7 @@ public class AnimatedSprite {
   public AnimatedSprite(Sprite s, Location l) {
     animatedSprite = s;
     entityLoc = l;
+    updatePosition(l);
   }
   
   /**
