@@ -128,6 +128,14 @@ public class Player extends Entity implements Drawable {
   }
   
   /**
+   * Get animated sprite.
+   * @return Animated sprite.
+   */
+  public Sprite getSprite() {
+    return playerSprite.getSprite();
+  }
+  
+  /**
    * Draw the player on the screen.
    */
   public void draw(RenderTarget target, RenderStates states) {

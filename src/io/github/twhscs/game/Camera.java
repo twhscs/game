@@ -34,7 +34,11 @@ public class Camera {
    * @param step Kyle ?
    */
   public void centerOn(Vector2f pos, float step) {
-    View newView = new View(vectorLerp(defaultView.getCenter(), pos, step), defaultView.getSize());
+    /* View newView = 
+     * new View(vectorLerp(defaultView.getCenter(), pos, step), defaultView.getSize());
+     */
+    View newView = new View(defaultView.getCenter(), defaultView.getSize());
+    newView.setCenter(pos);
     window.setView(newView);
   }
   
@@ -64,6 +68,6 @@ public class Camera {
    * @return
    */
   public Vector2f vectorLerp(Vector2f v0, Vector2f v1, float m) {
-    return new Vector2f(lerp(v0.x, v1.x, m), lerp(v0,y, v1.y, m));
+    return new Vector2f(lerp(v0.x, v1.x, m), lerp(v0.y, v1.y, m));
   }
 }

@@ -4,6 +4,7 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Keyboard.Key;
@@ -42,6 +43,10 @@ public class Game {
    * Represents whether or not the user has the window opened and focused.
    */
   private boolean windowFocus = true;
+  /**
+   * Allows the window to shift focus.
+   */
+  private Camera camera;
   
   /**
    * Creates an instance of the game and runs it.
@@ -58,6 +63,7 @@ public class Game {
   public void handleInitialization() {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
     player.changeMap(new Map(10, 10, Tile.SAND));
+    camera = new Camera(window);
   }
   
   /**
@@ -152,8 +158,11 @@ public class Game {
     // The window has automatic double buffering
     window.clear(); // Wipe everything from the window
     // Draw each object like layers, background to foreground
+    Vector2f playerPos = player.getSprite().getPosition();
+    camera.centerOn(playerPos, 0);
     window.draw(player.getMap()); 
     window.draw(player);
+    camera.centerOnDefault();
     window.draw(fpsUI);
     window.display(); // Show the window to the user
   }
