@@ -4,7 +4,6 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Keyboard.Key;
@@ -158,11 +157,10 @@ public class Game {
     // The window has automatic double buffering
     window.clear(); // Wipe everything from the window
     // Draw each object like layers, background to foreground
-    Vector2f playerPos = player.getSprite().getPosition();
-    camera.centerOn(playerPos, 0);
+    camera.centerOn(player.getAnimatedSprite()); // Draw everything relative to player, centering it
     window.draw(player.getMap()); 
     window.draw(player);
-    camera.centerOnDefault();
+    camera.centerOnDefault(); // Stop drawing relative to the player
     window.draw(fpsUI);
     window.display(); // Show the window to the user
   }

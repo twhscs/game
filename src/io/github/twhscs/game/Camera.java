@@ -3,6 +3,7 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 
 /**
  * Camera that can center on various objects.
@@ -29,17 +30,23 @@ public class Camera {
   }
   
   /**
-   * Center the camera on the following position.
-   * @param pos The position to center the camera on.
-   * @param step Kyle ?
+   * Center the camera on the position of an animated sprite.
+   * @param s The sprite to center on.
    */
-  public void centerOn(Vector2f pos, float step) {
-    /* View newView = 
-     * new View(vectorLerp(defaultView.getCenter(), pos, step), defaultView.getSize());
-     */
-    View newView = new View(defaultView.getCenter(), defaultView.getSize());
-    newView.setCenter(pos);
-    window.setView(newView);
+  public void centerOn(AnimatedSprite s) {
+    // Copy the default view
+    View newView = new View(defaultView.getCenter(), defaultView.getSize()); 
+    Vector2f spritePos = s.getSprite().getPosition(); // Get the vector position of the sprite
+    Vector2i spriteSize = s.getSpriteSize(); // Get the size of the sprite
+    // Convert the size to a float
+    Vector2f newSpriteSize = new Vector2f(spriteSize.x, spriteSize.y); 
+    newSpriteSize = Vector2f.div(newSpriteSize, 2); // Divide the size in half (for centering)
+    // Combine half the sprite size with the position
+    Vector2f cameraPos = Vector2f.add(spritePos, newSpriteSize); 
+    // Round the final position to prevent graphical artifacts
+    cameraPos = new Vector2f(Math.round(cameraPos.x), Math.round(cameraPos.y));
+    newView.setCenter(cameraPos); // Set the new position
+    window.setView(newView); // Set the view
   }
   
   /**
@@ -47,27 +54,5 @@ public class Camera {
    */
   public void centerOnDefault() {
     window.setView(defaultView);
-  }
-  
-  /**
-   * Kyle ?
-   * @param x0
-   * @param x1
-   * @param m
-   * @return
-   */
-  public float lerp(float x0, float x1, float m) {
-    return x0 + m * (x1 - x0);
-  }
-  
-  /**
-   * Kyle ?
-   * @param v0
-   * @param v1
-   * @param m
-   * @return
-   */
-  public Vector2f vectorLerp(Vector2f v0, Vector2f v1, float m) {
-    return new Vector2f(lerp(v0.x, v1.x, m), lerp(v0.y, v1.y, m));
   }
 }

@@ -131,8 +131,8 @@ public class Player extends Entity implements Drawable {
    * Get animated sprite.
    * @return Animated sprite.
    */
-  public Sprite getSprite() {
-    return playerSprite.getSprite();
+  public AnimatedSprite getAnimatedSprite() {
+    return playerSprite;
   }
   
   /**
