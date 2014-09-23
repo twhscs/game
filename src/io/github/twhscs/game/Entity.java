@@ -1,8 +1,5 @@
 package io.github.twhscs.game;
 
-import org.jsfml.graphics.Sprite;
-import org.jsfml.system.Vector2f;
-
 /**
  * The base class for all players, NPCs, monsters, items etc.
  * @author chris
