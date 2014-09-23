@@ -24,10 +24,6 @@ public class AnimatedSprite {
    */
   private int frameCounter = 0;
   /**
-   * Whether or not the sprite is currently animated.
-   */
-  private boolean animating = false;
-  /**
    * The position at which the sprite is rendered.
    */
   private Vector2f spritePosition = new Vector2f(0, 0);
@@ -43,6 +39,10 @@ public class AnimatedSprite {
    * The size of the sprite.
    */
   private final Vector2i spriteSize = new Vector2i(32, 48);
+  /**
+   * The current animation to play.
+   */
+  private AnimationType currentAnimationType = AnimationType.NONE;
   
   /**
    * Create a new animated sprite.
@@ -55,20 +55,13 @@ public class AnimatedSprite {
   }
   
   /**
-   * Start the animation.
-   */
-  public void startWalkingAnimation() {
-    startAnimation();
-  }
-  
-  /**
    * Update the animation.
    */
   public void animate() {
-    if (animating) { // If the animation is supposed to update
+    if (currentAnimationType != AnimationType.NONE) { // If the animation is supposed to update
       if (frameCounter >= animationSpeed) { // If 15 Hz has passed
         stopAnimation(); // Stop the animation
-      } else {
+      } else if (currentAnimationType == AnimationType.WALKING) {
         // Get the position between old and new.
         spritePosition = entityLoc.interpolate(animationSpeed, frameCounter);
         /*
@@ -95,6 +88,19 @@ public class AnimatedSprite {
         } else if (change >= .75f && change <= 1.0f) {
           animationFrame = 3;
         }
+      } else if (currentAnimationType == AnimationType.STATIONARY_WALK) {
+        // Essentially the same as above just without moving the player
+        float steps = animationSpeed / 4; // Divide number line into fourths
+        // Based on which fourth the animation resides, change the frame
+        if (frameCounter >= 0.f && frameCounter < steps) {
+          animationFrame = 0;
+        } else if (frameCounter >= steps && frameCounter < (2 * steps)) {
+          animationFrame = 1;
+        } else if (frameCounter >= (2 * steps) && frameCounter < (3 * steps)) {
+          animationFrame = 2;
+        } else if (frameCounter >= (3 * steps) && frameCounter <= (4 * steps)) {
+          animationFrame = 3;
+        }
       }
       frameCounter++; // Increment on each update to keep track of time
     }
@@ -105,7 +111,7 @@ public class AnimatedSprite {
    */
   private void stopAnimation() {
     // Reset the following
-    animating = false;
+    currentAnimationType = AnimationType.NONE;
     frameCounter = 0;
     animationFrame = 0;
   }
@@ -113,8 +119,8 @@ public class AnimatedSprite {
   /**
    * Start the animation.
    */
-  private void startAnimation() {
-    animating = true;
+  public void startAnimation(AnimationType t) {
+    currentAnimationType = t;
   }
   
   /**
@@ -122,7 +128,7 @@ public class AnimatedSprite {
    * @return If the animation finished.
    */
   public boolean finishedAnimating() {
-    return !animating;
+    return currentAnimationType == AnimationType.NONE;
   }
   
   /**
