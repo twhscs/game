@@ -99,13 +99,18 @@ public class Player extends Entity implements Drawable {
        * For example NORTH would return the location above the current location
        */
       Location newLoc = entityLoc.getRelativeLocation(d);
+      entityLoc.setDirection(d); // Change player direction to new direction
       if (currentMap.isValidLocation(newLoc)) { // Check if location exists
         currentAction = PlayerAction.MOVING; // Change player action to moving
-        entityLoc.setDirection(d); // Change player direction to new direction
-        playerSprite.startWalkingAnimation(); // Begin animating the sprite
+        playerSprite.startAnimation(AnimationType.WALKING); // Begin animating the sprite
         // If the location is invalid, play a sound
       } else if (cannotMove.getStatus() == SoundSource.Status.STOPPED) {
-        cannotMove.play();
+        /*
+         *  Play the stationary walk animation.
+         *  It looks like the player is trying to move but they cannot
+         */
+        playerSprite.startAnimation(AnimationType.STATIONARY_WALK); 
+        cannotMove.play(); // Play an annoying sound effect
       }
     }
   }
@@ -121,10 +126,10 @@ public class Player extends Entity implements Drawable {
         entityLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
         // Update the sprite with the new location
         playerSprite.updatePosition(entityLoc);
-      } else {
-        playerSprite.animate(); // Proceed with the animation
       }
     }
+    // Update the animation, if there is no current animation this call will be ignored
+    playerSprite.animate();
   }
   
   /**

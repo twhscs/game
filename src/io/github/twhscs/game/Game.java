@@ -63,6 +63,7 @@ public class Game {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
     player.changeMap(new Map(10, 10, Tile.SAND));
     camera = new Camera(window);
+    // window.setFramerateLimit(60);
   }
   
   /**
