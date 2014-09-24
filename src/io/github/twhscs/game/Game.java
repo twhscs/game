@@ -9,6 +9,7 @@ import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 
 import io.github.twhscs.game.ui.DialogueUIElement;
@@ -72,7 +73,7 @@ public class Game {
    * Configures one time settings at start-up.
    */
   public void handleInitialization() {
-    window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
+    window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle, WindowStyle.CLOSE | WindowStyle.TITLEBAR);
     currentMap = new Map(10, 10, Tile.SAND);
     player = new Player(currentMap.getRandomValidLocation(), dialogueUI);
     currentMap.addEntity(player);
