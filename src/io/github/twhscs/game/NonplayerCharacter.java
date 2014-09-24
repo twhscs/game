@@ -1,13 +1,12 @@
 package io.github.twhscs.game;
 
-import org.jsfml.audio.SoundSource;
-import org.jsfml.graphics.RenderStates;
-import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * An NPC class for interactive non-player characters.
@@ -24,16 +23,25 @@ public class NonplayerCharacter extends Entity {
   
   private String name;
   
+  private ArrayList<String> dialogue = new ArrayList<String>();
+  
+  private final Sprite portrait = new Sprite();
+  
+  private Iterator<String> dialogueProgress;
+  
   public NonplayerCharacter(int x, int y, String n, String spritesheet) {
     entityLoc = new Location(x, y);
+    Texture portraitTex = new Texture();
     try {
-      entitySpritesheetTexture.loadFromFile(Paths.get("resources/" + spritesheet + ".png"));
+      entitySpritesheetTexture.loadFromFile(Paths.get("resources/" + spritesheet + "_sprite.png"));
+      portraitTex.loadFromFile(Paths.get("resources/" + spritesheet + "_portrait.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
     Sprite sprite = new Sprite();
     sprite.setTexture(entitySpritesheetTexture);
     entitySprite = new AnimatedSprite(sprite, entityLoc);
+    portrait.setTexture(portraitTex);
     name = n;
   }
   
@@ -59,5 +67,34 @@ public class NonplayerCharacter extends Entity {
       }
     }
     entitySprite.animate();
+  }
+  
+  public void addDialogue(String s) {
+    dialogue.add(s);
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public Sprite getPortrait() {
+    return portrait;
+  }
+  
+  public void startTalking() {
+    dialogueProgress = dialogue.iterator();
+  }
+  
+  public String getDialogue() {
+    if (dialogueProgress.hasNext()) {
+      return dialogueProgress.next();
+    } else {
+      dialogueProgress = null;
+      return null;
+    }
+  }
+  
+  public boolean canTalk() {
+    return dialogue.size() > 0;
   }
 }

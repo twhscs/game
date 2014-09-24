@@ -5,4 +5,4 @@ package io.github.twhscs.game;
  * @author Robert
  *
  */
-public enum PlayerAction { NONE, MOVING }
+public enum PlayerAction { NONE, MOVING, TALKING }

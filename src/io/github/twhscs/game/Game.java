@@ -32,7 +32,7 @@ public class Game {
   /**
    * The main object representing the player.
    */
-  private final Player player = new Player();
+  private Player player;
   /**
    * The UI element responsible for displaying the FPS on screen.
    */
@@ -48,6 +48,8 @@ public class Game {
   private Camera camera;
   
   private Map currentMap;
+  
+  private final DialogueUIElement dialogueUI = new DialogueUIElement(windowDimensions);
   
   
   
@@ -65,9 +67,13 @@ public class Game {
    */
   public void handleInitialization() {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
+    player = new Player(dialogueUI);
     currentMap = new Map(10, 10, Tile.SAND);
     currentMap.addEntity(player);
-    currentMap.addEntity(new NonplayerCharacter(1, 0, "Bob", "npc1"));
+    NonplayerCharacter npc = new NonplayerCharacter(1, 0, "Creatine Chris", "npc3");
+    npc.addDialogue("Getting swole is my life.");
+    npc.addDialogue("That's why I consume copious amounts of creatine.");
+    currentMap.addEntity(npc);
     currentMap.addEntity(new NonplayerCharacter(3, 2, "Joe", "npc2"));
     camera = new Camera(window);
     // window.setFramerateLimit(60);
@@ -178,6 +184,9 @@ public class Game {
     window.draw(currentMap); 
     currentMap.drawAllEntities(window);
     camera.centerOnDefault(); // Stop drawing relative to the player
+    if (dialogueUI.isVisible()) {
+      window.draw(dialogueUI);
+    }
     window.draw(fpsUI);
     window.display(); // Show the window to the user
   }

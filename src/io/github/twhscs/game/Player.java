@@ -27,22 +27,32 @@ public class Player extends Entity {
    * The buffer that allows the 'stuck' sound to be loaded.
    */
   private final SoundBuffer cannotMoveBuffer = new SoundBuffer();
+  private final SoundBuffer interactSuccessBuffer = new SoundBuffer();
+  private final SoundBuffer interactFailureBuffer = new SoundBuffer();
   /**
    * The object that plays the 'stuck' sound.
    */
   private final Sound cannotMove = new Sound();
+  
+  private final Sound interactSuccess = new Sound();
+  
+  private final Sound interactFailure = new Sound();
+  
+  private DialogueUIElement dialogueUI;
   
   /**
    * Creates a new player with a location at x, y.
    * @param x Starting x position.
    * @param y Starting y position.
    */
-  public Player(int x, int y) {
+  public Player(int x, int y, DialogueUIElement d) {
     entityLoc = new Location(x, y); // Create a new location at position x, y
     // Try to load sprite texture and 'stuck' sound
     try {
       entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
       cannotMoveBuffer.loadFromFile(Paths.get("resources/stuck.wav"));
+      interactSuccessBuffer.loadFromFile(Paths.get("resources/interact_success.wav"));
+      interactFailureBuffer.loadFromFile(Paths.get("resources/interact_failure.wav"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
@@ -50,14 +60,17 @@ public class Player extends Entity {
     sprite.setTexture(entitySpritesheetTexture); // Set the texture for the sprite
     // Create a new animated sprite from the regular sprite
     entitySprite = new AnimatedSprite(sprite, entityLoc);
+    dialogueUI = d;
     cannotMove.setBuffer(cannotMoveBuffer); // Set the sound object from the buffer (loading)
+    interactSuccess.setBuffer(interactSuccessBuffer);
+    interactFailure.setBuffer(interactFailureBuffer);
   }
   
   /**
    * Create a new player at (0, 0).
    */
-  public Player() {
-    this(0, 0);
+  public Player(DialogueUIElement d) {
+    this(0, 0, d);
   }
   
   /**
@@ -117,9 +130,41 @@ public class Player extends Entity {
     Location interactLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
     Entity e = parentMap.getEntityatLocation(interactLoc);
     if (e != null && e instanceof NonplayerCharacter) {
-      System.out.println("YAYAYA");
-      NonplayerCharacter NPC = (NonplayerCharacter) e;
-      NPC.move(Direction.SOUTH);
+      NonplayerCharacter npc = (NonplayerCharacter) e;
+      if ((currentAction == PlayerAction.NONE || currentAction == PlayerAction.TALKING) 
+          && npc.canTalk()) {
+        if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
+            && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
+          interactSuccess.play();
+        }
+        talk(npc);
+      } else if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
+          && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
+        interactFailure.play();
+      }
     }
+  }
+  
+  public void talk(NonplayerCharacter n) {
+    if (currentAction == PlayerAction.NONE) {
+      dialogueUI.show();
+      currentAction = PlayerAction.TALKING;
+      n.startTalking();
+      dialogueUI.setPortrait(n.getPortrait());
+      dialogueUI.setText(n.getDialogue());
+      dialogueUI.setName(n.getName());
+    } else if (currentAction == PlayerAction.TALKING) {
+      String t = n.getDialogue();
+      if (t != null) {
+        dialogueUI.setText(t);
+      } else {
+        currentAction = PlayerAction.NONE;
+        dialogueUI.hide();
+      }
+    }
+  }
+  
+  public PlayerAction getCurrentAction() {
+    return currentAction;
   }
 }
