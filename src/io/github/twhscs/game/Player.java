@@ -140,6 +140,7 @@ public class Player extends Entity {
             && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
           interactSuccess.play();
         }
+        e.getLocation().setDirection(Direction.getInverse(entityLoc.getDirection()));
         talk(npc);
       } else if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
           && interactFailure.getStatus() == SoundSource.Status.STOPPED) {

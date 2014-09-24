@@ -11,6 +11,7 @@ import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,6 +190,9 @@ public class Map implements Drawable {
     while (!isValidLocation(randLoc)) {
       randLoc = getRandomLocation();
     }
+    List<Direction> directions = Arrays.asList(Direction.values());
+    Collections.shuffle(directions);
+    randLoc.setDirection(directions.get(0));
     return randLoc;
   }
   
