@@ -75,6 +75,9 @@ public class Game {
     npc.addDialogue("That's why I consume copious amounts of creatine.");
     currentMap.addEntity(npc);
     currentMap.addEntity(new NonplayerCharacter(3, 2, "Joe", "npc2"));
+    NonplayerCharacter pig = new NonplayerCharacter(5, 5, "Porky Chase", "npc4");
+    pig.addDialogue("I'll send you to the slaughterhouse!");
+    currentMap.addEntity(pig);
     camera = new Camera(window);
     // window.setFramerateLimit(60);
   }
