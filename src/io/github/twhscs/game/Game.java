@@ -1,6 +1,7 @@
 package io.github.twhscs.game;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.Image;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
@@ -12,6 +13,8 @@ import org.jsfml.window.event.Event;
 
 import io.github.twhscs.game.ui.DialogueUIElement;
 import io.github.twhscs.game.ui.TextUIElement;
+
+import java.io.IOException;
 
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
@@ -99,6 +102,13 @@ public class Game {
     camera = new Camera(window);
     // window.setFramerateLimit(60);
     window.setKeyRepeatEnabled(false);
+    Image icon = new Image();
+    try {
+      icon.loadFromStream(getClass().getClassLoader().getResourceAsStream("icon.png"));
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+    window.setIcon(icon);
   }
   
   /**

@@ -50,7 +50,7 @@ public class DialogueUIElement implements Drawable {
   public DialogueUIElement(Vector2i r) {
     // Try to load the font
     try {
-      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("kenpixel.ttf"));
+      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("fonts/kenpixel.ttf"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }

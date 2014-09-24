@@ -61,7 +61,7 @@ public class Map implements Drawable {
     // Try to load the tilesheet file
     try {
       tilesheetTexture.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("terrain.png"));
+          getClass().getClassLoader().getResourceAsStream("images/terrain.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
