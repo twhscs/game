@@ -67,17 +67,29 @@ public class Game {
    */
   public void handleInitialization() {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
-    player = new Player(dialogueUI);
     currentMap = new Map(10, 10, Tile.SAND);
+    player = new Player(currentMap.getRandomValidLocation(), dialogueUI);
     currentMap.addEntity(player);
-    NonplayerCharacter npc = new NonplayerCharacter(1, 0, "Creatine Chris", "npc3");
+    NonplayerCharacter npc = 
+        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Creatine Chris", "npc3");
     npc.addDialogue("Getting swole is my life.");
     npc.addDialogue("That's why I consume copious amounts of creatine.");
     currentMap.addEntity(npc);
-    currentMap.addEntity(new NonplayerCharacter(3, 2, "Joe", "npc2"));
-    NonplayerCharacter pig = new NonplayerCharacter(5, 5, "Porky Chase", "npc4");
+    currentMap.addEntity(new NonplayerCharacter(currentMap.getRandomValidLocation(), "Joe", "npc2"));
+    NonplayerCharacter pig = 
+        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Porky Chase", "npc4");
     pig.addDialogue("I'll send you to the slaughterhouse!");
     currentMap.addEntity(pig);
+    NonplayerCharacter swag = 
+        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Ryan May", "npc5");
+    swag.addDialogue("They call me the swag lord.");
+    currentMap.addEntity(swag);
+    NonplayerCharacter hunter = 
+        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Hunter \"Skumbag\" Brown", "npc6");
+    hunter.addDialogue("I'm a master programmer!");
+    hunter.addDialogue("For my mommy tells me so!");
+    hunter.addDialogue("Right Mr. S?");
+    currentMap.addEntity(hunter);
     camera = new Camera(window);
     // window.setFramerateLimit(60);
   }

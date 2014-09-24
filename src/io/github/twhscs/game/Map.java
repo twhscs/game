@@ -183,4 +183,18 @@ public class Map implements Drawable {
       e.update();
     }
   }
+  
+  public Location getRandomValidLocation() {
+    Location randLoc = getRandomLocation();
+    while (!isValidLocation(randLoc)) {
+      randLoc = getRandomLocation();
+    }
+    return randLoc;
+  }
+  
+  private Location getRandomLocation() {
+    int randomX = Random.intRange(0, dimensions.x);
+    int randomY = Random.intRange(0, dimensions.y);
+    return new Location(randomX, randomY);
+  }
 }

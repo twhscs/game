@@ -44,8 +44,8 @@ public class Player extends Entity {
    * @param x Starting x position.
    * @param y Starting y position.
    */
-  public Player(int x, int y, DialogueUIElement d) {
-    entityLoc = new Location(x, y); // Create a new location at position x, y
+  public Player(Location l, DialogueUIElement d) {
+    entityLoc = l; // Create a new location at position x, y
     // Try to load sprite texture and 'stuck' sound
     try {
       //entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
@@ -73,7 +73,7 @@ public class Player extends Entity {
    * Create a new player at (0, 0).
    */
   public Player(DialogueUIElement d) {
-    this(0, 0, d);
+    this(new Location(0, 0), d);
   }
   
   /**

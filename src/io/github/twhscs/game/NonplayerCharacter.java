@@ -28,8 +28,8 @@ public class NonplayerCharacter extends Entity {
   
   private Iterator<String> dialogueProgress;
   
-  public NonplayerCharacter(int x, int y, String n, String spritesheet) {
-    entityLoc = new Location(x, y);
+  public NonplayerCharacter(Location l, String n, String spritesheet) {
+    entityLoc = l;
     Texture portraitTex = new Texture();
     try {
       entitySpritesheetTexture.loadFromStream(
