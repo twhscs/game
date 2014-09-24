@@ -90,6 +90,9 @@ public class Game {
     hunter.addDialogue("For my mommy tells me so!");
     hunter.addDialogue("Right Mr. S?");
     currentMap.addEntity(hunter);
+    NonplayerCharacter ke = new NonplayerCharacter(currentMap.getRandomValidLocation(), "Ke Ma", "npc7");
+    ke.addDialogue("That's definitely my code Mr. Smith, I swear.");
+    currentMap.addEntity(ke);
     camera = new Camera(window);
     // window.setFramerateLimit(60);
   }
