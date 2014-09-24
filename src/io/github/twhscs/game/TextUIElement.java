@@ -9,7 +9,6 @@ import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * A UI element containing a dynamic text label.
@@ -46,7 +45,7 @@ public class TextUIElement implements Drawable {
   public TextUIElement(InterfacePosition p, Color c, int size, int style) {
     // Try to load the font
     try {
-      font.loadFromFile(Paths.get("resources/kenpixel.ttf"));
+      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("kenpixel.ttf"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }

@@ -13,7 +13,6 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * A UI element containing a dynamic text label.
@@ -51,7 +50,7 @@ public class DialogueUIElement implements Drawable {
   public DialogueUIElement(Vector2i r) {
     // Try to load the font
     try {
-      font.loadFromFile(Paths.get("resources/kenpixel.ttf"));
+      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("kenpixel.ttf"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }

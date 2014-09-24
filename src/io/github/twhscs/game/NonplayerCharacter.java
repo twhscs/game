@@ -4,7 +4,6 @@ import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -33,8 +32,10 @@ public class NonplayerCharacter extends Entity {
     entityLoc = new Location(x, y);
     Texture portraitTex = new Texture();
     try {
-      entitySpritesheetTexture.loadFromFile(Paths.get("resources/" + spritesheet + "_sprite.png"));
-      portraitTex.loadFromFile(Paths.get("resources/" + spritesheet + "_portrait.png"));
+      entitySpritesheetTexture.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream(spritesheet + "_sprite.png"));
+      portraitTex.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream(spritesheet + "_portrait.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }

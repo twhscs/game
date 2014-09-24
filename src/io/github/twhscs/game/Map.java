@@ -12,7 +12,6 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +57,8 @@ public class Map implements Drawable {
     tileArray = new Tile[dimensions.x][dimensions.y]; // Create a new tile array with the new size
     // Try to load the tilesheet file
     try {
-      tilesheetTexture.loadFromFile(Paths.get("resources/terrain.png")); 
+      tilesheetTexture.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream("terrain.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }

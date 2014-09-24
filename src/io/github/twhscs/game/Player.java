@@ -7,7 +7,6 @@ import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * Holds everything pertaining to the player (user) playing the game.
@@ -49,10 +48,14 @@ public class Player extends Entity {
     entityLoc = new Location(x, y); // Create a new location at position x, y
     // Try to load sprite texture and 'stuck' sound
     try {
-      entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
-      cannotMoveBuffer.loadFromFile(Paths.get("resources/stuck.wav"));
-      interactSuccessBuffer.loadFromFile(Paths.get("resources/interact_success.wav"));
-      interactFailureBuffer.loadFromFile(Paths.get("resources/interact_failure.wav"));
+      //entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
+      entitySpritesheetTexture.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream("player.png"));
+      cannotMoveBuffer.loadFromStream(getClass().getClassLoader().getResourceAsStream("stuck.wav"));
+      interactSuccessBuffer.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream("interact_success.wav"));
+      interactFailureBuffer.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream("interact_failure.wav"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
