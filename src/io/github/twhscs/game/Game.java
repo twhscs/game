@@ -10,6 +10,9 @@ import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
+import io.github.twhscs.game.ui.DialogueUIElement;
+import io.github.twhscs.game.ui.TextUIElement;
+
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
  * This file should ideally be as short as possible.
@@ -70,31 +73,32 @@ public class Game {
     currentMap = new Map(10, 10, Tile.SAND);
     player = new Player(currentMap.getRandomValidLocation(), dialogueUI);
     currentMap.addEntity(player);
-    NonplayerCharacter npc = 
-        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Creatine Chris", "npc3");
+    NonPlayerCharacter npc = 
+        new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Creatine Chris", "npc3");
     npc.addDialogue("Getting swole is my life.");
     npc.addDialogue("That's why I consume copious amounts of creatine.");
     currentMap.addEntity(npc);
-    currentMap.addEntity(new NonplayerCharacter(currentMap.getRandomValidLocation(), "Joe", "npc2"));
-    NonplayerCharacter pig = 
-        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Porky Chase", "npc4");
+    currentMap.addEntity(new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Joe", "npc2"));
+    NonPlayerCharacter pig = 
+        new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Porky Chase", "npc4");
     pig.addDialogue("I'll send you to the slaughterhouse!");
     currentMap.addEntity(pig);
-    NonplayerCharacter swag = 
-        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Ryan May", "npc5");
+    NonPlayerCharacter swag = 
+        new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Ryan May", "npc5");
     swag.addDialogue("They call me the swag lord.");
     currentMap.addEntity(swag);
-    NonplayerCharacter hunter = 
-        new NonplayerCharacter(currentMap.getRandomValidLocation(), "Hunter \"Skumbag\" Brown", "npc6");
+    NonPlayerCharacter hunter = 
+        new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Hunter \"Skumbag\" Brown", "npc6");
     hunter.addDialogue("I'm a master programmer!");
     hunter.addDialogue("For my mommy tells me so!");
     hunter.addDialogue("Right Mr. S?");
     currentMap.addEntity(hunter);
-    NonplayerCharacter ke = new NonplayerCharacter(currentMap.getRandomValidLocation(), "Ke Ma", "npc7");
+    NonPlayerCharacter ke = new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Ke Ma", "npc7");
     ke.addDialogue("That's definitely my code Mr. Smith, I swear.");
     currentMap.addEntity(ke);
     camera = new Camera(window);
     // window.setFramerateLimit(60);
+    window.setKeyRepeatEnabled(false);
   }
   
   /**

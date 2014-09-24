@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.util;
 
 /**
  * Static class to generate a random number within a given range.

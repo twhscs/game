@@ -11,6 +11,8 @@ import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import io.github.twhscs.game.util.Random;
+
 import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;

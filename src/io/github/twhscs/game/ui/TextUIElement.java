@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.ui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
@@ -7,6 +7,8 @@ import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
+
+import io.github.twhscs.game.InterfacePosition;
 
 import java.io.IOException;
 

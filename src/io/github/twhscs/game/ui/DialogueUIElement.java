@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.ui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;

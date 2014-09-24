@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @author Robert
  *
  */
-public class NonplayerCharacter extends Entity {
+public class NonPlayerCharacter extends Entity {
   /**
    * The texture for the sprite.
    */
@@ -28,7 +28,7 @@ public class NonplayerCharacter extends Entity {
   
   private Iterator<String> dialogueProgress;
   
-  public NonplayerCharacter(Location l, String n, String spritesheet) {
+  public NonPlayerCharacter(Location l, String n, String spritesheet) {
     entityLoc = l;
     Texture portraitTex = new Texture();
     try {

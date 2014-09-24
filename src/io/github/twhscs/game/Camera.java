@@ -44,7 +44,8 @@ public class Camera {
     // Combine half the sprite size with the position
     Vector2f cameraPos = Vector2f.add(spritePos, newSpriteSize); 
     // Round the final position to prevent graphical artifacts
-    cameraPos = new Vector2f(Math.round(cameraPos.x), Math.round(cameraPos.y));
+    System.out.println(cameraPos);
+    cameraPos = new Vector2f((float)Math.floor(cameraPos.x), (float)Math.floor(cameraPos.y));
     newView.setCenter(cameraPos); // Set the new position
     window.setView(newView); // Set the view
   }

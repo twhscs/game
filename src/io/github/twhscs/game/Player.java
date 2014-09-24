@@ -6,6 +6,8 @@ import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
+import io.github.twhscs.game.ui.DialogueUIElement;
+
 import java.io.IOException;
 
 /**
@@ -132,8 +134,8 @@ public class Player extends Entity {
   public void interact() {
     Location interactLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
     Entity e = parentMap.getEntityatLocation(interactLoc);
-    if (e != null && e instanceof NonplayerCharacter) {
-      NonplayerCharacter npc = (NonplayerCharacter) e;
+    if (e != null && e instanceof NonPlayerCharacter) {
+      NonPlayerCharacter npc = (NonPlayerCharacter) e;
       if ((currentAction == PlayerAction.NONE || currentAction == PlayerAction.TALKING) 
           && npc.canTalk()) {
         if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
@@ -149,7 +151,7 @@ public class Player extends Entity {
     }
   }
   
-  public void talk(NonplayerCharacter n) {
+  public void talk(NonPlayerCharacter n) {
     if (currentAction == PlayerAction.NONE) {
       dialogueUI.show();
       currentAction = PlayerAction.TALKING;
