@@ -1,3 +1,5 @@
+**NOTE:** Mac OS X is currently unsupported due to limitations with the [JSFML library](http://jsfml.org/).
+
 IMPORTANT SETUP
 ===============
 
