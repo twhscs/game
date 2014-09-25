@@ -53,7 +53,8 @@ public class Player extends Entity {
       //entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
       entitySpritesheetTexture.loadFromStream(
           getClass().getClassLoader().getResourceAsStream("images/player.png"));
-      cannotMoveBuffer.loadFromStream(getClass().getClassLoader().getResourceAsStream("sounds/stuck.wav"));
+      cannotMoveBuffer.loadFromStream(
+          getClass().getClassLoader().getResourceAsStream("sounds/stuck.wav"));
       interactSuccessBuffer.loadFromStream(
           getClass().getClassLoader().getResourceAsStream("sounds/interact_success.wav"));
       interactFailureBuffer.loadFromStream(

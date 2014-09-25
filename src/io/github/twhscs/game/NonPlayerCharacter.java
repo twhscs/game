@@ -35,7 +35,7 @@ public class NonPlayerCharacter extends Entity {
       entitySpritesheetTexture.loadFromStream(
           getClass().getClassLoader().getResourceAsStream("images/" + spritesheet + "_sprite.png"));
       portraitTex.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("images/" + spritesheet + "_portrait.png"));
+        getClass().getClassLoader().getResourceAsStream("images/" + spritesheet + "_portrait.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
