@@ -52,6 +52,22 @@ public class Player extends Entity {
    * A reference to the main dialogue ui object.
    */
   private DialogueUIElement dialogueUI;
+  /**
+   * Create and set the max health to default value.
+   */
+  private double maxHealth = 100;
+  /**
+   * Create and set the current health to max health.
+   */
+  private double curHealth = maxHealth;
+  /**
+   * Create and set the current XP to default value.
+   */
+  private double curXP = 0;
+  /**
+   * Create and set the current level to default value.
+   */
+  private int curLevel = 1;
   
   /**
    * Create a new player at the specified location.
@@ -205,5 +221,101 @@ public class Player extends Entity {
    */
   public PlayerAction getCurrentAction() {
     return currentAction;
+  }
+  /**
+   * Get the player's current health.
+   * @return The player's current health.
+   */
+  public double getHealth() {
+    return curHealth;
+  }
+  /**
+   * Sets the player's health.
+   * @param h The health to set as player's health.
+   */
+  public void setHealth(double h) {
+    curHealth = h;
+  }
+  /**
+   * Add health to the player's health.
+   * @param h Amount of health to add to the player's health.
+   */
+  public void addHealth(double h) {
+    curHealth += h;
+  }
+  /**
+   * Subtract health to the player's health.
+   * @param h Amount of health to subtract from the player's health.
+   */
+  public void subtractHealth(double h) {
+    curHealth -= h;
+  }
+  /**
+   * Get the player's maximum health.
+   * @return The player's maximum health.
+   */
+  public double getMaxHealth() {
+    return maxHealth;
+  }
+  /**
+   * Sets the player's current health to the player's maximum health.
+   */
+  public void heal() {
+    curHealth = maxHealth;
+  }
+  /**
+   * Get the player's current XP.
+   * @return The player's current XP.
+   */
+  public double getXP() {
+    return curXP;
+  }
+  /**
+   * Sets the player's XP.
+   * @param x The health to set as player's XP.
+   */
+  public void setXP(double x) {
+    curHealth = x;
+  }
+  /**
+   * Add XP to the player's XP.
+   * @param x Amount of XP to add to the player's XP.
+   */
+  public void addXP(double x) {
+    curHealth += x;
+  }
+  /**
+   * Subtract XP to the player's XP.
+   * @param x Amount of XP to subtract from the player's XP.
+   */
+  public void subtractXP(double x) {
+    curHealth -= x;
+  }
+  /**
+   * Get the player's current level.
+   * @return The player's current level.
+   */
+  public double getLevel() {
+    return curLevel;
+  }
+  /**
+   * Set the player's current level.
+   * @param l The level to set the player's current level to.
+   */
+  public void setLevel(int l) {
+    curLevel = l;
+  }
+  /**
+   * Add one to the player's current level.
+   */
+  public void levelUp() {
+    curLevel++;
+  }
+  /**
+   * Get the next XP needed to level up.
+   * @return The next XP needed to level up.
+   */
+  public double getNextLevelXP() {
+    return Math.floor(curLevel * 10 + Math.pow(curLevel + 1, 3));
   }
 }
