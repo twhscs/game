@@ -5,6 +5,7 @@ import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Texture;
 import org.jsfml.graphics.Vertex;
 import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
@@ -37,6 +38,7 @@ public class Map implements Drawable {
    * The tilesheet texture.
    */
   private final ImageResource tilesheet = new ImageResource("images/terrain");
+  private final Texture tilesheetTex = tilesheet.getTexture();
   /**
    * The vertex array for the tile map.
    * This is a streamlined way to draw many sprites at once.
@@ -121,7 +123,7 @@ public class Map implements Drawable {
       }
     }
     // Apply the texture to the vertex array
-    RenderStates newStates = new RenderStates(tilesheet.getTexture()); 
+    RenderStates newStates = new RenderStates(tilesheetTex); 
     vertexArray.draw(target, newStates); // Draw the vertex array
   }
   
