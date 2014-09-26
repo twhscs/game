@@ -16,6 +16,7 @@ import org.jsfml.window.event.Event;
 import java.io.IOException;
 
 import io.github.twhscs.game.ui.DialogueUIElement;
+import io.github.twhscs.game.ui.MainMenu;
 import io.github.twhscs.game.ui.TextUIElement;
 import io.github.twhscs.game.ui.UIPosition;
 
