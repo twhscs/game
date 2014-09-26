@@ -69,9 +69,11 @@ public class Game {
    * The level of anti-aliasing for the GPU to use when rendering.
    * From the crude tests I've performed this appears to do nothing...
    */
-  private MainMenu menu;
   private final int antialiasingLevel = 0;
-  
+  /**
+   * The main menu of the game
+   */
+  private MainMenu menu;
   /**
    * Creates an instance of the game and runs it.
    * @param args Command line arguments passed in at run-time.
@@ -209,13 +211,13 @@ public class Game {
               player.interact(); // Interact with entities by pressing E
               break;
             case ESCAPE:
-              menu.setVisible(!menu.isVisible());
+              menu.setVisible(!menu.isVisible()); // Set the menu's visibility opposite to the current visibility
               break;
             case UP:
-              menu.goUp();
+              menu.goUp(); // Move the selected button up one
               break;
             case DOWN:
-              menu.goDown();
+              menu.goDown(); // Move the selected button down one
               break;
             default:
               break;
@@ -268,7 +270,7 @@ public class Game {
       window.draw(dialogueUI); // Draw the dialogue UI if it has visibility (active)
     }
     if (menu.isVisible()) {
-      window.draw(menu);
+      window.draw(menu); // Draw the main menu if it is visible
     }
     window.draw(fpsUI); // Draw the FPS counter
     window.display(); // Show the window to the user

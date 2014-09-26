@@ -16,11 +16,11 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 public class MainMenu implements Drawable {
-  private final Font font = new Font(); //Create a new font
+  private final Font font = new Font(); // Create a new font
   
-  private final Color backColor = new Color(Color.BLACK, 230); //Default background color
-  private final Color buttonColor = new Color(Color.CYAN, 120); //Default button color
-  private final Color outlineColor = new Color(Color.CYAN, 200); //Default outline color
+  private final Color backColor = new Color(Color.BLACK, 230); // Default background color
+  private final Color buttonColor = new Color(Color.CYAN, 120); // Default button color
+  private final Color outlineColor = new Color(Color.CYAN, 200); // Default outline color
   
   /**
    * List of button Names (Used for organization)
