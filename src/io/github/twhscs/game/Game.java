@@ -68,6 +68,7 @@ public class Game {
    * The level of anti-aliasing for the GPU to use when rendering.
    * From the crude tests I've performed this appears to do nothing...
    */
+  private MainMenu menu;
   private final int antialiasingLevel = 0;
   
   /**
@@ -89,6 +90,7 @@ public class Game {
     int windowStyle = WindowStyle.CLOSE | WindowStyle.TITLEBAR;
     // Create a new window with specified resolution, options and anti-aliasing
     window.create(videoMode, windowTitle, windowStyle, new ContextSettings(antialiasingLevel));
+    menu = new MainMenu(windowDimensions); //Create the main menu
     currentMap = new Map(10, 10, Tile.SAND); // Create the main map
     player = new Player(currentMap.getRandomValidLocation(), dialogueUI); // Create the player
     currentMap.addEntity(player); // Add the player to the map
@@ -205,6 +207,8 @@ public class Game {
             case E:
               player.interact(); // Interact with entities by pressing E
               break;
+            case ESCAPE:
+              menu.setVisible(!menu.isVisible());
             default:
               break;
           }
@@ -254,6 +258,9 @@ public class Game {
     camera.centerOnDefault(); // Stop drawing relative to the player
     if (dialogueUI.isVisible()) {
       window.draw(dialogueUI); // Draw the dialogue UI if it has visibility (active)
+    }
+    if (menu.isVisible()) {
+      window.draw(menu);
     }
     window.draw(fpsUI); // Draw the FPS counter
     window.display(); // Show the window to the user
