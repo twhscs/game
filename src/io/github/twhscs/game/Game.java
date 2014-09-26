@@ -209,6 +209,13 @@ public class Game {
               break;
             case ESCAPE:
               menu.setVisible(!menu.isVisible());
+              break;
+            case UP:
+              menu.goUp();
+              break;
+            case DOWN:
+              menu.goDown();
+              break;
             default:
               break;
           }

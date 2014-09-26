@@ -42,7 +42,7 @@ public class MainMenu implements Drawable {
       curButton.setFillColor(buttonColor);
       curButton.setPosition(dimen.x/2 - buttonSize.x/2, dimen.y/2 + (buttonSize.y + 20) * (i-2));
       curButton.setOutlineColor(outlineColor);
-      curButton.setOutlineThickness(selected.equals(curButton) ? 4f : 2f);
+      curButton.setOutlineThickness(buttonList.get(selected).equals(curButton) ? 4f : 2f);
     }
   }
   
@@ -52,6 +52,32 @@ public class MainMenu implements Drawable {
   
   public boolean isVisible() {
     return visible;
+  }
+  
+  public void goUp() {
+    if (visible) {
+      for (int i = 0; i < buttonNames.length; i++) {
+        if (buttonNames[i] == selected && i > 0) {
+          selected = buttonNames[i-1];
+          buttonList.get(buttonNames[i]).setOutlineThickness(2f);
+          buttonList.get(buttonNames[i-1]).setOutlineThickness(4f);
+          break;
+        }
+      }
+    }
+  }
+  
+  public void goDown() {
+    if (visible) {
+      for (int i = 0; i < buttonNames.length; i++) {
+        if (buttonNames[i] == selected && i < buttonNames.length) {
+          selected = buttonNames[i+1];
+          buttonList.get(buttonNames[i]).setOutlineThickness(2f);
+          buttonList.get(buttonNames[i+1]).setOutlineThickness(4f);
+          break;
+        }
+      }
+    }
   }
   
   public void draw(RenderTarget target, RenderStates states) {
