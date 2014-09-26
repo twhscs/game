@@ -156,17 +156,28 @@ public class Location implements Cloneable, Comparable<Location> {
    * Allows the Location to be cloned (copied).
    */
   protected Location clone() throws CloneNotSupportedException {
-    return (Location) super.clone();
+    return (Location) super.clone(); // Return the cloned location
   }
   
+  /**
+   * Compare two locations based on their positions.
+   * @param l The location to compare to.
+   * @return Whether or not they have equal positions.
+   */
   public boolean equals(Location l) {
       return locPosition.equals(l.getPosition());
   }
   
+  /**
+   * Format the position and direction for printing.
+   */
   public String toString() {
     return "[" + locPosition.x + ", " + locPosition.y + "] Facing: " + locDirection;
   }
   
+  /**
+   * Compare two locations based on their position y values.
+   */
   public int compareTo(Location l) {
     return locPosition.y - l.getPosition().y;
   }

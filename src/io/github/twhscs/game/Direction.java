@@ -12,6 +12,11 @@ public enum Direction {
   EAST, 
   WEST;
   
+  /**
+   * Get the opposite or inverse of a direction.
+   * @param d The direction to find the opposite of.
+   * @return The opposite of the given direction.
+   */
   public static Direction getInverse(Direction d) {
     switch(d) {
       case NORTH:

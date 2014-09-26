@@ -6,9 +6,9 @@ import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
-import io.github.twhscs.game.ui.DialogueUIElement;
-
 import java.io.IOException;
+
+import io.github.twhscs.game.ui.DialogueUIElement;
 
 /**
  * Holds everything pertaining to the player (user) playing the game.
@@ -28,23 +28,35 @@ public class Player extends Entity {
    * The buffer that allows the 'stuck' sound to be loaded.
    */
   private final SoundBuffer cannotMoveBuffer = new SoundBuffer();
+  /**
+   * The buffer that allows the 'interact' sound to be loaded.
+   */
   private final SoundBuffer interactSuccessBuffer = new SoundBuffer();
+  /**
+   * The buffer that allows the 'interact fail' sound to be loaded.
+   */
   private final SoundBuffer interactFailureBuffer = new SoundBuffer();
   /**
    * The object that plays the 'stuck' sound.
    */
   private final Sound cannotMove = new Sound();
-  
+  /**
+   * The object that plays the 'interact' sound.
+   */
   private final Sound interactSuccess = new Sound();
-  
+  /**
+   * The object that plays the 'interact fail' sound.
+   */
   private final Sound interactFailure = new Sound();
-  
+  /**
+   * A reference to the main dialogue ui object.
+   */
   private DialogueUIElement dialogueUI;
   
   /**
-   * Creates a new player with a location at x, y.
-   * @param x Starting x position.
-   * @param y Starting y position.
+   * Create a new player at the specified location.
+   * @param l The location to create the player at.
+   * @param d A reference to the main dialogue ui.
    */
   public Player(Location l, DialogueUIElement d) {
     entityLoc = l; // Create a new location at position x, y
@@ -67,7 +79,8 @@ public class Player extends Entity {
     // Create a new animated sprite from the regular sprite
     entitySprite = new AnimatedSprite(sprite, entityLoc);
     dialogueUI = d;
-    cannotMove.setBuffer(cannotMoveBuffer); // Set the sound object from the buffer (loading)
+    // Set the sound object from the buffer (loading)
+    cannotMove.setBuffer(cannotMoveBuffer); 
     interactSuccess.setBuffer(interactSuccessBuffer);
     interactFailure.setBuffer(interactFailureBuffer);
   }
@@ -132,45 +145,64 @@ public class Player extends Entity {
     return entitySprite;
   }
   
+  /**
+   * Have the player interact with nearby objects.
+   */
   public void interact() {
+    // Get the location in front of the player
     Location interactLoc = entityLoc.getRelativeLocation(entityLoc.getDirection());
+    // Get the entity in that location
     Entity e = parentMap.getEntityatLocation(interactLoc);
+    // Check if there actually is an entity there and if it is an NPC
     if (e != null && e instanceof NonPlayerCharacter) {
+      // Cast the entity to an NPC
       NonPlayerCharacter npc = (NonPlayerCharacter) e;
+      // If the player is doing nothing or talking and the NPC can talk
       if ((currentAction == PlayerAction.NONE || currentAction == PlayerAction.TALKING) 
           && npc.canTalk()) {
+        // Play the interact sound
         if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
             && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
           interactSuccess.play();
         }
+        // Turn the NPC to face the player
         e.getLocation().setDirection(Direction.getInverse(entityLoc.getDirection()));
-        talk(npc);
+        talk(npc); // Talk to the NPC
       } else if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
           && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
         interactFailure.play();
+        // Play the interact failure sound
       }
     }
   }
   
+  /**
+   * Initiate dialogue between the player and an NPC.
+   * @param n The NPC to talk to.
+   */
   public void talk(NonPlayerCharacter n) {
-    if (currentAction == PlayerAction.NONE) {
-      dialogueUI.show();
-      currentAction = PlayerAction.TALKING;
-      n.startTalking();
-      dialogueUI.setPortrait(n.getPortrait());
-      dialogueUI.setText(n.getDialogue());
-      dialogueUI.setName(n.getName());
-    } else if (currentAction == PlayerAction.TALKING) {
-      String t = n.getDialogue();
-      if (t != null) {
-        dialogueUI.setText(t);
+    if (currentAction == PlayerAction.NONE) { // If the player isn't doing anything
+      dialogueUI.show(); // Show the dialogue
+      currentAction = PlayerAction.TALKING; // Change the player's action to talking
+      n.startTalking(); // Set the NPC to prepare to talk
+      dialogueUI.setPortrait(n.getPortrait()); // Update the UI with the NPC's portrait
+      dialogueUI.setText(n.getDialogue()); // Update the UI with the NPC's dialogue
+      dialogueUI.setName(n.getName()); // Update the UI with the NPC's name
+    } else if (currentAction == PlayerAction.TALKING) { // If the player is already talking
+      String t = n.getDialogue(); // Get the next line of dialogue
+      if (t != null) { // If the next line actually exists
+        dialogueUI.setText(t); // Update the UI
       } else {
-        currentAction = PlayerAction.NONE;
-        dialogueUI.hide();
+        currentAction = PlayerAction.NONE; // Make the player stop talking
+        dialogueUI.hide(); // Hide the UI
       }
     }
   }
   
+  /**
+   * Get the player's current action.
+   * @return The player's current action.
+   */
   public PlayerAction getCurrentAction() {
     return currentAction;
   }

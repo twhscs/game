@@ -13,10 +13,11 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 
+import java.io.IOException;
+
 import io.github.twhscs.game.ui.DialogueUIElement;
 import io.github.twhscs.game.ui.TextUIElement;
-
-import java.io.IOException;
+import io.github.twhscs.game.ui.UIPosition;
 
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
@@ -45,7 +46,7 @@ public class Game {
    * The UI element responsible for displaying the FPS on screen.
    */
   private final TextUIElement fpsUI = 
-      new TextUIElement(InterfacePosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
+      new TextUIElement(UIPosition.TOP_LEFT, Color.YELLOW, 24, TextStyle.BOLD);
   /**
    * Represents whether or not the user has the window opened and focused.
    */
@@ -54,14 +55,20 @@ public class Game {
    * Allows the window to shift focus.
    */
   private Camera camera;
-  
+  /**
+   * The current map the player is on.
+   * This is the map that will be rendered.
+   */
   private Map currentMap;
-  
+  /**
+   * A UI element for displaying dialogue between NPCs and players.
+   */
   private final DialogueUIElement dialogueUI = new DialogueUIElement(windowDimensions);
-  
+  /**
+   * The level of anti-aliasing for the GPU to use when rendering.
+   * From the crude tests I've performed this appears to do nothing...
+   */
   private final int antialiasingLevel = 0;
-  
-  
   
   /**
    * Creates an instance of the game and runs it.
@@ -76,52 +83,71 @@ public class Game {
    * Configures one time settings at start-up.
    */
   public void handleInitialization() {
-    window.create(new VideoMode(windowDimensions.x, windowDimensions.y), 
-        windowTitle, WindowStyle.CLOSE | WindowStyle.TITLEBAR, 
-        new ContextSettings(antialiasingLevel));
-    currentMap = new Map(10, 10, Tile.SAND);
-    player = new Player(currentMap.getRandomValidLocation(), dialogueUI);
-    currentMap.addEntity(player);
+    // Set the resolution
+    VideoMode videoMode = new VideoMode(windowDimensions.x, windowDimensions.y);
+    // Set the window options
+    int windowStyle = WindowStyle.CLOSE | WindowStyle.TITLEBAR;
+    // Create a new window with specified resolution, options and anti-aliasing
+    window.create(videoMode, windowTitle, windowStyle, new ContextSettings(antialiasingLevel));
+    currentMap = new Map(10, 10, Tile.SAND); // Create the main map
+    player = new Player(currentMap.getRandomValidLocation(), dialogueUI); // Create the player
+    currentMap.addEntity(player); // Add the player to the map
+    // Create NPC and add dialogue
     NonPlayerCharacter npc = 
         new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Creatine Chris", "npc3");
     npc.addDialogue("Getting swole is my life.");
     npc.addDialogue("That's why I consume copious amounts of creatine.");
-    currentMap.addEntity(npc);
-    currentMap.addEntity(
-        new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Joe", "npc2"));
+    currentMap.addEntity(npc); // Add the NPC to the map
+    // Get a random location and create another NPC there
+    Location randLoc = currentMap.getRandomValidLocation();
+    currentMap.addEntity(new NonPlayerCharacter(randLoc, "Joe", "npc2"));
+    // Create a delicious and non-kosher NPC
     NonPlayerCharacter pig = 
         new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Porky Chase", "npc4");
+    // Add some dialogue guaranteed to make you squeal. Are you boared yet?
     pig.addDialogue("I'll send you to the slaughterhouse!");
+    // Finally add the NPC to the map, with lots of hogs and kisses
     currentMap.addEntity(pig);
+    // Create another NPC bursting with swag
     NonPlayerCharacter swag = 
         new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Ryan May", "npc5");
+    // The swag lord indeed. A fitting title.
     swag.addDialogue("They call me the swag lord.");
+    // This map just got swagged out
     currentMap.addEntity(swag);
+    // Get another random location
+    Location randLoc2 = currentMap.getRandomValidLocation();
+    // This NPC is so smart IRL he won't even need to read this comment
     NonPlayerCharacter hunter = 
-        new NonPlayerCharacter(
-            currentMap.getRandomValidLocation(), "Hunter \"Skumbag\" Brown", "npc6");
+        new NonPlayerCharacter(randLoc2, "Hunter \"Skumbag\" Brown", "npc6");
+    // Master programmers never read comments, right Hunter?
     hunter.addDialogue("I'm a master programmer!");
     hunter.addDialogue("For my mommy tells me so!");
     hunter.addDialogue("Right Mr. S?");
+    // Add this master programmer to the map
     currentMap.addEntity(hunter);
+    // This line may or not have been "borrowed"
     NonPlayerCharacter ke = 
         new NonPlayerCharacter(currentMap.getRandomValidLocation(), "Ke Ma", "npc7");
+    // So believable
     ke.addDialogue("That's definitely my code Mr. Smith, I swear.");
-    currentMap.addEntity(ke);
-    camera = new Camera(window);
+    currentMap.addEntity(ke); // You know the drill
+    camera = new Camera(window); // Create the default camera
     // window.setFramerateLimit(60);
-    window.setKeyRepeatEnabled(false);
-    Image icon = new Image();
+    window.setKeyRepeatEnabled(false); // Prevent user from holding down keys in menus
+    Image icon = new Image(); // Create a shiny new icon image
+    // Load the shiny new icon
     try {
       icon.loadFromStream(getClass().getClassLoader().getResourceAsStream("icon.png"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
-    window.setIcon(icon);
+    window.setIcon(icon); // Set the window to use this shiny new icon
   }
   
   /**
    * Initializes the game and holds the main loop.
+   * Magic below. (Not really)
    */
   public void run() {
     handleInitialization(); // Initial configuration of various things
@@ -172,12 +198,12 @@ public class Game {
           windowFocus = true; // Update windowFocus if the user focuses the window
           break;
         case LOST_FOCUS:
-          windowFocus = false; // Update windowFocus if the user unfocuses the window
+          windowFocus = false; // Update windowFocus if the user un-focuses the window
           break;
         case KEY_PRESSED:
-          switch(event.asKeyEvent().key) {
+          switch(event.asKeyEvent().key) { // If a non-movement key is pressed
             case E:
-              player.interact();
+              player.interact(); // Interact with entities by pressing E
               break;
             default:
               break;
@@ -190,6 +216,7 @@ public class Game {
     
     /* Real-time input (no lag)
      * Good for repeated actions, bad for single-press actions
+     * Chances are you should be adding your key above, NOT below
      */
     
     // isKeyPressed will work whether the window is focused or not, therefore we must check manually
@@ -211,7 +238,7 @@ public class Game {
    * Updates at a fixed rate (20Hz).
    */
   public void handleLogic() {
-    currentMap.updateAllEntities();
+    currentMap.updateAllEntities(); // Call each the update method for each entity
   }
   
   /**
@@ -222,13 +249,13 @@ public class Game {
     window.clear(); // Wipe everything from the window
     // Draw each object like layers, background to foreground
     camera.centerOn(player.getAnimatedSprite()); // Draw everything relative to player, centering it
-    window.draw(currentMap); 
-    currentMap.drawAllEntities(window);
+    window.draw(currentMap); // Draw the map
+    currentMap.drawAllEntities(window); // Draw each entity, sorted by y-value
     camera.centerOnDefault(); // Stop drawing relative to the player
     if (dialogueUI.isVisible()) {
-      window.draw(dialogueUI);
+      window.draw(dialogueUI); // Draw the dialogue UI if it has visibility (active)
     }
-    window.draw(fpsUI);
+    window.draw(fpsUI); // Draw the FPS counter
     window.display(); // Show the window to the user
   }
 }

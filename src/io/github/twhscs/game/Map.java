@@ -11,14 +11,14 @@ import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
-import io.github.twhscs.game.util.Random;
-
-import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+
+import io.github.twhscs.game.util.Random;
 
 /**
  * A map or level for the player to interact in. Can be created manually or procedurally.
@@ -156,51 +156,79 @@ public class Map implements Drawable {
         && Tile.getCanWalkOn(getTile(l)) && (getEntityatLocation(l) == null));
   }
   
+  /**
+   * Get the entity at the specified location.
+   * @param l The location to check.
+   * @return The entity at the location.
+   */
   public Entity getEntityatLocation(Location l) {
-    Iterator<Entity> it = entitiesOnMap.iterator();
+    Iterator<Entity> it = entitiesOnMap.iterator(); // Iterate through entities
     while (it.hasNext()) {
-      Entity e = it.next();
-      if (e.getLocation().equals(l)) {
+      Entity e = it.next(); // Get each entity
+      if (e.getLocation().equals(l)) { // Check its location for a match
         return e;
       }
     }
-    return null;
+    return null; // Return null if no entity is found
   }
   
+  /**
+   * Add an entity to the map.
+   * @param e The entity to add.
+   */
   public void addEntity(Entity e) {
+    // Check the entity location to make sure it is open
     if (getEntityatLocation(e.getLocation()) == null) {
-      e.setParentMap(this);
-      entitiesOnMap.add(e);
+      e.setParentMap(this); // Set the entity parent map to this map
+      entitiesOnMap.add(e); // Add the entity to the array list
     }
   }
   
+  /**
+   * Draw each entity to the window.
+   * @param w The window to draw to.
+   */
   public void drawAllEntities(RenderWindow w) {
     for (Entity e : entitiesOnMap) {
-      w.draw(e);
+      w.draw(e); // Loop through and draw each entity
     }
   }
   
+  /**
+   * Sort and update each entity.
+   */
   public void updateAllEntities() {
-    Collections.sort(entitiesOnMap);
+    Collections.sort(entitiesOnMap); // Sort entities by y value for proper rendering
     for (Entity e : entitiesOnMap) {
-      e.update();
+      e.update(); // Call each entity update method
     }
   }
   
+  /**
+   * Get a random location on the map with a valid tile and no entity.
+   * @return The valid, random location.
+   */
   public Location getRandomValidLocation() {
-    Location randLoc = getRandomLocation();
+    Location randLoc = getRandomLocation(); // Get a random location on the map
     while (!isValidLocation(randLoc)) {
-      randLoc = getRandomLocation();
+      randLoc = getRandomLocation(); // Keep generating new locations until valid
     }
+    // Store all possible directions in a list
     List<Direction> directions = Arrays.asList(Direction.values());
-    Collections.shuffle(directions);
-    randLoc.setDirection(directions.get(0));
-    return randLoc;
+    Collections.shuffle(directions); // Shuffle the list
+    randLoc.setDirection(directions.get(0)); // Get the first (random) element in the list
+    return randLoc; // Return the new location with both a random position and direction
   }
   
+  /**
+   * Return a random (potentially non-valid) location on the map.
+   * @return The random location.
+   */
   private Location getRandomLocation() {
+    // Generate a random integer between 0 and the map width
     int randomX = Random.intRange(0, dimensions.x);
+    // Generate a random integer between 0 and the map height
     int randomY = Random.intRange(0, dimensions.y);
-    return new Location(randomX, randomY);
+    return new Location(randomX, randomY); // Return the new random location
   }
 }

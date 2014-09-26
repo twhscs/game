@@ -28,25 +28,47 @@ public class DialogueUIElement implements Drawable {
    * The text object containing style and content.
    */
   private final Text message = new Text();
-  
+  /**
+   * The speaker's name.
+   */
   private final Text name = new Text();
-  
+  /**
+   * The speaker's portrait.
+   */
   private Sprite portrait;
-  
+  /**
+   * The background of the dialogue UI.
+   */
   private RectangleShape background;
-  
+  /**
+   * Whether or not the UI is visible.
+   */
   private boolean visible = false;
-  
+  /**
+   * The window's resolution.
+   */
   private Vector2i screenResolution;
-  
+  /**
+   * Amount of spacing between the edges of the UI and it's contents.
+   */
   private final int padding = 20;
-  
+  /**
+   * A rectangle outlining the portrait.
+   */
   private final RectangleShape portraitOutline = new RectangleShape(new Vector2f(100, 100));
-  
+  /**
+   * Maximum characters per line of text to display.
+   */
   private final int wrapLength = 44;
-  
+  /**
+   * Maximum number of lines of text to display.
+   */
   private final int maxLines = 5;
   
+  /**
+   * Create a new dialogue UI.
+   * @param r The window's resolution.
+   */
   public DialogueUIElement(Vector2i r) {
     // Try to load the font
     try {
@@ -54,38 +76,55 @@ public class DialogueUIElement implements Drawable {
     } catch (IOException ex) {
       ex.printStackTrace();
     }
-    screenResolution = r;
+    screenResolution = r; // Set the resolution.
+    // Create the dialogue text
     message.setCharacterSize(12);
     message.setColor(Color.WHITE);
     message.setFont(font);
+    // Create the name
     name.setCharacterSize(14);
     name.setColor(Color.WHITE);
     name.setFont(font);
+    name.setStyle(TextStyle.UNDERLINED);
+    // Create the background rectangle
     background = new RectangleShape(new Vector2f(screenResolution.x - padding, 140));
     background.setPosition((screenResolution.x - background.getLocalBounds().width) / 2, 
         (screenResolution.y - background.getLocalBounds().height) - (padding / 2));
     background.setFillColor(Color.BLUE);
     background.setOutlineThickness(2);
     background.setOutlineColor(Color.WHITE);
+    // Create the portrait outline
     portraitOutline.setOutlineColor(Color.WHITE);
     portraitOutline.setOutlineThickness(2);
     portraitOutline.setPosition(background.getGlobalBounds().left + padding, 
         background.getGlobalBounds().top + padding);
-    name.setStyle(TextStyle.UNDERLINED);
   }
   
+  /**
+   * Update the UI portrait.
+   * @param p The new portrait.
+   */
   public void setPortrait(Sprite p) {
-    portrait = p;
+    portrait = p; // Update the portrait sprite
+    // Position the portrait
     portrait.setPosition(background.getGlobalBounds().left + padding, 
         background.getGlobalBounds().top + padding);
   }
   
+  /**
+   * Update the current dialogue text.
+   * @param s The new text.
+   */
   public void setText(String s) {
-    message.setString(wrapText(s));
+    message.setString(wrapText(s)); // Update the text
+    // Position the text
     message.setPosition(portrait.getGlobalBounds().width + (padding * 2), 
         portrait.getGlobalBounds().top + padding);
   }
   
+  /**
+   * Draw the UI to the window.
+   */
   public void draw(RenderTarget target, RenderStates states) {
     background.draw(target, states);
     portraitOutline.draw(target, states);
@@ -94,42 +133,62 @@ public class DialogueUIElement implements Drawable {
     message.draw(target, states);
   }
   
+  /**
+   * Hide the UI from displaying.
+   */
   public void hide() {
     visible = false;
   }
   
+  /**
+   * Show the UI for drawing.
+   */
   public void show() {
     visible = true;
   }
   
+  /**
+   * Determine if the UI is visible.
+   * @return Whether or not the UI is visible.
+   */
   public boolean isVisible() {
     return visible;
   }
   
+  /**
+   * Update the name to display.
+   * @param n The new name.
+   */
   public void setName(String n) {
-    name.setString(n);
+    name.setString(n); // Update the name
+    // Position the name
     name.setPosition((screenResolution.x - name.getLocalBounds().width) / 2, 
         background.getGlobalBounds().top - (padding / 2) + name.getLocalBounds().height);
   }
   
+  /**
+   * Automatically insert new lines into a long string so it will properly fit.
+   * @param t The long string to wrap.
+   * @return The wrapped string.
+   */
   public String wrapText(String t) {
-    int lines = 0;
-    String[] words = t.split(" ");
-    String newString = "";
-    int characterCounter = 0;
-    for (int i = 0; i < words.length; i++) {
-      if (lines <= maxLines) {
-        int l = words[i].length();
-        if (characterCounter + l <= wrapLength) {
-          newString += words[i] + " ";
-          characterCounter += l;
+    int lines = 0; // Keep track of inserted new lines
+    String[] words = t.split(" "); // Split the string into words
+    String newString = ""; // Create a blank new string to add to
+    int characterCounter = 0; // Count the characters
+    for (int i = 0; i < words.length; i++) { // Loop through each word
+      if (lines <= maxLines) { // Continue if less than max lines
+        int l = words[i].length(); // Get the current word length
+        if (characterCounter + l <= wrapLength) { // If the word is short enough
+          newString += words[i] + " "; // Add it to the new string
+          characterCounter += l; // Count the characters
         } else {
-          newString += "\n" + words[i] + " ";
-          characterCounter = 0;
-          lines++;
+          newString += "\n" + words[i] + " "; // Insert a new line and then add the word
+          characterCounter = 0; // reset the character counter
+          lines++; // Update the new line count
         }
       }
     }
-    return newString;
+    return newString; // Return the newly formatted string
   }
 }
