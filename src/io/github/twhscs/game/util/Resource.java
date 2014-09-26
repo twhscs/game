@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.util;
 
 import java.io.InputStream;
 
@@ -10,8 +10,7 @@ import java.io.InputStream;
 public abstract class Resource {
   
   protected InputStream getStream(String path) {
-    InputStream stream = 
-        getClass().getClassLoader().getResourceAsStream(path);
-    return stream;
+    return getClass().getClassLoader().getResourceAsStream(path);
   }
+  
 }

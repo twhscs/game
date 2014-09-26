@@ -1,11 +1,11 @@
 package io.github.twhscs.game;
 
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import io.github.twhscs.game.util.SpriteResource;
 
 /**
  * An NPC class for interactive non-player characters.
@@ -13,10 +13,6 @@ import java.util.Iterator;
  *
  */
 public class NonPlayerCharacter extends Entity {
-  /**
-   * The texture for the sprite.
-   */
-  private final Texture entitySpritesheetTexture = new Texture();
   /**
    * A boolean representing whether or not the NPC is moving.
    */
@@ -33,7 +29,7 @@ public class NonPlayerCharacter extends Entity {
   /**
    * A close-up image of the NPC's face, shown during dialogue.
    */
-  private final Sprite portrait = new Sprite();
+  private SpriteResource portrait;
   /**
    * Represents how many pages of dialogue has been shown out of the total.
    */
@@ -47,20 +43,9 @@ public class NonPlayerCharacter extends Entity {
    */
   public NonPlayerCharacter(Location l, String n, String spritesheet) {
     entityLoc = l; // Set the location
-    Texture portraitTex = new Texture(); // Create a new texture for the portrait
-    // Load the portrait and sprite-set textures
-    try {
-      entitySpritesheetTexture.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("images/" + spritesheet + "_sprite.png"));
-      portraitTex.loadFromStream(
-        getClass().getClassLoader().getResourceAsStream("images/" + spritesheet + "_portrait.png"));
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    Sprite sprite = new Sprite(); // Create a new regular sprite
-    sprite.setTexture(entitySpritesheetTexture); // Set the texture
+    SpriteResource sprite = new SpriteResource(spritesheet + "_sprite");
+    portrait = new SpriteResource(spritesheet + "_portrait");
     entitySprite = new AnimatedSprite(sprite, entityLoc); // Create an animated sprite
-    portrait.setTexture(portraitTex); // Set the portrait texture
     name = n; // Set the NPC's name
   }
   
@@ -114,7 +99,7 @@ public class NonPlayerCharacter extends Entity {
    * @return The portrait sprite.
    */
   public Sprite getPortrait() {
-    return portrait;
+    return portrait.getSprite();
   }
   
   /**

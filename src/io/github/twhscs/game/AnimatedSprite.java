@@ -5,6 +5,8 @@ import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import io.github.twhscs.game.util.SpriteResource;
+
 /**
  * A sprite supporting animation.
  * @author Robert
@@ -30,7 +32,7 @@ public class AnimatedSprite {
   /**
    * The sprite to animated.
    */
-  private Sprite animatedSprite;
+  private SpriteResource animatedSpriteResource;
   /**
    * The location of the entity this sprite represents.
    */
@@ -49,8 +51,8 @@ public class AnimatedSprite {
    * @param s The sprite to animate.
    * @param l The location of the entity that the sprite represents.
    */
-  public AnimatedSprite(Sprite s, Location l) {
-    animatedSprite = s; // Set the sprite
+  public AnimatedSprite(SpriteResource s, Location l) {
+    animatedSpriteResource = s; // Set the sprite
     entityLoc = l; // Get parent's location
     updatePosition(l); // Update the sprite position
   }
@@ -148,11 +150,11 @@ public class AnimatedSprite {
    */
   public Sprite getSprite() {
     // Set the texture based on the direction and animation frame
-    animatedSprite.setTextureRect(getTextureCoords()); 
+    animatedSpriteResource.getSprite().setTextureRect(getTextureCoords()); 
     // Set the sprite position
-    animatedSprite.setPosition(new Vector2f(spritePosition.x * spriteSize.x, 
+    animatedSpriteResource.getSprite().setPosition(new Vector2f(spritePosition.x * spriteSize.x, 
         (spritePosition.y * spriteSize.x) - (spriteSize.y - spriteSize.x)));
-    return animatedSprite;
+    return animatedSpriteResource.getSprite();
   }
   
   /**

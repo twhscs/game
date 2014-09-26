@@ -2,13 +2,11 @@ package io.github.twhscs.game.ui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
-import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
-import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
 
-import java.io.IOException;
+import io.github.twhscs.game.util.TextResource;
 
 /**
  * A UI element containing a dynamic text label.
@@ -16,14 +14,8 @@ import java.io.IOException;
  *
  */
 public class TextUIElement implements Drawable {
-  /**
-   * The font for the text.
-   */
-  private final Font font = new Font();
-  /**
-   * The text object containing style and content.
-   */
-  private final Text text = new Text();
+
+  private final TextResource text = new TextResource("kenpixel");
   
   /**
    * Create a new Text UI Element with the specified options and a default style.
@@ -43,16 +35,9 @@ public class TextUIElement implements Drawable {
    * @param style The style to apply to the text.
    */
   public TextUIElement(UIPosition p, Color c, int size, int style) {
-    // Try to load the font
-    try {
-      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("fonts/kenpixel.ttf"));
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    text.setFont(font); // Apply the selected font
-    text.setCharacterSize(size); // Update the character size
-    text.setColor(c); // Change the color
-    text.setStyle(style); // Set the desired style
+    text.getText().setCharacterSize(size); // Update the character size
+    text.getText().setColor(c); // Change the color
+    text.getText().setStyle(style); // Set the desired style
     setPosition(p); // Position the label
   }
   
@@ -61,7 +46,7 @@ public class TextUIElement implements Drawable {
    * @param s The new value for the text.
    */
   public void updateString(String s) {
-    text.setString(s); // Update the text
+    text.getText().setString(s); // Update the text
   }
   
   /**
@@ -71,7 +56,7 @@ public class TextUIElement implements Drawable {
   public void setPosition(UIPosition p) {
     switch(p) {
       case TOP_LEFT:
-        text.setPosition(0, 0); // If the position is top left, default to 0, 0
+        text.getText().setPosition(0, 0); // If the position is top left, default to 0, 0
         break;
       default:
         break;
@@ -82,6 +67,6 @@ public class TextUIElement implements Drawable {
    * Draw the UI element onto the screen.
    */
   public void draw(RenderTarget target, RenderStates states) {
-    text.draw(target, states);
+    text.getText().draw(target, states);
   }
 }

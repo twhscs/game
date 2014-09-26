@@ -1,7 +1,6 @@
 package io.github.twhscs.game;
 
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.Image;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
@@ -13,11 +12,10 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 
-import java.io.IOException;
-
 import io.github.twhscs.game.ui.DialogueUIElement;
 import io.github.twhscs.game.ui.TextUIElement;
 import io.github.twhscs.game.ui.UIPosition;
+import io.github.twhscs.game.util.ImageResource;
 
 /**
  * The main class of the game. Contains the main loop and pieces everything together.
@@ -135,14 +133,8 @@ public class Game {
     camera = new Camera(window); // Create the default camera
     // window.setFramerateLimit(60);
     window.setKeyRepeatEnabled(false); // Prevent user from holding down keys in menus
-    Image icon = new Image(); // Create a shiny new icon image
-    // Load the shiny new icon
-    try {
-      icon.loadFromStream(getClass().getClassLoader().getResourceAsStream("icon.png"));
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    window.setIcon(icon); // Set the window to use this shiny new icon
+    ImageResource icon = new ImageResource("icon"); // Create a shiny new icon image
+    window.setIcon(icon.getImage()); // Set the window to use this shiny new icon
   }
   
   /**

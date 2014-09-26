@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.util;
 
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
@@ -11,9 +11,9 @@ import java.io.IOException;
  *
  */
 public class SpriteResource extends Resource {
-  private Sprite sprite;
+  private final Sprite sprite = new Sprite();
   
-  private Texture texture;
+  private final Texture texture = new Texture();
   
   private final String directorySubfolder = "images/";
   
@@ -26,5 +26,9 @@ public class SpriteResource extends Resource {
       e.printStackTrace();
     }
     sprite.setTexture(texture);
+  }
+  
+  public Sprite getSprite() {
+    return sprite;
   }
 }

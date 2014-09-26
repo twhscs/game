@@ -7,12 +7,13 @@ import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import java.io.IOException;
+
+import io.github.twhscs.game.util.TextResource;
 
 /**
  * A UI element containing a dynamic text label.
@@ -27,11 +28,11 @@ public class DialogueUIElement implements Drawable {
   /**
    * The text object containing style and content.
    */
-  private final Text message = new Text();
+  private final TextResource message = new TextResource("kenpixel");
   /**
    * The speaker's name.
    */
-  private final Text name = new Text();
+  private final TextResource name = new TextResource("kenpixel");
   /**
    * The speaker's portrait.
    */
@@ -78,14 +79,14 @@ public class DialogueUIElement implements Drawable {
     }
     screenResolution = r; // Set the resolution.
     // Create the dialogue text
-    message.setCharacterSize(12);
-    message.setColor(Color.WHITE);
-    message.setFont(font);
+    message.getText().setCharacterSize(12);
+    message.getText().setColor(Color.WHITE);
+    message.getText().setFont(font);
     // Create the name
-    name.setCharacterSize(14);
-    name.setColor(Color.WHITE);
-    name.setFont(font);
-    name.setStyle(TextStyle.UNDERLINED);
+    name.getText().setCharacterSize(14);
+    name.getText().setColor(Color.WHITE);
+    name.getText().setFont(font);
+    name.getText().setStyle(TextStyle.UNDERLINED);
     // Create the background rectangle
     background = new RectangleShape(new Vector2f(screenResolution.x - padding, 140));
     background.setPosition((screenResolution.x - background.getLocalBounds().width) / 2, 
@@ -116,9 +117,9 @@ public class DialogueUIElement implements Drawable {
    * @param s The new text.
    */
   public void setText(String s) {
-    message.setString(wrapText(s)); // Update the text
+    message.getText().setString(wrapText(s)); // Update the text
     // Position the text
-    message.setPosition(portrait.getGlobalBounds().width + (padding * 2), 
+    message.getText().setPosition(portrait.getGlobalBounds().width + (padding * 2), 
         portrait.getGlobalBounds().top + padding);
   }
   
@@ -129,8 +130,8 @@ public class DialogueUIElement implements Drawable {
     background.draw(target, states);
     portraitOutline.draw(target, states);
     portrait.draw(target, states);
-    name.draw(target, states);
-    message.draw(target, states);
+    name.getText().draw(target, states);
+    message.getText().draw(target, states);
   }
   
   /**
@@ -160,10 +161,10 @@ public class DialogueUIElement implements Drawable {
    * @param n The new name.
    */
   public void setName(String n) {
-    name.setString(n); // Update the name
+    name.getText().setString(n); // Update the name
     // Position the name
-    name.setPosition((screenResolution.x - name.getLocalBounds().width) / 2, 
-        background.getGlobalBounds().top - (padding / 2) + name.getLocalBounds().height);
+    name.getText().setPosition((screenResolution.x - name.getText().getLocalBounds().width) / 2, 
+        background.getGlobalBounds().top - (padding / 2) + name.getText().getLocalBounds().height);
   }
   
   /**
