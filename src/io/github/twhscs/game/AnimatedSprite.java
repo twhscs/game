@@ -50,8 +50,9 @@ public class AnimatedSprite {
    * @param l The location of the entity that the sprite represents.
    */
   public AnimatedSprite(Sprite s, Location l) {
-    animatedSprite = s;
-    entityLoc = l;
+    animatedSprite = s; // Set the sprite
+    entityLoc = l; // Get parent's location
+    updatePosition(l); // Update the sprite position
   }
   
   /**

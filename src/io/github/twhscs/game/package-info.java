@@ -1,5 +1,5 @@
 /**
- * Provides the classes necessary to run the game.
+ * Core classes.
  * @author Robert
  *
  */

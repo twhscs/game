@@ -5,4 +5,10 @@ package io.github.twhscs.game;
  * @author Robert
  *
  */
-public enum AnimationType { NONE, WALKING, STATIONARY_WALK };
+public enum AnimationType { 
+  
+  NONE,
+  WALKING,
+  STATIONARY_WALK;
+  
+}

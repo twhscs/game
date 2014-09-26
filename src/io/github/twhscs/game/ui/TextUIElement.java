@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.ui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
@@ -9,7 +9,6 @@ import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * A UI element containing a dynamic text label.
@@ -32,7 +31,7 @@ public class TextUIElement implements Drawable {
    * @param c The color to set the text.
    * @param size The size to render the text.
    */
-  public TextUIElement(InterfacePosition p, Color c, int size) {
+  public TextUIElement(UIPosition p, Color c, int size) {
     this(p, c, size, TextStyle.REGULAR);
   }
   
@@ -43,10 +42,10 @@ public class TextUIElement implements Drawable {
    * @param size The size to render the text.
    * @param style The style to apply to the text.
    */
-  public TextUIElement(InterfacePosition p, Color c, int size, int style) {
+  public TextUIElement(UIPosition p, Color c, int size, int style) {
     // Try to load the font
     try {
-      font.loadFromFile(Paths.get("resources/kenpixel.ttf"));
+      font.loadFromStream(getClass().getClassLoader().getResourceAsStream("fonts/kenpixel.ttf"));
     } catch (IOException ex) {
       ex.printStackTrace();
     }
@@ -69,7 +68,7 @@ public class TextUIElement implements Drawable {
    * Position the element on the screen.
    * @param p The screen position.
    */
-  public void setPosition(InterfacePosition p) {
+  public void setPosition(UIPosition p) {
     switch(p) {
       case TOP_LEFT:
         text.setPosition(0, 0); // If the position is top left, default to 0, 0
