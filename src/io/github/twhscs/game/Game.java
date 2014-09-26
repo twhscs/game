@@ -6,6 +6,8 @@ import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.ContextSettings;
+import org.jsfml.window.Joystick;
+import org.jsfml.window.Joystick.Axis;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.VideoMode;
@@ -67,6 +69,8 @@ public class Game {
    * From the crude tests I've performed this appears to do nothing...
    */
   private final int antialiasingLevel = 0;
+  
+  private boolean usingController;
   
   /**
    * Creates an instance of the game and runs it.
@@ -135,6 +139,7 @@ public class Game {
     window.setKeyRepeatEnabled(false); // Prevent user from holding down keys in menus
     ImageResource icon = new ImageResource("icon"); // Create a shiny new icon image
     window.setIcon(icon.getImage()); // Set the window to use this shiny new icon
+    usingController = Joystick.isConnected(0);
   }
   
   /**
@@ -193,13 +198,29 @@ public class Game {
           windowFocus = false; // Update windowFocus if the user un-focuses the window
           break;
         case KEY_PRESSED:
-          switch(event.asKeyEvent().key) { // If a non-movement key is pressed
-            case E:
-              player.interact(); // Interact with entities by pressing E
-              break;
-            default:
+          if (!usingController) {
+            switch(event.asKeyEvent().key) { // If a non-movement key is pressed
+              case E:
+              case NUMPAD9:
+                player.interact(); // Interact with entities by pressing E
+                break;
+              default:
+                break;
+            }
+          }
+          break;
+        case JOYSTICK_BUTTON_PRESSED:
+          switch(event.asJoystickButtonEvent().button) {
+            case 0:
+              player.interact();
               break;
           }
+          break;
+        case JOYSTICK_CONNECETED:
+          usingController = true;
+          break;
+        case JOYSTICK_DISCONNECTED:
+          usingController = false;
           break;
         default:
           break;
@@ -213,14 +234,26 @@ public class Game {
     
     // isKeyPressed will work whether the window is focused or not, therefore we must check manually
     if (windowFocus) { 
-      if (Keyboard.isKeyPressed(Key.W)) {
-        player.move(Direction.NORTH); // W moves the player up (north)
-      } else if (Keyboard.isKeyPressed(Key.S)) {
-        player.move(Direction.SOUTH); // S moves the player down (south)
-      } else if (Keyboard.isKeyPressed(Key.A)) {
-        player.move(Direction.WEST); // A moves the player left (west)
-      } else if (Keyboard.isKeyPressed(Key.D)) {
-        player.move(Direction.EAST); // D moves the player right (east)
+      if(!usingController) {
+        if (Keyboard.isKeyPressed(Key.W) || Keyboard.isKeyPressed(Key.NUMPAD8)) {
+          player.move(Direction.NORTH); // W moves the player up (north)
+        } else if (Keyboard.isKeyPressed(Key.S) || Keyboard.isKeyPressed(Key.NUMPAD5)) {
+          player.move(Direction.SOUTH); // S moves the player down (south)
+        } else if (Keyboard.isKeyPressed(Key.A) || Keyboard.isKeyPressed(Key.NUMPAD4)) {
+          player.move(Direction.WEST); // A moves the player left (west)
+        } else if (Keyboard.isKeyPressed(Key.D) || Keyboard.isKeyPressed(Key.NUMPAD6)) {
+          player.move(Direction.EAST); // D moves the player right (east)
+        }
+      } else {
+        if (Joystick.getAxisPosition(0, Axis.POV_X) == 100) {
+          player.move(Direction.NORTH); // W moves the player up (north)
+        } else if (Joystick.getAxisPosition(0, Axis.POV_X) == -100) {
+          player.move(Direction.SOUTH); // S moves the player down (south)
+        } else if (Joystick.getAxisPosition(0, Axis.POV_Y) == 100) {
+          player.move(Direction.EAST); // D moves the player right (east)
+        } else if (Joystick.getAxisPosition(0, Axis.POV_Y) == -100) {
+          player.move(Direction.WEST); // A moves the player left (west)
+        }
       }
     }
     
