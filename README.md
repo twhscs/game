@@ -9,11 +9,16 @@ IMPORTANT SETUP
 2. Window > Show View > Other > Git > Git Repositories
 3. Click the "Clone a Git Repository and add the clone to this view" button (blue arrow)
 4. Help > Eclipse Marketplace > Find: 'checkstyle' > Install "Checkstyle Plug-in 5.7.0 (version might be slightly different)
-5. Help > Check for Updates > Install any available updates
-6. Restart Eclipse
-7. File > Import > General > Existing Projects into Workspace > Browse > Find where the git repository was cloned to earlier and open it
-8. Open src > game > "Game.java" and press Ctrl + F11
-9. Make sure everything is working properly
+5. Window > Preferences > Checkstyle > New > Project Relative Configuration
+6. Name: Google Java Style
+7. Location > Browse > `google_java_style.xml` > Ok
+8. Check "Protect Checkstyle configuration file" > Ok
+9. Google Java Style > Set as Default
+10. Help > Check for Updates > Install any available updates
+11. Restart Eclipse
+12. File > Import > General > Existing Projects into Workspace > Browse > Find where the git repository was cloned to earlier and open it
+13. Open src > game > "Game.java" and press Ctrl + F11
+14. Make sure everything is working properly
 
 PRO-TIPS
 ========
