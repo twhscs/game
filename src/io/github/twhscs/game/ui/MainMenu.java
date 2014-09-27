@@ -10,6 +10,7 @@ import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Text;
 import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Vector2f;
@@ -50,11 +51,14 @@ public class MainMenu implements Drawable {
    * The boolean value that tells whether or not the menu is visible
    */
   private boolean visible = false;
+  
+  private RenderWindow window;
   /**
    * Constructor class
    * @param dimen The dimension of the window
    */
-  public MainMenu(Vector2i dimen) {
+  public MainMenu(Vector2i dimen, RenderWindow w) {
+	  window = w;
     /**
      * Load the font
      */
@@ -76,7 +80,6 @@ public class MainMenu implements Drawable {
     buttonList.put("Options", new RectangleShape(buttonSize));
     buttonList.put("Credits", new RectangleShape(buttonSize));
     buttonList.put("Exit", new RectangleShape(buttonSize));
-    System.out.println(buttonList);
     /**
      * Set the selected button to the first button.
      */
@@ -186,6 +189,14 @@ public class MainMenu implements Drawable {
     for (Text t : textList) {
       t.draw(target, states);
     }
+  }
+  
+  public void selectCurrentOption() {
+	  switch(selected) {
+	  case "Exit":
+		  window.close();
+		  break;
+	  }
   }
   
 }

@@ -93,7 +93,7 @@ public class Game {
     int windowStyle = WindowStyle.CLOSE | WindowStyle.TITLEBAR;
     // Create a new window with specified resolution, options and anti-aliasing
     window.create(videoMode, windowTitle, windowStyle, new ContextSettings(antialiasingLevel));
-    menu = new MainMenu(windowDimensions); //Create the main menu
+    menu = new MainMenu(windowDimensions, window); //Create the main menu
     currentMap = new Map(10, 10, Tile.SAND); // Create the main map
     player = new Player(currentMap.getRandomValidLocation(), dialogueUI); // Create the player
     currentMap.addEntity(player); // Add the player to the map
@@ -208,16 +208,31 @@ public class Game {
         case KEY_PRESSED:
           switch(event.asKeyEvent().key) { // If a non-movement key is pressed
             case E:
-              player.interact(); // Interact with entities by pressing E
+            	if(player.getCurrentAction() == PlayerAction.NONE || player.getCurrentAction() == PlayerAction.TALKING) {
+            		player.interact(); // Interact with entities by pressing E
+            	} else if (player.getCurrentAction() == PlayerAction.IN_MENU) {
+            		// select the current option
+            		menu.selectCurrentOption();
+            	}
               break;
             case ESCAPE:
-              menu.setVisible(!menu.isVisible()); // Set the menu's visibility opposite to the current visibility
+            	if(player.getCurrentAction() == PlayerAction.NONE) {
+            		menu.setVisible(true); // Set the menu's visibility opposite to the current visibility
+            		player.setCurrentAction(PlayerAction.IN_MENU);
+            	} else if(player.getCurrentAction() == PlayerAction.IN_MENU) {
+            		menu.setVisible(false);
+            		player.setCurrentAction(PlayerAction.NONE);
+            	}
               break;
-            case UP:
-              menu.goUp(); // Move the selected button up one
+            case W:
+            	if (player.getCurrentAction() == PlayerAction.IN_MENU) {
+            		menu.goUp(); // Move the selected button up one
+            	}
               break;
-            case DOWN:
-              menu.goDown(); // Move the selected button down one
+            case S:
+            	if (player.getCurrentAction() == PlayerAction.IN_MENU) {
+            		menu.goDown(); // Move the selected button down one
+            	}
               break;
             default:
               break;
@@ -234,7 +249,7 @@ public class Game {
      */
     
     // isKeyPressed will work whether the window is focused or not, therefore we must check manually
-    if (windowFocus) { 
+    if (windowFocus && player.getCurrentAction() != PlayerAction.IN_MENU) { 
       if (Keyboard.isKeyPressed(Key.W)) {
         player.move(Direction.NORTH); // W moves the player up (north)
       } else if (Keyboard.isKeyPressed(Key.S)) {
