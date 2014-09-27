@@ -1,5 +1,7 @@
 package io.github.twhscs.game;
 
+import java.io.IOException;
+
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Image;
 import org.jsfml.graphics.RenderWindow;
@@ -13,8 +15,6 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 
-import java.io.IOException;
-
 import io.github.twhscs.game.ui.DialogueUIElement;
 import io.github.twhscs.game.ui.TextUIElement;
 import io.github.twhscs.game.ui.UIPosition;
@@ -25,7 +25,7 @@ import io.github.twhscs.game.ui.UIPosition;
  * @author Robert
  *
  */
-public class Game { 
+public class Game {
   /**
    * Main window where everything is drawn to. Handles all input.
    */
