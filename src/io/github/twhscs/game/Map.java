@@ -1,5 +1,11 @@
 package io.github.twhscs.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RenderStates;
@@ -10,12 +16,6 @@ import org.jsfml.graphics.Vertex;
 import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import io.github.twhscs.game.util.ImageResource;
 import io.github.twhscs.game.util.Random;
@@ -44,7 +44,7 @@ public class Map implements Drawable {
    * This is a streamlined way to draw many sprites at once.
    * By using the vertex array instead of 100s of sprites, performance is greatly improved.
    */
-  private final VertexArray vertexArray = new VertexArray();
+  private VertexArray vertexArray;
   /**
    * All of the entities (NPCs) on the map.
    */
@@ -61,7 +61,6 @@ public class Map implements Drawable {
     dimensions = new Vector2i(l, w); // Update map dimensions
     tileArray = new Tile[dimensions.x][dimensions.y]; // Create a new tile array with the new size
     // Set the vertex array to use quads because the tiles are square
-    vertexArray.setPrimitiveType(PrimitiveType.QUADS); 
     initializeMap(t); // Auto-populate the map with the specified tile
   }
   
@@ -92,7 +91,8 @@ public class Map implements Drawable {
    * Draw the map onto the window.
    */
   public void draw(RenderTarget target, RenderStates states) {
-    vertexArray.clear(); // Empty the vertex array from the previous draw
+    vertexArray = new VertexArray();
+    vertexArray.setPrimitiveType(PrimitiveType.QUADS); 
     final int tileSize = Tile.getSize(); // Grab the tile size
     // Loop through every single tile in the map
     for (int i = 0; i < dimensions.x; i++) {
