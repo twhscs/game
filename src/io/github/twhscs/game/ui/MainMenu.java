@@ -25,7 +25,7 @@ public class MainMenu implements Drawable {
   /**
    * List of button Names (Used for organization)
    */
-  private final String[] buttonNames = {"newGame", "loadGame", "options", "credits", "exit"};
+  private final String[] buttonNames = {"New Game", "Load Game", "Options", "Credits", "Exit"};
   /**
    * Default size of the buttons
    */
@@ -71,11 +71,12 @@ public class MainMenu implements Drawable {
     /**
      * Create all the buttons and add them to the HashMap "buttonList"
      */
-    buttonList.put("newGame", new RectangleShape(buttonSize));
-    buttonList.put("loadGame", new RectangleShape(buttonSize));
-    buttonList.put("options", new RectangleShape(buttonSize));
-    buttonList.put("credits", new RectangleShape(buttonSize));
-    buttonList.put("exit", new RectangleShape(buttonSize));
+    buttonList.put("New Game", new RectangleShape(buttonSize));
+    buttonList.put("Load Game", new RectangleShape(buttonSize));
+    buttonList.put("Options", new RectangleShape(buttonSize));
+    buttonList.put("Credits", new RectangleShape(buttonSize));
+    buttonList.put("Exit", new RectangleShape(buttonSize));
+    System.out.println(buttonList);
     /**
      * Set the selected button to the first button.
      */
