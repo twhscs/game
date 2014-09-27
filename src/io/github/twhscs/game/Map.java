@@ -11,13 +11,13 @@ import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import io.github.twhscs.game.util.ImageResource;
 import io.github.twhscs.game.util.Random;
 
 /**
@@ -37,7 +37,8 @@ public class Map implements Drawable {
   /**
    * The tilesheet texture.
    */
-  private final Texture tilesheetTexture = new Texture();
+  private final ImageResource tilesheet = new ImageResource("images/terrain");
+  private final Texture tilesheetTex = tilesheet.getTexture();
   /**
    * The vertex array for the tile map.
    * This is a streamlined way to draw many sprites at once.
@@ -49,6 +50,7 @@ public class Map implements Drawable {
    */
   private final ArrayList<Entity> entitiesOnMap = new ArrayList<Entity>();
   
+  
   /**
    * Create a new map of specified size and tile type.
    * @param l Map length.
@@ -58,13 +60,6 @@ public class Map implements Drawable {
   public Map(int l, int w, Tile t) {
     dimensions = new Vector2i(l, w); // Update map dimensions
     tileArray = new Tile[dimensions.x][dimensions.y]; // Create a new tile array with the new size
-    // Try to load the tilesheet file
-    try {
-      tilesheetTexture.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("images/terrain.png"));
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
     // Set the vertex array to use quads because the tiles are square
     vertexArray.setPrimitiveType(PrimitiveType.QUADS); 
     initializeMap(t); // Auto-populate the map with the specified tile
@@ -128,7 +123,7 @@ public class Map implements Drawable {
       }
     }
     // Apply the texture to the vertex array
-    RenderStates newStates = new RenderStates(tilesheetTexture); 
+    RenderStates newStates = new RenderStates(tilesheetTex); 
     vertexArray.draw(target, newStates); // Draw the vertex array
   }
   

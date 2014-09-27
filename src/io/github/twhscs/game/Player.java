@@ -1,14 +1,10 @@
 package io.github.twhscs.game;
 
-import org.jsfml.audio.Sound;
-import org.jsfml.audio.SoundBuffer;
 import org.jsfml.audio.SoundSource;
-import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
-
-import java.io.IOException;
 
 import io.github.twhscs.game.ui.DialogueUIElement;
+import io.github.twhscs.game.util.SoundResource;
+import io.github.twhscs.game.util.SpriteResource;
 
 /**
  * Holds everything pertaining to the player (user) playing the game.
@@ -17,40 +13,12 @@ import io.github.twhscs.game.ui.DialogueUIElement;
  */
 public class Player extends Entity {
   /**
-   * The texture for the sprite.
-   */
-  private final Texture entitySpritesheetTexture = new Texture();
-  /**
    * The action the player is currently performing.
    */
   private PlayerAction currentAction = PlayerAction.NONE;
-  /**
-   * The buffer that allows the 'stuck' sound to be loaded.
-   */
-  private final SoundBuffer cannotMoveBuffer = new SoundBuffer();
-  /**
-   * The buffer that allows the 'interact' sound to be loaded.
-   */
-  private final SoundBuffer interactSuccessBuffer = new SoundBuffer();
-  /**
-   * The buffer that allows the 'interact fail' sound to be loaded.
-   */
-  private final SoundBuffer interactFailureBuffer = new SoundBuffer();
-  /**
-   * The object that plays the 'stuck' sound.
-   */
-  private final Sound cannotMove = new Sound();
-  /**
-   * The object that plays the 'interact' sound.
-   */
-  private final Sound interactSuccess = new Sound();
-  /**
-   * The object that plays the 'interact fail' sound.
-   */
-  private final Sound interactFailure = new Sound();
-  /**
-   * A reference to the main dialogue ui object.
-   */
+  private final SoundResource cannotMove = new SoundResource("stuck");
+  private final SoundResource interactSuccess = new SoundResource("interact_success");
+  private final SoundResource interactFailure = new SoundResource("interact_failure");
   private DialogueUIElement dialogueUI;
   
   /**
@@ -60,29 +28,10 @@ public class Player extends Entity {
    */
   public Player(Location l, DialogueUIElement d) {
     entityLoc = l; // Create a new location at position x, y
-    // Try to load sprite texture and 'stuck' sound
-    try {
-      //entitySpritesheetTexture.loadFromFile(Paths.get("resources/player.png"));
-      entitySpritesheetTexture.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("images/player.png"));
-      cannotMoveBuffer.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("sounds/stuck.wav"));
-      interactSuccessBuffer.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("sounds/interact_success.wav"));
-      interactFailureBuffer.loadFromStream(
-          getClass().getClassLoader().getResourceAsStream("sounds/interact_failure.wav"));
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    Sprite sprite = new Sprite(); // Create a new regular sprite
-    sprite.setTexture(entitySpritesheetTexture); // Set the texture for the sprite
     // Create a new animated sprite from the regular sprite
+    SpriteResource sprite = new SpriteResource("player");
     entitySprite = new AnimatedSprite(sprite, entityLoc);
     dialogueUI = d;
-    // Set the sound object from the buffer (loading)
-    cannotMove.setBuffer(cannotMoveBuffer); 
-    interactSuccess.setBuffer(interactSuccessBuffer);
-    interactFailure.setBuffer(interactFailureBuffer);
   }
   
   /**
@@ -109,13 +58,13 @@ public class Player extends Entity {
         currentAction = PlayerAction.MOVING; // Change player action to moving
         entitySprite.startAnimation(AnimationType.WALKING); // Begin animating the sprite
         // If the location is invalid, play a sound
-      } else if (cannotMove.getStatus() == SoundSource.Status.STOPPED) {
+      } else if (cannotMove.getSound().getStatus() == SoundSource.Status.STOPPED) {
         /*
          *  Play the stationary walk animation.
          *  It looks like the player is trying to move but they cannot
          */
         entitySprite.startAnimation(AnimationType.STATIONARY_WALK); 
-        cannotMove.play(); // Play an annoying sound effect
+        cannotMove.getSound().play(); // Play an annoying sound effect
       }
     }
   }
@@ -161,16 +110,16 @@ public class Player extends Entity {
       if ((currentAction == PlayerAction.NONE || currentAction == PlayerAction.TALKING) 
           && npc.canTalk()) {
         // Play the interact sound
-        if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
-            && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
-          interactSuccess.play();
+        if (interactSuccess.getSound().getStatus() == SoundSource.Status.STOPPED 
+            && interactFailure.getSound().getStatus() == SoundSource.Status.STOPPED) {
+          interactSuccess.getSound().play();
         }
         // Turn the NPC to face the player
         e.getLocation().setDirection(Direction.getInverse(entityLoc.getDirection()));
         talk(npc); // Talk to the NPC
-      } else if (interactSuccess.getStatus() == SoundSource.Status.STOPPED 
-          && interactFailure.getStatus() == SoundSource.Status.STOPPED) {
-        interactFailure.play();
+      } else if (interactSuccess.getSound().getStatus() == SoundSource.Status.STOPPED 
+          && interactFailure.getSound().getStatus() == SoundSource.Status.STOPPED) {
+        interactFailure.getSound().play();
         // Play the interact failure sound
       }
     }
