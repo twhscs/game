@@ -49,7 +49,7 @@ public class Camera {
      * Rounding was creating pixel off-by-one errors
      * Sometimes it would round up, sometimes down creating a 1 px difference
      */
-    cameraPos = new Vector2f((float) Math.floor(cameraPos.x), (float) Math.floor(cameraPos.y));
+    cameraPos = new Vector2f((float) (int)(cameraPos.x), (float) (int)(cameraPos.y));
     newView.setCenter(cameraPos); // Set the new position
     window.setView(newView); // Set the view
   }
