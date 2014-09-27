@@ -155,4 +155,8 @@ public class Player extends Entity {
   public PlayerAction getCurrentAction() {
     return currentAction;
   }
+  
+  public void setCurrentAction(PlayerAction a) {
+	  currentAction = a;
+  }
 }
