@@ -4,6 +4,8 @@ Game
 
 Architecture
 ------------
-[Gradle](https://gradle.org/) is being used as the build automation system. [JSFML](http://jsfml.org/) is being used for
++ [Gradle](https://gradle.org/) is used as the build automation system.
++ [JSFML](http://jsfml.org/) is used for handling audio, graphics, input and window management.
++ [JUnit](http://junit.org/) is used for unit testing.
 
 &copy; 2015
