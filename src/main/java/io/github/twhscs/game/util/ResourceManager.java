@@ -59,9 +59,8 @@ public class ResourceManager {
      *
      * @param name the name of the resource.
      * @return the {@link java.io.InputStream} of the specified resource.
-     * @throws java.io.IOException in case an I/O error occurs.
      */
-    public static InputStream loadResource(String name) throws IOException {
+    public static InputStream loadResource(String name) {
         return ResourceManager.class.getResourceAsStream(name);
     }
 
