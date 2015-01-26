@@ -23,7 +23,7 @@ class App {
         WINDOW = new RenderWindow();
         PLAYER = new Player();
         RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
-        WINDOW.create(new VideoMode(1280, 720), "Game");
+        WINDOW.create(new VideoMode(640, 480), "Game");
         DEFAULT_VIEW = WINDOW.getDefaultView();
         String[] imageNames = {"icon", "kyle"};
         String[] textureNames = {"player", "tiles"};
@@ -37,6 +37,8 @@ class App {
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         UI_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
+        GAME_VIEW.zoom((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
+        System.out.println((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
         run();
     }
 
@@ -93,8 +95,8 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
-                    GAME_VIEW.zoom(1.0f / (size.x / 32) * 25);
-                    System.out.println(1.0f / (size.x / 32) * 25);
+                    GAME_VIEW.zoom((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
+                    System.out.println((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
                     break;
             }
         }
