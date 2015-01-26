@@ -93,7 +93,8 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
-                    GAME_VIEW.zoom(size.x / size.y);
+                    GAME_VIEW.zoom(1.0f / (size.x / 32) * 25);
+                    System.out.println(1.0f / (size.x / 32) * 25);
                     break;
             }
         }
