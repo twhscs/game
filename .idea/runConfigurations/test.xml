@@ -16,7 +16,13 @@
       </option>
       <option name="vmOptions" value="" />
     </ExternalSystemSettings>
+    <RunnerSettings RunnerId="ExternalSystemTaskDebugRunner">
+      <option name="DEBUG_PORT" value="" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
     <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
+    <ConfigurationWrapper RunnerId="ExternalSystemTaskDebugRunner" />
     <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
     <method />
   </configuration>

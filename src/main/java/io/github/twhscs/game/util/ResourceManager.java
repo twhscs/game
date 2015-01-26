@@ -18,6 +18,7 @@ public class ResourceManager {
     private final Map<String, Texture> TEXTURE_MAP;
     private final Map<String, Font> FONT_MAP;
     private final Map<String, SoundBuffer> SOUND_BUFFER_MAP;
+    private final String ROOT_PACKAGE;
     private final String IMAGE_DIRECTORY;
     private final String TEXTURE_DIRECTORY;
     private final String FONT_DIRECTORY;
@@ -30,6 +31,7 @@ public class ResourceManager {
     /**
      * Constructs a resource manager with the specified directories and extensions.
      *
+     * @param ROOT_PACKAGE           the root package containing the resources.
      * @param IMAGE_DIRECTORY        the directory containing images.
      * @param IMAGE_EXTENSION        the filename extension for images.
      * @param TEXTURE_DIRECTORY      the directory containing textures.
@@ -39,11 +41,12 @@ public class ResourceManager {
      * @param SOUND_BUFFER_DIRECTORY the directory containing sound buffers.
      * @param SOUND_BUFFER_EXTENSION the filename extension for sound buffers.
      */
-    public ResourceManager(String IMAGE_DIRECTORY, String IMAGE_EXTENSION, String TEXTURE_DIRECTORY, String TEXTURE_EXTENSION, String FONT_DIRECTORY, String FONT_EXTENSION, String SOUND_BUFFER_DIRECTORY, String SOUND_BUFFER_EXTENSION) {
+    public ResourceManager(String ROOT_PACKAGE, String IMAGE_DIRECTORY, String IMAGE_EXTENSION, String TEXTURE_DIRECTORY, String TEXTURE_EXTENSION, String FONT_DIRECTORY, String FONT_EXTENSION, String SOUND_BUFFER_DIRECTORY, String SOUND_BUFFER_EXTENSION) {
         IMAGE_MAP = new HashMap<String, Image>();
         TEXTURE_MAP = new HashMap<String, Texture>();
         FONT_MAP = new HashMap<String, Font>();
         SOUND_BUFFER_MAP = new HashMap<String, SoundBuffer>();
+        this.ROOT_PACKAGE = "/" + ROOT_PACKAGE.replace(".", "/");
         this.IMAGE_DIRECTORY = IMAGE_DIRECTORY;
         this.TEXTURE_DIRECTORY = TEXTURE_DIRECTORY;
         this.FONT_DIRECTORY = FONT_DIRECTORY;
@@ -73,7 +76,7 @@ public class ResourceManager {
         for (String imageName : imageNames) {
             final Image IMAGE = new Image();
             try {
-                IMAGE.loadFromStream(loadResource(IMAGE_DIRECTORY + "/" + imageName + "." + IMAGE_EXTENSION));
+                IMAGE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + IMAGE_DIRECTORY + "/" + imageName + "." + IMAGE_EXTENSION));
                 IMAGE_MAP.put(imageName, IMAGE);
             } catch (IOException e) {
                 System.out.println("Error loading image " + imageName);
@@ -91,7 +94,7 @@ public class ResourceManager {
         for (String textureName : textureNames) {
             final Texture TEXTURE = new Texture();
             try {
-                TEXTURE.loadFromStream(loadResource(TEXTURE_DIRECTORY + "/" + textureName + "." + TEXTURE_EXTENSION));
+                TEXTURE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + TEXTURE_DIRECTORY + "/" + textureName + "." + TEXTURE_EXTENSION));
                 TEXTURE_MAP.put(textureName, TEXTURE);
             } catch (IOException e) {
                 System.out.println("Error loading texture " + textureName);
@@ -109,7 +112,7 @@ public class ResourceManager {
         for (String fontName : fontNames) {
             final Font FONT = new Font();
             try {
-                FONT.loadFromStream(loadResource(FONT_DIRECTORY + "/" + fontName + "." + FONT_EXTENSION));
+                FONT.loadFromStream(loadResource(ROOT_PACKAGE + "/" + FONT_DIRECTORY + "/" + fontName + "." + FONT_EXTENSION));
                 FONT_MAP.put(fontName, FONT);
             } catch (IOException e) {
                 System.out.println("Error loading font " + fontName);
@@ -127,7 +130,7 @@ public class ResourceManager {
         for (String soundBufferName : soundBufferNames) {
             final SoundBuffer SOUND_BUFFER = new SoundBuffer();
             try {
-                SOUND_BUFFER.loadFromStream(loadResource(SOUND_BUFFER_DIRECTORY + "/" + soundBufferName + "." + SOUND_BUFFER_EXTENSION));
+                SOUND_BUFFER.loadFromStream(loadResource(ROOT_PACKAGE + "/" + SOUND_BUFFER_DIRECTORY + "/" + soundBufferName + "." + SOUND_BUFFER_EXTENSION));
                 SOUND_BUFFER_MAP.put(soundBufferName, SOUND_BUFFER);
             } catch (IOException e) {
                 System.out.println("Error loading sound buffer " + soundBufferName);
@@ -169,7 +172,7 @@ public class ResourceManager {
     /**
      * Gets the specified {@link org.jsfml.audio.SoundBuffer} from the map.
      *
-     * @param soundBufferName the name of the sound buffer to retrieve.
+     * @param soundBufferName the name of the sound buffer to retrieve.l
      * @return the specified {@link org.jsfml.audio.SoundBuffer}
      */
     public SoundBuffer getSoundBuffer(String soundBufferName) {
@@ -183,6 +186,7 @@ public class ResourceManager {
                 ", TEXTURE_MAP=" + TEXTURE_MAP +
                 ", FONT_MAP=" + FONT_MAP +
                 ", SOUND_BUFFER_MAP=" + SOUND_BUFFER_MAP +
+                ", ROOT_PACKAGE='" + ROOT_PACKAGE + '\'' +
                 ", IMAGE_DIRECTORY='" + IMAGE_DIRECTORY + '\'' +
                 ", TEXTURE_DIRECTORY='" + TEXTURE_DIRECTORY + '\'' +
                 ", FONT_DIRECTORY='" + FONT_DIRECTORY + '\'' +
