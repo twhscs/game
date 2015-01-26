@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.util;
 
 /**
  * Enumeration of the four cardinal directions.
@@ -12,8 +12,8 @@ public enum Direction {
     /**
      * Gets the opposite of a direction.
      *
-     * @param direction the {@link io.github.twhscs.game.Direction} to get the opposite of.
-     * @return the opposite {@link io.github.twhscs.game.Direction}
+     * @param direction the {@link Direction} to get the opposite of.
+     * @return the opposite {@link Direction}
      */
     public static Direction getOppositeDirection(Direction direction) {
         switch (direction) {

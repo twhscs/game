@@ -1,8 +1,12 @@
 package io.github.twhscs.game;
 
 import io.github.twhscs.game.util.ResourceManager;
+import org.jsfml.graphics.ConstView;
+import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2i;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
@@ -10,12 +14,17 @@ class App {
     private final RenderWindow WINDOW;
     private final Player PLAYER;
     private final ResourceManager RESOURCE_MANAGER;
+    private final Map MAP;
+    private final ConstView DEFAULT_VIEW;
+    private final View GAME_VIEW;
+    private final View UI_VIEW;
 
     private App() {
         WINDOW = new RenderWindow();
         PLAYER = new Player();
         RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
-        WINDOW.create(new VideoMode(640, 480), "Game");
+        WINDOW.create(new VideoMode(1280, 720), "Game");
+        DEFAULT_VIEW = WINDOW.getDefaultView();
         String[] imageNames = {"icon", "kyle"};
         String[] textureNames = {"player", "tiles"};
         String[] fontNames = {"free_mono", "free_sans", "free_serif"};
@@ -24,7 +33,10 @@ class App {
         RESOURCE_MANAGER.loadTextures(textureNames);
         RESOURCE_MANAGER.loadFonts(fontNames);
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
+        MAP = new Map(100, 100, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
+        GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
+        UI_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         run();
     }
 
@@ -78,6 +90,11 @@ class App {
                 case CLOSED:
                     WINDOW.close();
                     break;
+                case RESIZED:
+                    Vector2i size = event.asSizeEvent().size;
+                    GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
+                    GAME_VIEW.zoom(size.x / size.y);
+                    break;
             }
         }
     }
@@ -87,8 +104,9 @@ class App {
     }
 
     private void render(float betweenUpdates) {
+        WINDOW.setView(GAME_VIEW);
         WINDOW.clear();
-        //TODO: draw player
+        WINDOW.draw(MAP);
         WINDOW.display();
     }
 }
