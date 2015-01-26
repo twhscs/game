@@ -37,8 +37,8 @@ class App {
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         UI_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
-        GAME_VIEW.zoom((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
-        System.out.println((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
+        GAME_VIEW.zoom(10 / (DEFAULT_VIEW.getSize().x / 32));
+        System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
         run();
     }
 
@@ -95,8 +95,8 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
-                    GAME_VIEW.zoom((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
-                    System.out.println((DEFAULT_VIEW.getSize().x / 640) * 0.5f);
+                    GAME_VIEW.zoom(10 / (DEFAULT_VIEW.getSize().x / 32));
+                    System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
                     break;
             }
         }
