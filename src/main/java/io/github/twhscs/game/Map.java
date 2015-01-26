@@ -11,14 +11,21 @@ class Map implements Drawable {
     private final Texture TILESHEET;
     private final Vector2i DIMENSIONS;
     private final RenderWindow WINDOW;
+    private final VertexArray VERTEX_ARRAY;
 
     Map(int x, int y, Texture TILESHEET, RenderWindow WINDOW) {
         this.DIMENSIONS = new Vector2i(x, y);
         TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
         this.TILESHEET = TILESHEET;
         this.WINDOW = WINDOW;
+        VERTEX_ARRAY = new VertexArray(PrimitiveType.QUADS);
         for (int[] row : TILE_ARRAY) {
             Arrays.fill(row, 0);
+        }
+        for(int i = 0; i < DIMENSIONS.x; i++) {
+            for(int j = 0; j < DIMENSIONS.y; j++) {
+                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
+            }
         }
     }
 
@@ -37,19 +44,35 @@ class Map implements Drawable {
 
     @Override
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
-        VertexArray vertexArray = new VertexArray(PrimitiveType.QUADS);
+        VERTEX_ARRAY.clear();
         final int TILE_SIZE = 32;
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
                 int tile = TILE_ARRAY[i][j];
-                Vector2f textureCoordinates = new Vector2f(416, 576);
-                vertexArray.add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), textureCoordinates));
-                vertexArray.add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE))));
-                vertexArray.add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE))));
-                vertexArray.add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0))));
+                Vector2f textureCoordinates;
+                switch(tile) {
+                    case 0:
+                        textureCoordinates = new Vector2f(576, 352);
+                        break;
+                    case 1:
+                        textureCoordinates = new Vector2f(192, 352);
+                        break;
+                    case 2:
+                        textureCoordinates = new Vector2f(480, 544);
+                        break;
+                    case 3:
+                        textureCoordinates = new Vector2f(576, 544);
+                        break;
+                    default:
+                        textureCoordinates = null;
+                }
+                VERTEX_ARRAY.add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), textureCoordinates));
+                VERTEX_ARRAY.add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE))));
+                VERTEX_ARRAY.add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE))));
+                VERTEX_ARRAY.add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0))));
             }
         }
         RenderStates states = new RenderStates(TILESHEET);
-        vertexArray.draw(renderTarget, states);
+        VERTEX_ARRAY.draw(renderTarget, states);
     }
 }

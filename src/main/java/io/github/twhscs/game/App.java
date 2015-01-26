@@ -8,6 +8,7 @@ import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 
 class App {
@@ -37,8 +38,9 @@ class App {
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         UI_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
-        GAME_VIEW.zoom(10 / (DEFAULT_VIEW.getSize().x / 32));
-        System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
+        GAME_VIEW.zoom(.5f);
+        //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
+       // System.out.println(MAP);
         run();
     }
 
@@ -95,15 +97,15 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
-                    GAME_VIEW.zoom(10 / (DEFAULT_VIEW.getSize().x / 32));
-                    System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
+                    GAME_VIEW.zoom(.5f);
+                    //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
                     break;
             }
         }
     }
 
     private void update() {
-        //TODO: add update method
+        //TODO: add update methodx
     }
 
     private void render(float betweenUpdates) {
