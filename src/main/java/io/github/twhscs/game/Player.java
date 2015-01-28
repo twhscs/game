@@ -37,6 +37,7 @@ class Player implements Drawable {
 
     public void move(Direction direction) {
         Vector2f newPosition = null;
+        // System.out.println(direction);
         switch (direction) {
             case NORTH:
                 newPosition = Vector2f.sub(position, new Vector2f(0, 1));
@@ -57,6 +58,7 @@ class Player implements Drawable {
             SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position, 32), new Vector2f(0, 16)));
             GAME_VIEW.setCenter(SPRITE.getPosition());
             //MAP.update(new Vector2f((int) Math.floor(position.x), (int) Math.floor(position.y)));
+            System.out.println(position);
         }
 
         // GAME_VIEW.setCenter(SPRITE.getPosition());

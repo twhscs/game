@@ -17,7 +17,6 @@ class App {
     private final Map MAP;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
-    private final View UI_VIEW;
 
     private App() {
         WINDOW = new RenderWindow();
@@ -37,10 +36,9 @@ class App {
 
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
-        UI_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
 //        GAME_VIEW.zoom(0.5f);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW);
-        MAP = new Map(25, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
+        MAP = new Map(113, 277, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
         PLAYER.setMap(MAP);
 //        GAME_VIEW.setCenter(0, -8);
         //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
