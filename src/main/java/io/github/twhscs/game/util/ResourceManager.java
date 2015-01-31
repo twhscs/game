@@ -29,7 +29,7 @@ public class ResourceManager {
     private final String SOUND_BUFFER_EXTENSION;
 
     /**
-     * Constructs a resource manager with the specified directories and extensions.
+     * Constructs a {@link io.github.twhscs.game.util.ResourceManager} with the specified directories and extensions.
      *
      * @param ROOT_PACKAGE           the root package containing the resources.
      * @param IMAGE_DIRECTORY        the directory containing images.
@@ -142,7 +142,7 @@ public class ResourceManager {
     /**
      * Gets the specified {@link org.jsfml.graphics.Image} from the map.
      *
-     * @param imageName the name of the image to retrieve.
+     * @param imageName the name of the {@link org.jsfml.graphics.Image}to retrieve.
      * @return the specified {@link org.jsfml.graphics.Image}
      */
     public Image getImage(String imageName) {
@@ -152,7 +152,7 @@ public class ResourceManager {
     /**
      * Gets the specified {@link org.jsfml.graphics.Texture} from the map.
      *
-     * @param textureName the name of the texture to retrieve.
+     * @param textureName the name of the {@link org.jsfml.graphics.Texture} to retrieve.
      * @return the specified {@link org.jsfml.graphics.Texture}
      */
     public Texture getTexture(String textureName) {
@@ -162,7 +162,7 @@ public class ResourceManager {
     /**
      * Gets the specified {@link org.jsfml.graphics.Font} from the map.
      *
-     * @param fontName the name of the font to retrieve.
+     * @param fontName the name of the {@link org.jsfml.graphics.Font} to retrieve.
      * @return the specified {@link org.jsfml.graphics.Font}
      */
     public Font getFont(String fontName) {
@@ -172,7 +172,7 @@ public class ResourceManager {
     /**
      * Gets the specified {@link org.jsfml.audio.SoundBuffer} from the map.
      *
-     * @param soundBufferName the name of the sound buffer to retrieve.l
+     * @param soundBufferName the name of the {@link org.jsfml.audio.SoundBuffer} to retrieve.l
      * @return the specified {@link org.jsfml.audio.SoundBuffer}
      */
     public SoundBuffer getSoundBuffer(String soundBufferName) {

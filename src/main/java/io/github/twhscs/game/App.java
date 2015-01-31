@@ -12,39 +12,35 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
 class App {
+    private final int TILE_SIZE = 32;
+    private final float ZOOM = 0.5f;
     private final RenderWindow WINDOW;
-    private final Player PLAYER;
-    private final ResourceManager RESOURCE_MANAGER;
-    private final Map MAP;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
+    private final ResourceManager RESOURCE_MANAGER;
+    private final Map MAP;
+    private final Player PLAYER;
 
     private App() {
-        WINDOW = new RenderWindow();
-
-        RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
-        WINDOW.create(new VideoMode(640, 480), "Game");
+        WINDOW = new RenderWindow(new VideoMode(640, 480), "Game");
         DEFAULT_VIEW = WINDOW.getDefaultView();
+        GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
+        GAME_VIEW.zoom(ZOOM);
+        RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
         String[] imageNames = {"icon", "kyle"};
-        String[] textureNames = {"player", "tiles"};
-        String[] fontNames = {"free_mono", "free_sans", "free_serif"};
-        String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadImages(imageNames);
+        WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
+        String[] textureNames = {"player", "tiles"};
         RESOURCE_MANAGER.loadTextures(textureNames);
-
+        String[] fontNames = {"free_mono", "free_sans", "free_serif"};
         RESOURCE_MANAGER.loadFonts(fontNames);
+        String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
 
-        WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
-        GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
-//        GAME_VIEW.zoom(0.5f);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW);
-        MAP = new Map(117, 713, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
-//        System.out.println("DONE");
+        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
         PLAYER.setMap(MAP);
-//        GAME_VIEW.setCenter(0, -8);
-        //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
-       // System.out.println(MAP);
+
         run();
     }
 
@@ -67,7 +63,7 @@ class App {
         float lag = 0f;
         float frameTime = 0f;
         int framesDrawn = 0;
-//        System.out.println("DONE 2");
+
         while (WINDOW.isOpen()) {
             float elapsed = clock.restart().asSeconds();
             lag += elapsed;
@@ -93,7 +89,6 @@ class App {
     }
 
     private void processInput() {
-//        System.out.println("DONE 3");
         for (Event event : WINDOW.pollEvents()) {
             switch (event.type) {
                 case CLOSED:
@@ -105,10 +100,8 @@ class App {
 //                    GAME_VIEW.setCenter(Math.round(size.x / 2), Math.round(size.y / 2));
                     //GAME_VIEW.setCenter(0, 0);
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
-//                    GAME_VIEW.zoom(.5f);
-                    GAME_VIEW.setCenter(0, 0);
-                    //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
-                    System.out.println(size);
+                    GAME_VIEW.setCenter(PLAYER.getSPRITE().getPosition());
+                    GAME_VIEW.zoom(ZOOM);
                     break;
                 case KEY_PRESSED:
                     switch (event.asKeyEvent().key) {
@@ -131,6 +124,7 @@ class App {
     }
 
     private void update() {
+        MAP.update();
         PLAYER.update();
     }
 
