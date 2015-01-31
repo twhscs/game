@@ -4,9 +4,12 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import java.util.HashSet;
+import java.util.Set;
+
 class Map implements Drawable {
     private final int TILE_SIZE = 32;
-    private final int CHUNK_SIZE = 25;
+    private final int CHUNK_SIZE = 10;
     private final Vector2i DIMENSIONS;
     private final int[][] TILE_ARRAY;
     private final Texture TILE_SHEET;
@@ -28,7 +31,7 @@ class Map implements Drawable {
         this.PLAYER = PLAYER;
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
-                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
+                TILE_ARRAY[i][j] = (int) (Math.random() * 2);
             }
         }
         if (CHUNK_SIZE > DIMENSIONS.x || CHUNK_SIZE > DIMENSIONS.y) {
@@ -88,14 +91,24 @@ class Map implements Drawable {
         return (((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS));
     }
 
+    private Vector2f chunkIDToPosition(int chunkID) {
+        int startX = (chunkID % X_CHUNKS) * CHUNK_SIZE;
+        int startY = (chunkID / X_CHUNKS) * CHUNK_SIZE;
+        return new Vector2f(startX, startY);
+    }
+
     private boolean isValidDifferentChunk(Vector2f position, Vector2f newPosition, int chunkID) {
         int newChunkID = positionToChunkID(Vector2f.add(position, newPosition));
         if (newChunkID >= 0 && newChunkID < TOTAL_CHUNKS) {
             int abs = Math.abs(newChunkID - chunkID);
-            return abs == 1 || abs == X_CHUNKS || abs == X_CHUNKS + 1 || abs == X_CHUNKS - 1;
+            return abs <= 1 || abs <= X_CHUNKS || abs <= X_CHUNKS + 1 || abs <= X_CHUNKS - 1;
         } else {
             return false;
         }
+    }
+
+    private boolean isValidChunk(int chunkID) {
+        return chunkID >= 0 && chunkID < TOTAL_CHUNKS;
     }
 
     @Override
@@ -105,9 +118,46 @@ class Map implements Drawable {
             Vector2f playerPosition = PLAYER.getPosition();
             Vector2i windowSize = WINDOW.getSize();
 
-            final int DRAW_DISTANCE = Math.max(((windowSize.x / 32) / 2), (windowSize.y / 32) / 2);
+            // int chunkID = positionToChunkID(playerPosition);
+            //final int DRAW_DISTANCE = Math.max(((windowSize.x / TILE_SIZE) / 2), (windowSize.y / TILE_SIZE) / 2);
+            //final int radius = Math.max(((windowSize.x / TILE_SIZE) / 2), (windowSize.y / TILE_SIZE) / 2);
+            // Vector2f chunkStart = chunkIDToPosition(chunkID);
+            // Vector2f chunkEnd = Vector2f.add(chunkStart, new Vector2f(CHUNK_SIZE, CHUNK_SIZE));
+            //System.out.println(chunkStart);
+            //System.out.println(chunkEnd);
 
-            Vector2f north = new Vector2f(0, -DRAW_DISTANCE);
+            final int X_RADIUS = (int) Math.ceil((windowSize.x / TILE_SIZE) / 2.0f);
+            final int Y_RADIUS = (int) Math.ceil((windowSize.y / TILE_SIZE) / 2.0f);
+            //System.out.println(Y_RADIUS);
+            //  float west = chunkEnd.x - playerPosition.x;
+            //float east = playerPosition.x - chunkStart.x;
+            // float north = playerPosition.y - chunkStart.y;
+            // float south = chunkEnd.y - playerPosition.y;
+            // if(west < X_RADIUS) {
+            //   int chunksToRender = (int) (Math.ceil(X_RADIUS / CHUNK_SIZE));
+            // System.out.println(chunksToRender);
+            //   }
+            // System.out.println("START");
+            FloatRect visibleArea = new FloatRect(playerPosition.x - X_RADIUS, playerPosition.y - Y_RADIUS, X_RADIUS * 2, Y_RADIUS * 2);
+            //System.out.println(visibleArea);
+            Set<Integer> rendered = new HashSet<Integer>();
+            for (float i = visibleArea.left; i <= visibleArea.left + visibleArea.width; i++) {
+                for (float j = visibleArea.top; j <= visibleArea.top + visibleArea.height; j++) {
+
+                    int chunkID = positionToChunkID(new Vector2f(i, j));
+                    // System.out.println("X: " + i + " Y: " + j + " ID: " + chunkID);
+                    if (isValidChunk(chunkID) && !rendered.contains(chunkID)) {
+                        VERTEX_ARRAYS[chunkID].draw(renderTarget, states);
+                        rendered.add(chunkID);
+                    }
+
+                }
+            }
+            //System.out.println(visibleArea);
+
+            // VERTEX_ARRAYS[chunkID].draw(renderTarget, states);
+
+            /*Vector2f north = new Vector2f(0, -DRAW_DISTANCE);
             Vector2f south = new Vector2f(0, DRAW_DISTANCE);
             Vector2f west = new Vector2f(-DRAW_DISTANCE, 0);
             Vector2f east = new Vector2f(DRAW_DISTANCE, 0);
@@ -116,7 +166,7 @@ class Map implements Drawable {
             Vector2f southWest = Vector2f.add(south, west);
             Vector2f southEast = Vector2f.add(south, east);
 
-            int chunkID = positionToChunkID(playerPosition);
+
             int chunksRendering = 0;
             VERTEX_ARRAYS[chunkID].draw(renderTarget, states);
             chunksRendering++;
@@ -155,7 +205,7 @@ class Map implements Drawable {
                 VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, southEast))].draw(renderTarget, states);
                 chunksRendering++;
             }
-            System.out.println(chunksRendering);
+//            System.out.println(chunksRendering);*/
         }
     }
 

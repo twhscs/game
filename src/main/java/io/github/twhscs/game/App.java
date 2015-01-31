@@ -39,7 +39,7 @@ class App {
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
 //        GAME_VIEW.zoom(0.5f);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW);
-        MAP = new Map(100, 100, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
+        MAP = new Map(117, 713, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
 //        System.out.println("DONE");
         PLAYER.setMap(MAP);
 //        GAME_VIEW.setCenter(0, -8);
@@ -106,7 +106,7 @@ class App {
                     //GAME_VIEW.setCenter(0, 0);
                     GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
 //                    GAME_VIEW.zoom(.5f);
-                    //GAME_VIEW.setCenter(0, 0);
+                    GAME_VIEW.setCenter(0, 0);
                     //System.out.println(10 / (DEFAULT_VIEW.getSize().x / 32));
                     System.out.println(size);
                     break;
