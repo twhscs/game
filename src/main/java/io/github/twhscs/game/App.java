@@ -33,14 +33,13 @@ class App {
         RESOURCE_MANAGER.loadImages(imageNames);
         // Set the window icon.
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
-        String[] textureNames = {"player", "tiles", "leviathan", "ryuk", "drax"};
+        String[] textureNames = {"player", "tiles", "leviathan", "ryuk", "drax", "hulk"};
         RESOURCE_MANAGER.loadTextures(textureNames);
         String[] fontNames = {"free_mono", "free_sans", "free_serif"};
         RESOURCE_MANAGER.loadFonts(fontNames);
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
-
-        PLAYER = new Player(RESOURCE_MANAGER.getTexture("drax"), GAME_VIEW, new Vector2i(40, 56), TILE_SIZE, 4, 2);
+        PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
 
@@ -118,8 +117,8 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
-                    GAME_VIEW.setCenter(PLAYER.getSprite().getPosition());
                     GAME_VIEW.zoom(ZOOM);
+                    PLAYER.updateSprite();
                     break;
                 case KEY_PRESSED:
                     switch (event.asKeyEvent().key) {
@@ -143,11 +142,11 @@ class App {
         PLAYER.update();
     }
 
-    private void render(float betweenUpdates) {
+    private void render(float positionBetweenUpdates) {
         WINDOW.setView(GAME_VIEW);
         WINDOW.clear();
         WINDOW.draw(MAP);
-        PLAYER.interpolate(betweenUpdates);
+        PLAYER.interpolate(positionBetweenUpdates);
         WINDOW.draw(PLAYER);
         WINDOW.display();
     }

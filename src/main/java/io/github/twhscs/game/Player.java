@@ -14,52 +14,77 @@ class Player implements Drawable {
     private final int ANIMATION_FRAMES;
     private final int ANIMATION_SPEED;
     private final float ANIMATION_STEP;
-    private Position position;
+    private Vector2f position;
     private Direction direction;
-    private Map map;
     private int animationFrame;
     private boolean animating;
+    private Map map;
 
-    Player(Texture playerTexture, View GAME_VIEW, Vector2i SPRITE_SIZE, int TILE_SIZE, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
+    Player(Texture playerTexture, View GAME_VIEW, int TILE_SIZE, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
+        // Create a new sprite with the specified texture.
         this.SPRITE = new Sprite(playerTexture);
         this.GAME_VIEW = GAME_VIEW;
-        this.SPRITE_SIZE = SPRITE_SIZE;
+        // Calculate the sprite size by dividing the texture size by the number of animations.
+        SPRITE_SIZE = Vector2i.div(playerTexture.getSize(), ANIMATION_FRAMES);
         this.TILE_SIZE = TILE_SIZE;
         this.ANIMATION_FRAMES = ANIMATION_FRAMES;
         this.ANIMATION_SPEED = ANIMATION_SPEED;
+        // Calculate the animation step by taking the reciprocal of the frame count times speed.
         ANIMATION_STEP = 1.0f / (ANIMATION_FRAMES * ANIMATION_SPEED);
-        position = new Position(0.0f, 0.0f);
+        position = new Vector2f(0.0f, 0.0f);
         direction = Direction.NORTH;
         animationFrame = 0;
         animating = false;
+        // Initialize the sprite.
         updateSprite();
     }
 
-    private void updateSprite() {
-        float positionX = position.getX() * 32 - ((SPRITE_SIZE.x - TILE_SIZE) / 2);
-        float positionY = position.getY() * 32 - (SPRITE_SIZE.y - TILE_SIZE);
-        positionX = (float) Math.round(positionX);
-        positionY = (float) Math.round(positionY);
-        SPRITE.setPosition(positionX, positionY);
+    @Override
+    public String toString() {
+        return "Player{" +
+                "SPRITE_SIZE=" + SPRITE_SIZE +
+                ", ANIMATION_FRAMES=" + ANIMATION_FRAMES +
+                ", ANIMATION_SPEED=" + ANIMATION_SPEED +
+                ", ANIMATION_STEP=" + ANIMATION_STEP +
+                ", position=" + position +
+                ", direction=" + direction +
+                ", animationFrame=" + animationFrame +
+                ", animating=" + animating +
+                '}';
+    }
+
+    public Vector2f getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector2f position) {
+        this.position = position;
+    }
+
+    public void updateSprite() {
+        // Calculate the sprite position by multiplying the map position by the tile size.
+        // Subtract half of the sprite width minus the tile size to center it horizontally.
+        // Subtract the sprite height minus the tile size to center it vertically.
+        Vector2f spritePosition = new Vector2f(position.x * TILE_SIZE - ((SPRITE_SIZE.x - TILE_SIZE) / 2.0f), position.y * TILE_SIZE - (SPRITE_SIZE.y - TILE_SIZE));
+        // Round the position to prevent graphical errors.
+        spritePosition = Position.round(spritePosition);
+        // Update the sprite's position.
+        SPRITE.setPosition(spritePosition);
+        // Apply the appropriate texture based on direction and animation.
         SPRITE.setTextureRect(getTextureRect());
-        GAME_VIEW.setCenter(SPRITE.getPosition());
+        // Add half of the sprite's width and height to the view in order to center the sprite.
+        GAME_VIEW.setCenter(Vector2f.add(spritePosition, Vector2f.div(new Vector2f(SPRITE_SIZE), 2.0f)));
     }
 
     public void move(Direction direction) {
-        if (!animating /*|| direction != this.direction*/) {
-            Position newPosition = position.getRelativePosition(direction, 1.0f);
-            if (map.isValidPosition(newPosition.getPosition())) {
-
-                //position = position.getRelativePosition(direction, ANIMATION_STEP);
-                //animationFrame++;
-                //updateSprite();
-                if (direction != this.direction) {
-                    Position currentPosition = position;
-                    Vector2f roundedPosition = new Vector2f(Math.round(currentPosition.getX()), Math.round(currentPosition.getY()));
-                    position.setPosition(roundedPosition);
-                    System.out.println(roundedPosition);
-                    updateSprite();
-                }
+        // TODO: Allow for faster movement. (Do not have to wait until current move is finished before initiating next move.)
+        // Only move the player if they are not already moving.
+        if (!animating) {
+            // Calculate the position to move towards.
+            Vector2f newPosition = Position.getRelativePosition(position, direction, 1.0f);
+            // Make sure the new position is valid.
+            if (map.isValidPosition(newPosition)) {
+                // If it is valid, update the direction and start moving..
                 this.direction = direction;
                 animating = true;
             }
@@ -67,33 +92,24 @@ class Player implements Drawable {
     }
 
     public void update() {
+        // Check if the player is moving.
         if (animating) {
-            //System.out.println(getTextureRect());
-            if (animationFrame >= (ANIMATION_FRAMES * ANIMATION_SPEED) - 1) {
+            // Move the player by the animation step.
+            position = Position.getRelativePosition(position, direction, ANIMATION_STEP);
+            // Check if it is time to stop moving.
+            if (animationFrame + 1 >= ANIMATION_FRAMES * ANIMATION_SPEED) {
+                // Reset the animation frame and stop moving.
                 animationFrame = 0;
                 animating = false;
+                // Round the position to prevent float rounding errors.
+                position = Position.round(position);
             } else {
+                // If it is not time to stop, keep going.
                 animationFrame++;
             }
-            position = position.getRelativePosition(direction, ANIMATION_STEP);
+            // Update the sprite.
             updateSprite();
         }
-    }
-
-    public Sprite getSprite() {
-        return SPRITE;
-    }
-
-    public int getAnimationFrame() {
-        return animationFrame;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public void setMap(Map map) {
@@ -101,8 +117,9 @@ class Player implements Drawable {
     }
 
     private IntRect getTextureRect() {
+        // Normalize the current frame based on the amount of actual frames.
         int adjustedFrame = Math.round((animationFrame * ANIMATION_FRAMES) / (ANIMATION_FRAMES * ANIMATION_SPEED));
-        //System.out.println(adjustedFrame);
+        // Use math to calculate the player's current texture.
         switch (direction) {
             case NORTH:
                 return new IntRect(adjustedFrame * SPRITE_SIZE.x, 3 * SPRITE_SIZE.y, SPRITE_SIZE.x, SPRITE_SIZE.y);
@@ -122,35 +139,14 @@ class Player implements Drawable {
         renderTarget.draw(SPRITE);
     }
 
-    public void interpolate(float betweenUpdates) {
-        /*if(animationFrame / 2 > 0) {
-            float step = (1.0f / (ANIMATION_FRAMES * ANIMATION_SPEED)) * betweenUpdates;
-            float positionX = position.getX() * 32 - ((SPRITE_SIZE.x - TILE_SIZE) / 2);
-            float positionY = position.getY() * 32 - (SPRITE_SIZE.y - TILE_SIZE);
-            switch (direction) {
-                case NORTH:
-                    positionY = (position.getY() - step) * 32 - (SPRITE_SIZE.y - TILE_SIZE);
-                    break;
-                case SOUTH:
-                    positionY = (position.getY() + step) * 32 - (SPRITE_SIZE.y - TILE_SIZE);
-                    break;
-                case WEST:
-                    positionX = (position.getX() - step) * 32 - ((SPRITE_SIZE.x - TILE_SIZE) / 2);
-                    break;
-                case EAST:
-                    positionX = (position.getX() + step) * 32 - ((SPRITE_SIZE.x - TILE_SIZE) / 2);
-                    break;
-            }
-
-            SPRITE.setPosition(positionX, positionY);
-            SPRITE.setTextureRect(getTextureRect());
-            GAME_VIEW.setCenter(SPRITE.getPosition());
-        }*/
+    public void interpolate(float positionBetweenUpdates) {
         if (animating) {
-            float step = ANIMATION_STEP * betweenUpdates;
-            Position currentPosition = position;
-            Position newPosition = position.getRelativePosition(direction, step);
-            position = newPosition;
+            // Multiply the animation step by the position between frames (0.0f - 1.0f).
+            float interpolationStep = ANIMATION_STEP * positionBetweenUpdates;
+            // Get the current position.
+            Vector2f currentPosition = position;
+            // Temporarily update the position with the interpolation step applied, update the sprite, then revert the position.
+            position = Position.getRelativePosition(position, direction, interpolationStep);
             updateSprite();
             position = currentPosition;
         }

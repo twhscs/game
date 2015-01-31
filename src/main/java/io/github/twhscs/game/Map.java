@@ -51,7 +51,7 @@ class Map implements Drawable {
         // TODO: Add random terrain generation.
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
-                TILE_ARRAY[i][j] = (int) (Math.random() * 2);
+                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
             }
         }
         // Divide the map into smaller chunks.
@@ -163,14 +163,14 @@ class Map implements Drawable {
         // Apply the tile sheet to the tiles.
         RenderStates states = new RenderStates(TILE_SHEET);
         // Get the player's current position.
-        Vector2f playerPosition = player.getPosition().getPosition();
+        Vector2f playerPosition = player.getPosition();
         // Get the window's current size.
         Vector2i windowSize = WINDOW.getSize();
 
         // Determine how many tiles fit the window horizontally and vertically taking zoom into account, then halve both values.
         int xDistance = (int) Math.ceil(windowSize.x / (TILE_SIZE * 2 / ZOOM));
         int yDistance = (int) Math.ceil(windowSize.y / (TILE_SIZE * 2 / ZOOM));
-        Vector2f distance = new Vector2f(xDistance, yDistance);
+        Vector2f distance = new Vector2f(xDistance + 1, yDistance + 1);
 
         // Create a rectangle representing the positions currently viewable by the player.
         FloatRect visibleArea = new FloatRect(playerPosition.x - distance.x, playerPosition.y - distance.y, distance.x * 2, distance.y * 2);

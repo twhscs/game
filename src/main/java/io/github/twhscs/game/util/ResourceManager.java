@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Handles loading and accessing images, textures, fonts and sound buffers.
  */
-public class ResourceManager {
+public final class ResourceManager {
     private final Map<String, Image> IMAGE_MAP;
     private final Map<String, Texture> TEXTURE_MAP;
     private final Map<String, Font> FONT_MAP;
