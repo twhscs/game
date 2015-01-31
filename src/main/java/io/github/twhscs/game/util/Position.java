@@ -96,24 +96,24 @@ public class Position {
      * @param direction The {@link io.github.twhscs.game.util.Direction} of the new {@link io.github.twhscs.game.util.Position} relative to the current {@link io.github.twhscs.game.util.Position}
      * @return The new {@link io.github.twhscs.game.util.Direction}
      */
-    public Position getRelativePosition(Direction direction) {
+    public Position getRelativePosition(Direction direction, float step) {
         switch (direction) {
             case NORTH:
-                return new Position(position.x, position.y - 1);
+                return new Position(position.x, position.y - step);
             case SOUTH:
-                return new Position(position.x, position.y + 1);
+                return new Position(position.x, position.y + step);
             case WEST:
-                return new Position(position.x - 1, position.y);
+                return new Position(position.x - step, position.y);
             case EAST:
-                return new Position(position.x + 1, position.y);
+                return new Position(position.x + step, position.y);
             case NORTH_WEST:
-                return new Position(position.x - 1, position.y - 1);
+                return new Position(position.x - step, position.y - step);
             case NORTH_EAST:
-                return new Position(position.x + 1, position.y - 1);
+                return new Position(position.x + step, position.y - step);
             case SOUTH_WEST:
-                return new Position(position.x - 1, position.y + 1);
+                return new Position(position.x - step, position.y + step);
             case SOUTH_EAST:
-                return new Position(position.x + 1, position.y + 1);
+                return new Position(position.x + step, position.y + step);
             default:
                 return null;
         }

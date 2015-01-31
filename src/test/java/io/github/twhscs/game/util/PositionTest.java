@@ -21,13 +21,13 @@ public class PositionTest {
 
     @Test
     public void testGetRelativePosition() throws Exception {
-        assertEquals("Position (2, 2) should be north of (2, 3).", new Position(2, 2), position.getRelativePosition(Direction.NORTH));
-        assertEquals("Position (2, 4) should be south of (2, 3).", new Position(2, 4), position.getRelativePosition(Direction.SOUTH));
-        assertEquals("Position (1, 3) should be west of (2, 3).", new Position(1, 3), position.getRelativePosition(Direction.WEST));
-        assertEquals("Position (3, 3) should be east of (2, 3).", new Position(3, 3), position.getRelativePosition(Direction.EAST));
-        assertEquals("Position (1, 2) should be north west of (2, 3).", new Position(1, 2), position.getRelativePosition(Direction.NORTH_WEST));
-        assertEquals("Position (3, 2) should be north east of (2, 3).", new Position(3, 2), position.getRelativePosition(Direction.NORTH_EAST));
-        assertEquals("Position (1, 4) should be south west of (2, 3).", new Position(1, 4), position.getRelativePosition(Direction.SOUTH_WEST));
-        assertEquals("Position (3, 4) should be south east of (2, 3).", new Position(3, 4), position.getRelativePosition(Direction.SOUTH_EAST));
+        assertEquals("Position (2, 2) should be north of (2, 3).", new Position(2, 2), position.getRelativePosition(Direction.NORTH, 1.0f));
+        assertEquals("Position (2, 4) should be south of (2, 3).", new Position(2, 4), position.getRelativePosition(Direction.SOUTH, 1.0f));
+        assertEquals("Position (1, 3) should be west of (2, 3).", new Position(1, 3), position.getRelativePosition(Direction.WEST, 1.0f));
+        assertEquals("Position (3, 3) should be east of (2, 3).", new Position(3, 3), position.getRelativePosition(Direction.EAST, 1.0f));
+        assertEquals("Position (1, 2) should be north west of (2, 3).", new Position(1, 2), position.getRelativePosition(Direction.NORTH_WEST, 1.0f));
+        assertEquals("Position (3, 2) should be north east of (2, 3).", new Position(3, 2), position.getRelativePosition(Direction.NORTH_EAST, 1.0f));
+        assertEquals("Position (1, 4) should be south west of (2, 3).", new Position(1, 4), position.getRelativePosition(Direction.SOUTH_WEST, 1.0f));
+        assertEquals("Position (3, 4) should be south east of (2, 3).", new Position(3, 4), position.getRelativePosition(Direction.SOUTH_EAST, 1.0f));
     }
 }
