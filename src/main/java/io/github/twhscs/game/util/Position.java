@@ -2,6 +2,8 @@ package io.github.twhscs.game.util;
 
 import org.jsfml.system.Vector2f;
 
+// TODO: Possibly change this to a static class.
+
 /**
  * Represents a 2D location on a grid.
  */

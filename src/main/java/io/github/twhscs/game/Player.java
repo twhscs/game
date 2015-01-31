@@ -3,28 +3,28 @@ package io.github.twhscs.game;
 import io.github.twhscs.game.util.Direction;
 import io.github.twhscs.game.util.Position;
 import org.jsfml.graphics.*;
-import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 
 class Player implements Drawable {
     private final Sprite SPRITE;
     private final View GAME_VIEW;
-    private Map MAP;
+    private final Vector2i SPRITE_SIZE;
+    private final int TILE_SIZE;
     private Position position;
     private Direction direction;
+    private Map map;
 
-    Player(Texture playerTexture, View GAME_VIEW) {
-        position = new Position(0.0f, 0.0f);
-        this.SPRITE = new Sprite();
-        SPRITE.setTexture(playerTexture);
-        SPRITE.setTextureRect(new IntRect(0, 0, 32, 48));
+    Player(Texture playerTexture, View GAME_VIEW, Vector2i SPRITE_SIZE, int TILE_SIZE) {
+        this.SPRITE = new Sprite(playerTexture);
         this.GAME_VIEW = GAME_VIEW;
+        this.SPRITE_SIZE = SPRITE_SIZE;
+        this.TILE_SIZE = TILE_SIZE;
+        position = new Position(0.0f, 0.0f);
         direction = Direction.NORTH;
-        //this.MAP = MAP;
-        SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32.0f), new Vector2f(0.0f, 16.0f)));
-        GAME_VIEW.setCenter(SPRITE.getPosition());
+        updateSprite();
     }
 
-    public Sprite getSPRITE() {
+    public Sprite getSprite() {
         return SPRITE;
     }
 
@@ -37,37 +37,41 @@ class Player implements Drawable {
     }
 
     public void setMap(Map map) {
-        this.MAP = map;
+        this.map = map;
+    }
+
+    private void updateSprite() {
+        float positionX = position.getX() * 32 - ((SPRITE_SIZE.x - TILE_SIZE) / 2);
+        float positionY = position.getY() * 32 - (SPRITE_SIZE.y - TILE_SIZE);
+        SPRITE.setPosition(positionX, positionY);
+        // 32 * (spritex - tile), 32 * spritey - tile
+        SPRITE.setTextureRect(getTextureRect());
+        GAME_VIEW.setCenter(SPRITE.getPosition());
+        System.out.println(SPRITE.getLocalBounds());
     }
 
     public void move(Direction direction) {
-        Vector2f newPosition = null;
-        // System.out.println(direction);
+        Position newPosition = position.getRelativePosition(direction);
+        if (map.isValidPosition(newPosition.getPosition())) {
+            position = newPosition;
+            this.direction = direction;
+            updateSprite();
+        }
+    }
+
+    private IntRect getTextureRect() {
         switch (direction) {
             case NORTH:
-                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(0.0f, 1.0f));
-                break;
+                return new IntRect(0, 3 * SPRITE_SIZE.y, SPRITE_SIZE.x, SPRITE_SIZE.y);
             case SOUTH:
-                newPosition = Vector2f.add(position.getPosition(), new Vector2f(0.0f, .0f));
-                break;
+                return new IntRect(0, 0, SPRITE_SIZE.x, SPRITE_SIZE.y);
             case WEST:
-                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(1.0f, 0.0f));
-                break;
+                return new IntRect(0, SPRITE_SIZE.y, SPRITE_SIZE.x, SPRITE_SIZE.y);
             case EAST:
-                newPosition = Vector2f.add(position.getPosition(), new Vector2f(1.0f, 0.0f));
-                break;
+                return new IntRect(0, 2 * SPRITE_SIZE.y, SPRITE_SIZE.x, SPRITE_SIZE.y);
+            default:
+                return new IntRect(0, 0, 0, 0);
         }
-        if (MAP.isValidPosition(newPosition)) {
-            position.setPosition(newPosition);
-            this.direction = direction;
-            SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32.0f), new Vector2f(0.0f, 16.0f)));
-            GAME_VIEW.setCenter(SPRITE.getPosition());
-            //MAP.update(new Vector2f((int) Math.floor(position.x), (int) Math.floor(position.y)));
-            //System.out.println(position);
-        }
-
-        // GAME_VIEW.setCenter(SPRITE.getPosition());
-//        MAP.update((int) Math.floor(position.x), (int) Math.floor(position.y));
     }
 
     public void update() {

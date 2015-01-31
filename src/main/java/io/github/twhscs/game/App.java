@@ -32,16 +32,16 @@ class App {
         RESOURCE_MANAGER.loadImages(imageNames);
         // Set the window icon.
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
-        String[] textureNames = {"player", "tiles"};
+        String[] textureNames = {"player", "tiles", "leviathan", "ryuk"};
         RESOURCE_MANAGER.loadTextures(textureNames);
         String[] fontNames = {"free_mono", "free_sans", "free_serif"};
         RESOURCE_MANAGER.loadFonts(fontNames);
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
 
-        PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
-        PLAYER.setMap(MAP);
+        PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, new Vector2i(48, 64), TILE_SIZE);
+        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
+        MAP.setPlayer(PLAYER);
 
         // Start the main loop.
         run();
@@ -117,7 +117,7 @@ class App {
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
-                    GAME_VIEW.setCenter(PLAYER.getSPRITE().getPosition());
+                    GAME_VIEW.setCenter(PLAYER.getSprite().getPosition());
                     GAME_VIEW.zoom(ZOOM);
                     break;
                 case KEY_PRESSED:

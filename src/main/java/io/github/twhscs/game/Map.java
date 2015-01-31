@@ -15,21 +15,20 @@ class Map implements Drawable {
     private final int CHUNK_SIZE;
     private final Texture TILE_SHEET;
     private final RenderWindow WINDOW;
-    private final Player PLAYER;
     private final int[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
+    private Player player;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW, Player PLAYER) {
+    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
         this.CHUNK_SIZE = CHUNK_SIZE;
         this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
-        this.PLAYER = PLAYER;
         TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
@@ -40,6 +39,11 @@ class Map implements Drawable {
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
         load();
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        player.setMap(this);
     }
 
     private void load() {
@@ -159,7 +163,7 @@ class Map implements Drawable {
         // Apply the tile sheet to the tiles.
         RenderStates states = new RenderStates(TILE_SHEET);
         // Get the player's current position.
-        Vector2f playerPosition = PLAYER.getPosition().getPosition();
+        Vector2f playerPosition = player.getPosition().getPosition();
         // Get the window's current size.
         Vector2i windowSize = WINDOW.getSize();
 
