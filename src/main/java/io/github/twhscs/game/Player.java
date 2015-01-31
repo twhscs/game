@@ -13,14 +13,14 @@ class Player implements Drawable {
     private Direction direction;
 
     Player(Texture playerTexture, View GAME_VIEW) {
-        position = new Position(0, 0);
+        position = new Position(0.0f, 0.0f);
         this.SPRITE = new Sprite();
         SPRITE.setTexture(playerTexture);
         SPRITE.setTextureRect(new IntRect(0, 0, 32, 48));
         this.GAME_VIEW = GAME_VIEW;
         direction = Direction.NORTH;
         //this.MAP = MAP;
-        SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32), new Vector2f(0, 16)));
+        SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32.0f), new Vector2f(0.0f, 16.0f)));
         GAME_VIEW.setCenter(SPRITE.getPosition());
     }
 
@@ -45,22 +45,22 @@ class Player implements Drawable {
         // System.out.println(direction);
         switch (direction) {
             case NORTH:
-                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(0, 1));
+                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(0.0f, 1.0f));
                 break;
             case SOUTH:
-                newPosition = Vector2f.add(position.getPosition(), new Vector2f(0, 1));
+                newPosition = Vector2f.add(position.getPosition(), new Vector2f(0.0f, .0f));
                 break;
             case WEST:
-                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(1, 0));
+                newPosition = Vector2f.sub(position.getPosition(), new Vector2f(1.0f, 0.0f));
                 break;
             case EAST:
-                newPosition = Vector2f.add(position.getPosition(), new Vector2f(1, 0));
+                newPosition = Vector2f.add(position.getPosition(), new Vector2f(1.0f, 0.0f));
                 break;
         }
         if (MAP.isValidPosition(newPosition)) {
             position.setPosition(newPosition);
             this.direction = direction;
-            SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32), new Vector2f(0, 16)));
+            SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position.getPosition(), 32.0f), new Vector2f(0.0f, 16.0f)));
             GAME_VIEW.setCenter(SPRITE.getPosition());
             //MAP.update(new Vector2f((int) Math.floor(position.x), (int) Math.floor(position.y)));
             //System.out.println(position);

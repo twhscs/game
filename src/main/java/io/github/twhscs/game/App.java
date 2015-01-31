@@ -26,9 +26,11 @@ class App {
         DEFAULT_VIEW = WINDOW.getDefaultView();
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         GAME_VIEW.zoom(ZOOM);
+        // Construct resource manager with main package.
         RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
         String[] imageNames = {"icon", "kyle"};
         RESOURCE_MANAGER.loadImages(imageNames);
+        // Set the window icon.
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
         String[] textureNames = {"player", "tiles"};
         RESOURCE_MANAGER.loadTextures(textureNames);
@@ -41,6 +43,7 @@ class App {
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, PLAYER);
         PLAYER.setMap(MAP);
 
+        // Start the main loop.
         run();
     }
 
@@ -54,14 +57,27 @@ class App {
         
         Game Loop: http://gameprogrammingpatterns.com/game-loop.html
         
-        The game loop runs as long as the window is open. Each iteration the elapsed time of the previous iteration is measured in seconds and stored in 'elapsed'. This elapsed time is added to both 'lag' and 'frameTime'. Both 'lag' and 'frameTime' keep running totals of elapsed seconds in order to determine when to update the game or calculate FPS. The user input is then processed. Now it is time to determine whether or not to update. If 'lag' is less than SECONDS_PER_UPDATE, it is not time to update yet because not enough time has passed. If 'lag' is equal to or slightly greater than SECONDS_PER_UPDATE, it is time to update. If 'lag' is twice as large as SECONDS_PER_UPDATE or even greater, the game is behind by more than one update. To remedy this the game updates multiple times until caught up. Finally, the game is rendered. If one second has passed, the FPS is calculated.
+        The game loop runs as long as the window is open.
+        Each iteration the elapsed time of the previous iteration is measured in seconds and stored in 'elapsed'.
+        This elapsed time is added to both 'lag' and 'frameTime'.
+        Both 'lag' and 'frameTime' keep running totals of elapsed seconds in order to determine when to update the game or calculate FPS.
+        The user input is then processed.
+        Now it is time to determine whether or not to update.
+        If 'lag' is less than SECONDS_PER_UPDATE, it is not time to update yet because not enough time has passed.
+        If 'lag' is equal to or slightly greater than SECONDS_PER_UPDATE, it is time to update.
+        If 'lag' is twice as large as SECONDS_PER_UPDATE or even greater, the game is behind by more than one update.
+        To remedy this the game updates multiple times until caught up.
+        Finally, the game is rendered.
+        If one second has passed, the FPS is calculated.
         
          */
 
-        final float SECONDS_PER_UPDATE = 1 / 20f; // Fixed rate at which the game updates. 1 / 20f = 20 Hz = 20 updates per second.
+        // Fixed rate at which the game updates.
+        // 1 / 20.0f = 20 Hz = 20 updates per second.
+        final float SECONDS_PER_UPDATE = 1 / 20.0f;
         Clock clock = new Clock();
-        float lag = 0f;
-        float frameTime = 0f;
+        float lag = 0.0f;
+        float frameTime = 0.0f;
         int framesDrawn = 0;
 
         while (WINDOW.isOpen()) {
@@ -76,14 +92,18 @@ class App {
                 lag -= SECONDS_PER_UPDATE;
             }
 
-            render(lag / SECONDS_PER_UPDATE); // Render the game passing in a float between 0.0 and 1.0. 0.0 represents the last update while 1.0 represents the next update. 'betweenUpdates' represents how far between updates the game is.
+            // Render the game, passing in a float between 0.0f and 1.0f.
+            // 0.0f represents the last update while 1.0f represents the next update.
+            // 'betweenUpdates' represents how far between updates the game is.
+            render(lag / SECONDS_PER_UPDATE);
             framesDrawn++;
 
-            if (frameTime >= 1) {
-                int fps = (int) (framesDrawn / frameTime); // FPS = frames per second
+            if (frameTime >= 1.0) {
+                // FPS = frames per second.
+                int fps = (int) (framesDrawn / frameTime);
                 System.out.println("FPS: " + fps);
                 framesDrawn = 0;
-                frameTime = 0f;
+                frameTime = 0.0f;
             }
         }
     }
@@ -96,10 +116,7 @@ class App {
                     break;
                 case RESIZED:
                     Vector2i size = event.asSizeEvent().size;
-//                    GAME_VIEW.setSize(new Vector2f(size));
-//                    GAME_VIEW.setCenter(Math.round(size.x / 2), Math.round(size.y / 2));
-                    //GAME_VIEW.setCenter(0, 0);
-                    GAME_VIEW.reset(new FloatRect(0, 0, size.x, size.y));
+                    GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.setCenter(PLAYER.getSPRITE().getPosition());
                     GAME_VIEW.zoom(ZOOM);
                     break;
