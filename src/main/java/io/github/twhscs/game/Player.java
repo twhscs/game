@@ -30,6 +30,10 @@ class Player implements Drawable {
         return SPRITE;
     }
 
+    public int getAnimationFrame() {
+        return animationFrame;
+    }
+
     public Position getPosition() {
         return position;
     }
@@ -54,8 +58,8 @@ class Player implements Drawable {
         if (animationFrame == 0) {
             Position newPosition = position.getRelativePosition(direction);
             if (map.isValidPosition(newPosition.getPosition())) {
-                position = newPosition;
                 this.direction = direction;
+                position = newPosition;
                 animationFrame++;
                 updateSprite();
             }
@@ -80,7 +84,7 @@ class Player implements Drawable {
     public void update() {
         if (animationFrame > 0) {
             System.out.println(getTextureRect());
-            if (animationFrame > 3) {
+            if (animationFrame >= 3) {
                 animationFrame = 0;
                 updateSprite();
             } else {
