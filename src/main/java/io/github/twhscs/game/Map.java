@@ -57,8 +57,7 @@ class Map implements Drawable {
     private Vector2f chunkIDToPosition(int chunkID) {
         // Use math to convert a chunkID to its top left position.
         // Chunk IDs start at 0
-        Vector2f position = new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
-        return position;
+        return new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
     }
 
     @Override
