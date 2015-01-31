@@ -16,9 +16,11 @@ class Map implements Drawable {
     private final int X_CHUNKS;
     private final int Y_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
+    private boolean LOADED;
 
 
     Map(int x, int y, Texture TILE_SHEET, RenderWindow WINDOW, Player PLAYER) {
+        //this.CHUNK_SIZE = (int) Math.max(Math.ceil(WINDOW.getSize().x / TILE_SIZE), Math.ceil(WINDOW.getSize().y / TILE_SIZE)) + 16;
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
         this.TILE_SHEET = TILE_SHEET;
@@ -29,14 +31,15 @@ class Map implements Drawable {
                 TILE_ARRAY[i][j] = (int) (Math.random() * 4);
             }
         }
-        if (CHUNK_SIZE > DIMENSIONS.x || CHUNK_SIZE > DIMENSIONS.y || CHUNK_SIZE <= 0) {
+        if (CHUNK_SIZE > DIMENSIONS.x || CHUNK_SIZE > DIMENSIONS.y) {
             throw new IllegalArgumentException("Chunk size must be smaller than map dimensions and greater than 0.");
         }
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         Y_CHUNKS = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         TOTAL_CHUNKS = X_CHUNKS * Y_CHUNKS;
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
-        System.out.println("Total Chunks: " + TOTAL_CHUNKS + " X: " + X_CHUNKS + " Y: " + Y_CHUNKS);
+        //out.println("Total Chunks: " + TOTAL_CHUNKS + " X: " + X_CHUNKS + " Y: " + Y_CHUNKS);
+        LOADED = false;
         update();
     }
 
@@ -44,8 +47,11 @@ class Map implements Drawable {
         for (int chunkID = 0; chunkID < TOTAL_CHUNKS; chunkID++) {
             VERTEX_ARRAYS[chunkID] = new VertexArray(PrimitiveType.QUADS);
             int startX = (chunkID % X_CHUNKS) * CHUNK_SIZE;
-            int startY = (int) ((int) (((double) chunkID) / Y_CHUNKS) * CHUNK_SIZE);
-            System.out.println("id: " + chunkID + " x: " + startX + " y: " + startY);
+            int startY = (chunkID / X_CHUNKS) * CHUNK_SIZE;
+            if (startY < 0) {
+                startY = 0;
+            }
+            //System.out.println("id: " + chunkID + " x: " + startX + " y: " + startY);
 //            System.out.println(chunkID + " out of " + TOTAL_CHUNKS);
             for (int i = startX; i < startX + CHUNK_SIZE; i++) {
                 for (int j = startY; j < startY + CHUNK_SIZE; j++) {
@@ -75,36 +81,82 @@ class Map implements Drawable {
                 }
             }
         }
+        LOADED = true;
+    }
+
+    private int positionToChunkID(Vector2f position) {
+        return (((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS));
+    }
+
+    private boolean isValidDifferentChunk(Vector2f position, Vector2f newPosition, int chunkID) {
+        int newChunkID = positionToChunkID(Vector2f.add(position, newPosition));
+        if (newChunkID >= 0 && newChunkID < TOTAL_CHUNKS) {
+            int abs = Math.abs(newChunkID - chunkID);
+            return abs == 1 || abs == X_CHUNKS || abs == X_CHUNKS + 1 || abs == X_CHUNKS - 1;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
-        RenderStates states = new RenderStates(TILE_SHEET);
-        Vector2f playerPosition = PLAYER.getPosition();
-        Vector2i windowSize = WINDOW.getSize();
+        if (LOADED) {
+            RenderStates states = new RenderStates(TILE_SHEET);
+            Vector2f playerPosition = PLAYER.getPosition();
+            Vector2i windowSize = WINDOW.getSize();
 
-        int tilesX = (int) Math.ceil(windowSize.x / TILE_SIZE);
-        int tilesY = (int) Math.ceil(windowSize.y / TILE_SIZE);
+            final int DRAW_DISTANCE = Math.max(((windowSize.x / 32) / 2), (windowSize.y / 32) / 2);
 
-        /*if (tilesX * tilesY > Math.pow(CHUNK_SIZE, 2)) {
-            System.out.println("chunks too small");
-        } else {
-            // get
-            /*int xChunks = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
-            int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE) - 1;*/
+            Vector2f north = new Vector2f(0, -DRAW_DISTANCE);
+            Vector2f south = new Vector2f(0, DRAW_DISTANCE);
+            Vector2f west = new Vector2f(-DRAW_DISTANCE, 0);
+            Vector2f east = new Vector2f(DRAW_DISTANCE, 0);
+            Vector2f northWest = Vector2f.add(north, west);
+            Vector2f northEast = Vector2f.add(north, east);
+            Vector2f southWest = Vector2f.add(south, west);
+            Vector2f southEast = Vector2f.add(south, east);
 
+            int chunkID = positionToChunkID(playerPosition);
+            int chunksRendering = 0;
+            VERTEX_ARRAYS[chunkID].draw(renderTarget, states);
+            chunksRendering++;
 
-        /*int chunkId = (int) (playerPosition.x / CHUNK_SIZE) + ((int) (playerPosition.y / CHUNK_SIZE) * X_CHUNKS);
-        System.out.println((int) (playerPosition.x / CHUNK_SIZE));
-        System.out.println((int) (((playerPosition.y / CHUNK_SIZE) * X_CHUNKS)));
-        System.out.println(chunkId);
-        VERTEX_ARRAYS[chunkId].draw(renderTarget, states);*/
-
-        for (VertexArray vertexes : VERTEX_ARRAYS) {
-            vertexes.draw(renderTarget, states);
+            if (isValidDifferentChunk(playerPosition, north, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, north))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, south, chunkID)) {
+//                System.out.println("SOUTH");
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, south))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, west, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, west))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, east, chunkID)) {
+                //System.out.println("yes");
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, east))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, northWest, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, northWest))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, northEast, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, northEast))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, southWest, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, southWest))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            if (isValidDifferentChunk(playerPosition, southEast, chunkID)) {
+                VERTEX_ARRAYS[positionToChunkID(Vector2f.add(playerPosition, southEast))].draw(renderTarget, states);
+                chunksRendering++;
+            }
+            System.out.println(chunksRendering);
         }
-
-        //}
     }
 
     public boolean isValidPosition(Vector2f position) {

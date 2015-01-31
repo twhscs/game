@@ -18,7 +18,7 @@ class Player implements Drawable {
         SPRITE.setTextureRect(new IntRect(0, 0, 32, 48));
         this.GAME_VIEW = GAME_VIEW;
         direction = Direction.NORTH;
-        this.MAP = MAP;
+        //this.MAP = MAP;
         SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position, 32), new Vector2f(0, 16)));
         GAME_VIEW.setCenter(SPRITE.getPosition());
     }
@@ -58,7 +58,7 @@ class Player implements Drawable {
             SPRITE.setPosition(Vector2f.sub(Vector2f.mul(position, 32), new Vector2f(0, 16)));
             GAME_VIEW.setCenter(SPRITE.getPosition());
             //MAP.update(new Vector2f((int) Math.floor(position.x), (int) Math.floor(position.y)));
-            System.out.println(position);
+            //System.out.println(position);
         }
 
         // GAME_VIEW.setCenter(SPRITE.getPosition());
