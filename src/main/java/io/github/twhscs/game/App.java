@@ -1,11 +1,12 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.ui.DynamicLabel;
+import io.github.twhscs.game.ui.HorizontalAlignment;
+import io.github.twhscs.game.ui.UserInterface;
+import io.github.twhscs.game.ui.VerticalAlignment;
 import io.github.twhscs.game.util.Direction;
 import io.github.twhscs.game.util.ResourceManager;
-import org.jsfml.graphics.ConstView;
-import org.jsfml.graphics.FloatRect;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.View;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
@@ -15,18 +16,23 @@ import org.jsfml.window.event.Event;
 class App {
     private final int TILE_SIZE = 32;
     private final float ZOOM = 0.5f;
+    private final float UI_SCALE = 1.0f;
     private final RenderWindow WINDOW;
-    private final ConstView DEFAULT_VIEW;
+    //private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
+    private final View UI_VIEW;
     private final ResourceManager RESOURCE_MANAGER;
     private final Map MAP;
     private final Player PLAYER;
+    private final UserInterface UI;
 
     private App() {
         WINDOW = new RenderWindow(new VideoMode(640, 480), "Game");
-        DEFAULT_VIEW = WINDOW.getDefaultView();
-        GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
+        ConstView defaultView = WINDOW.getDefaultView();
+        GAME_VIEW = new View(defaultView.getCenter(), defaultView.getSize());
         GAME_VIEW.zoom(ZOOM);
+        UI_VIEW = new View(defaultView.getCenter(), defaultView.getSize());
+        UI_VIEW.zoom(UI_SCALE);
         // Construct resource manager with main package.
         RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
         String[] imageNames = {"icon", "kyle"};
@@ -42,6 +48,9 @@ class App {
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
+        UI = new UserInterface();
+        final DynamicLabel<Integer> FPS_LABEL = new DynamicLabel<Integer>("FPS: ", 0, VerticalAlignment.TOP, HorizontalAlignment.LEFT, RESOURCE_MANAGER.getFont("free_sans"), 36, Color.YELLOW, UI_VIEW);
+        UI.addElement("fps", FPS_LABEL);
 
         // Start the main loop.
         run();
@@ -101,7 +110,7 @@ class App {
             if (frameTime >= 1.0) {
                 // FPS = frames per second.
                 int fps = (int) (framesDrawn / frameTime);
-                System.out.println("FPS: " + fps);
+                ((DynamicLabel) UI.getElement("fps")).updateValue(fps);
                 framesDrawn = 0;
                 frameTime = 0.0f;
             }
@@ -118,6 +127,9 @@ class App {
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.zoom(ZOOM);
+                    UI_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
+                    UI_VIEW.zoom(UI_SCALE);
+                    UI.alignAll();
                     PLAYER.updateSprite();
                     break;
                 case KEY_PRESSED:
@@ -143,11 +155,13 @@ class App {
     }
 
     private void render(float positionBetweenUpdates) {
-        WINDOW.setView(GAME_VIEW);
         WINDOW.clear();
+        WINDOW.setView(GAME_VIEW);
         WINDOW.draw(MAP);
         PLAYER.interpolate(positionBetweenUpdates);
         WINDOW.draw(PLAYER);
+        WINDOW.setView(UI_VIEW);
+        WINDOW.draw(UI);
         WINDOW.display();
     }
 }
