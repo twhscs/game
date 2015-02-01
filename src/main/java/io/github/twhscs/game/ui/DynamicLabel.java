@@ -2,15 +2,19 @@ package io.github.twhscs.game.ui;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Font;
-import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 
 public class DynamicLabel<E> extends Label {
 
     private E value;
 
-    public DynamicLabel(View UI_VIEW, VerticalAlignment vAlign, HorizontalAlignment hAlign, String LABEL, Font font, int fontSize, Color color, E value) {
-        super(UI_VIEW, vAlign, hAlign, LABEL, font, fontSize, color);
+    public DynamicLabel(VerticalAlignment vAlign, HorizontalAlignment hAlign, String LABEL, Font font, int fontSize, Color color, E value) {
+        super(vAlign, hAlign, LABEL, font, fontSize, color);
+        this.value = value;
+    }
+
+    @Override
+    public void initialize() {
         updateValue(value);
     }
 
@@ -22,6 +26,6 @@ public class DynamicLabel<E> extends Label {
         } else {
             TEXT.setString(LABEL + " " + value.toString());
         }
-        align();
+        super.initialize();
     }
 }

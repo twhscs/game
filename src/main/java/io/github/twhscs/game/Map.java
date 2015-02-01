@@ -190,6 +190,5 @@ class Map implements Drawable {
                 }
             }
         }
-        System.out.println(renderedChunks.size());
     }
 }
