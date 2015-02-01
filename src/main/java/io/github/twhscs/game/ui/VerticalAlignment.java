@@ -1,5 +1,5 @@
 package io.github.twhscs.game.ui;
 
 public enum VerticalAlignment {
-    TOP, CENTER, BOTTOM
+    TOP, CENTER, BOTTOM, CUSTOM
 }

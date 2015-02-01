@@ -1,13 +1,11 @@
 package io.github.twhscs.game;
 
-import io.github.twhscs.game.ui.DynamicLabel;
-import io.github.twhscs.game.ui.HorizontalAlignment;
-import io.github.twhscs.game.ui.UserInterface;
-import io.github.twhscs.game.ui.VerticalAlignment;
+import io.github.twhscs.game.ui.*;
 import io.github.twhscs.game.util.Direction;
 import io.github.twhscs.game.util.ResourceManager;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
@@ -49,8 +47,12 @@ class App {
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
         UI = new UserInterface();
-        final DynamicLabel<Integer> FPS_LABEL = new DynamicLabel<Integer>("FPS: ", 0, VerticalAlignment.TOP, HorizontalAlignment.LEFT, RESOURCE_MANAGER.getFont("free_sans"), 36, Color.YELLOW, UI_VIEW);
+        final DynamicLabel<Integer> FPS_LABEL = new DynamicLabel<Integer>(UI_VIEW, VerticalAlignment.TOP, HorizontalAlignment.LEFT, "FPS:", RESOURCE_MANAGER.getFont("free_sans"), 36, Color.YELLOW, 0);
+        final DynamicLabel<Vector2f> PLAYER_POSITION_LABEL = new DynamicLabel<Vector2f>(UI_VIEW, VerticalAlignment.TOP, HorizontalAlignment.RIGHT, "POS:", RESOURCE_MANAGER.getFont("free_sans"), 24, Color.RED, new Vector2f(0.0f, 0.0f));
+        final Label VERSION = new Label(UI_VIEW, VerticalAlignment.BOTTOM, HorizontalAlignment.CENTER, "v1.0 -- alpha", RESOURCE_MANAGER.getFont("free_sans"), 24, Color.BLUE);
         UI.addElement("fps", FPS_LABEL);
+        UI.addElement("player_pos", PLAYER_POSITION_LABEL);
+        UI.addElement("version", VERSION);
 
         // Start the main loop.
         run();
@@ -110,7 +112,7 @@ class App {
             if (frameTime >= 1.0) {
                 // FPS = frames per second.
                 int fps = (int) (framesDrawn / frameTime);
-                ((DynamicLabel) UI.getElement("fps")).updateValue(fps);
+                ((DynamicLabel<Integer>) UI.getElement("fps")).updateValue(fps);
                 framesDrawn = 0;
                 frameTime = 0.0f;
             }
@@ -152,6 +154,7 @@ class App {
     private void update() {
         MAP.update();
         PLAYER.update();
+        ((DynamicLabel<Vector2f>) UI.getElement("player_pos")).updateValue(PLAYER.getPosition());
     }
 
     private void render(float positionBetweenUpdates) {
