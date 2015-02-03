@@ -13,22 +13,24 @@ class Map implements Drawable {
     private final int TILE_SIZE;
     private final float ZOOM;
     private final int CHUNK_SIZE;
-    private final Texture TILE_SHEET;
+    private final Texture[] TILE_SHEETS;
     private final RenderWindow WINDOW;
     private final int[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
     private Player player;
+    private float sheetIndex;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
+    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture[] TILE_SHEETS, RenderWindow WINDOW) {
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
         this.CHUNK_SIZE = CHUNK_SIZE;
-        this.TILE_SHEET = TILE_SHEET;
+        this.TILE_SHEETS = TILE_SHEETS;
         this.WINDOW = WINDOW;
+        sheetIndex = 0;
         TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
@@ -127,7 +129,7 @@ class Map implements Drawable {
                                 textureCoordinates = new Vector2f(192, 352);
                                 break;
                             case 2:
-                                textureCoordinates = new Vector2f(480, 544);
+                                textureCoordinates = new Vector2f(480 + (int)(Math.random() * 3) * 32, 544);
                                 break;
                             case 3:
                                 textureCoordinates = new Vector2f(576, 544);
@@ -153,7 +155,8 @@ class Map implements Drawable {
     }
 
     public void update() {
-
+        sheetIndex += 0.1f;
+        sheetIndex = sheetIndex >= TILE_SHEETS.length ? 0 : sheetIndex;
     }
 
 
@@ -161,7 +164,7 @@ class Map implements Drawable {
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
         // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the start of the chunk.
         // Apply the tile sheet to the tiles.
-        RenderStates states = new RenderStates(TILE_SHEET);
+        RenderStates states = new RenderStates(TILE_SHEETS[(int)sheetIndex]);
         // Get the player's current position.
         Vector2f playerPosition = player.getPosition();
         // Get the window's current size.

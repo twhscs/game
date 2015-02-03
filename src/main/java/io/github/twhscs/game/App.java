@@ -2,10 +2,7 @@ package io.github.twhscs.game;
 
 import io.github.twhscs.game.util.Direction;
 import io.github.twhscs.game.util.ResourceManager;
-import org.jsfml.graphics.ConstView;
-import org.jsfml.graphics.FloatRect;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.View;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
@@ -33,14 +30,22 @@ class App {
         RESOURCE_MANAGER.loadImages(imageNames);
         // Set the window icon.
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
-        String[] textureNames = {"player", "tiles", "leviathan", "ryuk", "drax", "hulk"};
+        String[] textureNames = {"player", "tiles", "tiles2", "leviathan", "ryuk", "drax", "hulk"};
         RESOURCE_MANAGER.loadTextures(textureNames);
         String[] fontNames = {"free_mono", "free_sans", "free_serif"};
         RESOURCE_MANAGER.loadFonts(fontNames);
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
+        MAP = new Map(
+                100,
+                100,
+                TILE_SIZE,
+                ZOOM,
+                25,
+                new Texture[]{RESOURCE_MANAGER.getTexture("tiles"), RESOURCE_MANAGER.getTexture("tiles2")},
+                WINDOW
+        );
         MAP.setPlayer(PLAYER);
 
         // Start the main loop.
