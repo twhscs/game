@@ -23,6 +23,7 @@ class App {
     private final Player PLAYER;
 
     private App() {
+        // test
         WINDOW = new RenderWindow(new VideoMode(640, 480), "Game");
         DEFAULT_VIEW = WINDOW.getDefaultView();
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
