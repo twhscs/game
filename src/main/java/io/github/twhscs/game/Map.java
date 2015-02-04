@@ -18,15 +18,18 @@ class Map implements Drawable {
     private final Terrain[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
-    private final VertexArray[] VERTEX_ARRAYS;
-    private Player player;
+    private final VertexArray[][] VERTEX_ARRAYS;
     private final Terrain GRASS;
     private final Terrain WATER;
     private final Terrain SAND;
     private final Terrain SNOW;
+    private final int ANIMATION_FRAMES;
+    private final int ANIMATION_SPEED;
+    private Player player;
+    private int animationFrame;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
+    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
@@ -40,11 +43,15 @@ class Map implements Drawable {
         int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
-        VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
+        VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS][ANIMATION_FRAMES];
         GRASS = new Terrain(true, new Vector2f(0, 352), true);
-        WATER = new Terrain(false, new Vector2f(864, 160), false);
+        Vector2f[] waterFrames = {new Vector2f(864, 160), new Vector2f(896, 160), new Vector2f(928, 160)};
+        WATER = new Terrain(false, waterFrames, false);
         SAND = new Terrain(true, new Vector2f(576, 352), true);
         SNOW = new Terrain(true, new Vector2f(576, 544), true);
+        this.ANIMATION_FRAMES = ANIMATION_FRAMES;
+        this.ANIMATION_SPEED = ANIMATION_SPEED;
+        animationFrame = 0;
         // Load the tiles into the map.
         load();
     }
@@ -134,7 +141,9 @@ class Map implements Drawable {
         // Loop through each chunk.
         for (int chunkID = 0; chunkID < TOTAL_CHUNKS; chunkID++) {
             // Initialize the chunk's vertex array.
-            VERTEX_ARRAYS[chunkID] = new VertexArray(PrimitiveType.QUADS);
+            for (int i = 0; i < ANIMATION_FRAMES; i++) {
+                VERTEX_ARRAYS[chunkID][i] = new VertexArray(PrimitiveType.QUADS);
+            }
             // Get the top left corner of the current chunk.
             Vector2f position = chunkIDToPosition(chunkID);
             // Loop through the current chunk tile by tile.
@@ -145,56 +154,65 @@ class Map implements Drawable {
                         // Get the current tile.
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates = tile.getTextureCoordinates();
-                        // Create a vector for each corner of the texture.
-                        Vector2f[] positions = new Vector2f[4];
-                        // Set each corner.
-                        positions[0] = textureCoordinates;
-                        positions[1] = Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE));
-                        positions[2] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE));
-                        positions[3] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0));
-                        // Determine whether or not the tile is to be randomly rotated.
-                        boolean random = tile.isRandomized();
-                        boolean flipped = true;
-                        if (random) {
-                            // Randomly choose 1 - 3 rotations.
-                            int rotations = (int) (Math.random() * 3) + 1;
-                            // For each rotation shift the coordinates in a circular fashion.
-                            for (int k = 0; k < rotations; k++) {
-                                Vector2f temp;
-                                temp = positions[3];
-                                positions[3] = positions[2];
-                                positions[2] = positions[1];
-                                positions[1] = positions[0];
-                                positions[0] = temp;
+                        Vector2f[] textureCoordinates = tile.getTextureCoordinates();
+                        for (int frame = 0; frame < ANIMATION_FRAMES; frame++) {
+                            Vector2f animatedTexture;
+                            if (tile.getTextureCount() < ANIMATION_FRAMES) {
+                                animatedTexture = textureCoordinates[0];
+                            } else {
+                                animatedTexture = textureCoordinates[frame];
                             }
-                            // Randomly determine whether or not to flip with a 50-50 chance.
-                            flipped = (Math.random() < 0.5);
-                            if (flipped) {
-                                // If flipped, flip the texture coordinates.
-                                Vector2f temp;
-                                temp = positions[0];
-                                positions[0] = positions[1];
-                                positions[1] = temp;
-                                temp = positions[2];
-                                positions[2] = positions[3];
-                                positions[3] = temp;
+
+                            // Create a vector for each corner of the texture.
+                            Vector2f[] positions = new Vector2f[4];
+                            // Set each corner.
+                            positions[0] = animatedTexture;
+                            positions[1] = Vector2f.add(animatedTexture, new Vector2f(0, TILE_SIZE));
+                            positions[2] = Vector2f.add(animatedTexture, new Vector2f(TILE_SIZE, TILE_SIZE));
+                            positions[3] = Vector2f.add(animatedTexture, new Vector2f(TILE_SIZE, 0));
+                            // Determine whether or not the tile is to be randomly rotated.
+                            boolean random = tile.isRandomized();
+                            boolean flipped = true;
+                            if (random) {
+                                // Randomly choose 1 - 3 rotations.
+                                int rotations = (int) (Math.random() * 3) + 1;
+                                // For each rotation shift the coordinates in a circular fashion.
+                                for (int k = 0; k < rotations; k++) {
+                                    Vector2f temp;
+                                    temp = positions[3];
+                                    positions[3] = positions[2];
+                                    positions[2] = positions[1];
+                                    positions[1] = positions[0];
+                                    positions[0] = temp;
+                                }
+                                // Randomly determine whether or not to flip with a 50-50 chance.
+                                flipped = (Math.random() < 0.5);
+                                if (flipped) {
+                                    // If flipped, flip the texture coordinates.
+                                    Vector2f temp;
+                                    temp = positions[0];
+                                    positions[0] = positions[1];
+                                    positions[1] = temp;
+                                    temp = positions[2];
+                                    positions[2] = positions[3];
+                                    positions[3] = temp;
+                                }
                             }
+                            if (!tile.isRandomized() || flipped) {
+                                // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
+                                for (int k = 0; k < 4; k++) {
+                                    positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                                }
+                            }
+                            // Create and add a vertex for the bottom left corner of the tile.
+                            VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), positions[0]));
+                            // Create and add a vertex for the top left corner of the tile.
+                            VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[1]));
+                            // Create and add a vertex for the top right corner of the tile.
+                            VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[2]));
+                            // Create and add a vertex for the bottom right corner of the tile.
+                            VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), positions[3]));
                         }
-                        if (!tile.isRandomized() || flipped) {
-                            // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
-                            for (int k = 0; k < 4; k++) {
-                                positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
-                            }
-                        }
-                        // Create and add a vertex for the bottom left corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), positions[0]));
-                        // Create and add a vertex for the top left corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[1]));
-                        // Create and add a vertex for the top right corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[2]));
-                        // Create and add a vertex for the bottom right corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), positions[3]));
                     }
                 }
             }
@@ -202,12 +220,17 @@ class Map implements Drawable {
     }
 
     public void update() {
-
+        animationFrame++;
+        if (animationFrame + 1 >= ANIMATION_FRAMES * ANIMATION_SPEED) {
+            animationFrame = 0;
+        }
     }
 
 
     @Override
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
+        int adjustedFrame = Math.round((animationFrame * ANIMATION_FRAMES) / (ANIMATION_FRAMES * ANIMATION_SPEED));
+        System.out.println(adjustedFrame);
         // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the start of the chunk.
         // Apply the tile sheet to the tiles.
         RenderStates states = new RenderStates(TILE_SHEET);
@@ -233,7 +256,7 @@ class Map implements Drawable {
                 // If the chunk is valid and hasn't been drawn yet, draw it.
                 if (isValidChunkID(chunkID) && !renderedChunks.contains(chunkID)) {
                     // Draw the chunk vertex array with the tile sheet.
-                    VERTEX_ARRAYS[chunkID].draw(renderTarget, states);
+                    VERTEX_ARRAYS[chunkID][adjustedFrame].draw(renderTarget, states);
                     // Add the drawn chunk ID to the set to check against in order to save resources by not drawing it twice.
                     renderedChunks.add(chunkID);
                 }

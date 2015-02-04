@@ -1,15 +1,12 @@
 package io.github.twhscs.game;
 
 import io.github.twhscs.game.util.Direction;
-import io.github.twhscs.game.util.Position;
 import io.github.twhscs.game.util.ResourceManager;
 import org.jsfml.graphics.ConstView;
-import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
@@ -46,7 +43,7 @@ class App {
         String[] soundBufferNames = {};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW, TILE_SIZE, 4, 2);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
+        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, 3, 6);
         MAP.setPlayer(PLAYER);
 
         // Start the main loop.
