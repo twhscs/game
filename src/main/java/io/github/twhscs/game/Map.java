@@ -144,7 +144,7 @@ class Map implements Drawable {
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
                         Vector2f textureCoordinates = tile.getTEXTURE_COORDINATES();
-                        textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.01f, -0.01f));
+                        //textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.01f, -0.01f));
                         System.out.println(textureCoordinates);
                         Vector2f[] positions = new Vector2f[4];
                         positions[0] = textureCoordinates;
@@ -170,9 +170,9 @@ class Map implements Drawable {
                                 temp = positions[2];
                                 positions[2] = positions[3];
                                 positions[3] = temp;
-                            }
-                            for(int k = 0; k < 4; k++) {
-                                //positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                                for(int k = 0; k < 4; k++) {
+                                    positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                                }
                             }
                         }
                         /* {
