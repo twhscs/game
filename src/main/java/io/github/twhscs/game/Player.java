@@ -66,17 +66,12 @@ class Player implements Drawable {
         // Subtract half of the sprite width minus the tile size to center it horizontally.
         // Subtract the sprite height minus the tile size to center it vertically.
         Vector2f spritePosition = new Vector2f(position.x * TILE_SIZE - ((SPRITE_SIZE.x - TILE_SIZE) / 2.0f), position.y * TILE_SIZE - (SPRITE_SIZE.y - TILE_SIZE));
-        // Round the position to prevent graphical errors.
-       // spritePosition = Position.ceil(spritePosition);
         // Update the sprite's position.
         SPRITE.setPosition(spritePosition);
         // Apply the appropriate texture based on direction and animation.
         SPRITE.setTextureRect(getTextureRect());
-        // Add half of the sprite's width and height to the view in order to center the sprite.
+        // Add half of the sprite's width and height to the view in order to center the sprite and then round to prevent graphical errors.
         GAME_VIEW.setCenter(Position.round(Vector2f.add(spritePosition, Vector2f.div(new Vector2f(SPRITE_SIZE), 2.0f))));
-        // Round the view dimensions to integers to prevent rendering artifacts
-        //Vector2f viewSize = GAME_VIEW.getSize();
-        //GAME_VIEW.setSize(viewSize);
     }
 
     public void move(Direction direction) {
