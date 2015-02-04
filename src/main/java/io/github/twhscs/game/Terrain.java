@@ -2,8 +2,12 @@ package io.github.twhscs.game;
 
 import org.jsfml.system.Vector2f;
 
-// http://gameprogrammingpatterns.com/flyweight.html
 class Terrain {
+    /*
+    
+    See: http://gameprogrammingpatterns.com/flyweight.html
+    
+     */
     private final boolean TRAVERSABLE;
     private final Vector2f TEXTURE_COORDINATES;
     private final boolean RANDOMIZED;
@@ -14,15 +18,15 @@ class Terrain {
         this.RANDOMIZED = RANDOMIZED;
     }
 
-    public Vector2f getTEXTURE_COORDINATES() {
+    public Vector2f getTextureCoordinates() {
         return TEXTURE_COORDINATES;
     }
 
-    public boolean isTRAVERSABLE() {
+    public boolean isTraversable() {
         return TRAVERSABLE;
     }
 
-    public boolean isRANDOMIZED() {
+    public boolean isRandomized() {
         return RANDOMIZED;
     }
 }

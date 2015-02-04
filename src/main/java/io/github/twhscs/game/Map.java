@@ -113,6 +113,11 @@ class Map implements Drawable {
         return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
     }
 
+    public boolean isEmptyPosition(Vector2f position) {
+        return isValidPosition(position) && TILE_ARRAY[(int) position.x][(int) position.y].isTraversable();
+
+    }
+
     private void partition() {
         // TODO: Improve partitioning efficiency. Currently O(n^3).
 
@@ -140,7 +145,7 @@ class Map implements Drawable {
                         // Get the current tile.
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates = tile.getTEXTURE_COORDINATES();
+                        Vector2f textureCoordinates = tile.getTextureCoordinates();
                         // Create a vector for each corner of the texture.
                         Vector2f[] positions = new Vector2f[4];
                         // Set each corner.
@@ -149,7 +154,7 @@ class Map implements Drawable {
                         positions[2] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE));
                         positions[3] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0));
                         // Determine whether or not the tile is to be randomly rotated.
-                        boolean random = tile.isRANDOMIZED();
+                        boolean random = tile.isRandomized();
                         boolean flipped = true;
                         if (random) {
                             // Randomly choose 1 - 3 rotations.
@@ -176,7 +181,7 @@ class Map implements Drawable {
                                 positions[3] = temp;
                             }
                         }
-                        if (!tile.isRANDOMIZED() || flipped) {
+                        if (!tile.isRandomized() || flipped) {
                             // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
                             for (int k = 0; k < 4; k++) {
                                 positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
