@@ -1,12 +1,10 @@
 package io.github.twhscs.game;
 
-import io.github.twhscs.game.util.Position;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,8 +59,8 @@ class Map implements Drawable {
         // TODO: Add random terrain generation.
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
-               int k = (int) (Math.random() * 4);
-                switch(k) {
+                int k = (int) (Math.random() * 4);
+                switch (k) {
                     case 0:
                         TILE_ARRAY[i][j] = GRASS;
                         break;
@@ -143,14 +141,21 @@ class Map implements Drawable {
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
                         Vector2f textureCoordinates = tile.getTEXTURE_COORDINATES();
+                        // Create a vector for each corner of the texture.
                         Vector2f[] positions = new Vector2f[4];
+                        // Set each corner.
                         positions[0] = textureCoordinates;
                         positions[1] = Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE));
                         positions[2] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE));
                         positions[3] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0));
-                        if(tile.isRANDOMIZED()) {
+                        // Determine whether or not the tile is to be randomly rotated.
+                        boolean random = tile.isRANDOMIZED();
+                        boolean flipped = true;
+                        if (random) {
+                            // Randomly choose 1 - 3 rotations.
                             int rotations = (int) (Math.random() * 3) + 1;
-                            for(int k = 0; k < rotations; k++) {
+                            // For each rotation shift the coordinates in a circular fashion.
+                            for (int k = 0; k < rotations; k++) {
                                 Vector2f temp;
                                 temp = positions[3];
                                 positions[3] = positions[2];
@@ -158,8 +163,10 @@ class Map implements Drawable {
                                 positions[1] = positions[0];
                                 positions[0] = temp;
                             }
-                            boolean flipped = (Math.random() < 0.5);
-                            if(flipped) {
+                            // Randomly determine whether or not to flip with a 50-50 chance.
+                            flipped = (Math.random() < 0.5);
+                            if (flipped) {
+                                // If flipped, flip the texture coordinates.
                                 Vector2f temp;
                                 temp = positions[0];
                                 positions[0] = positions[1];
@@ -167,14 +174,11 @@ class Map implements Drawable {
                                 temp = positions[2];
                                 positions[2] = positions[3];
                                 positions[3] = temp;
-                                // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
-                                for(int k = 0; k < 4; k++) {
-                                    positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
-                                }
                             }
-                        } else {
+                        }
+                        if (!tile.isRANDOMIZED() || flipped) {
                             // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
-                            for(int k = 0; k < 4; k++) {
+                            for (int k = 0; k < 4; k++) {
                                 positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
                             }
                         }
