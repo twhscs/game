@@ -107,7 +107,7 @@ class App {
             if (frameTime >= 1.0) {
                 // FPS = frames per second.
                 int fps = (int) (framesDrawn / frameTime);
-//                System.out.println("FPS: " + fps);
+                System.out.println("FPS: " + fps);
                 framesDrawn = 0;
                 frameTime = 0.0f;
             }
@@ -123,7 +123,6 @@ class App {
                 case RESIZED:
                     GAME_VIEW.setSize(new Vector2f(event.asSizeEvent().size));
                     GAME_VIEW.zoom(ZOOM);
-                    //GAME_VIEW.setSize(Position.round(GAME_VIEW.getSize()));
                     PLAYER.updateSprite();
                     break;
                 case KEY_PRESSED:
@@ -146,7 +145,6 @@ class App {
     private void update() {
         MAP.update();
         PLAYER.update();
-        System.out.println(GAME_VIEW.getSize());
     }
 
     private void render(float positionBetweenUpdates) {

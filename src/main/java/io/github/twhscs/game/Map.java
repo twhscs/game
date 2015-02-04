@@ -61,7 +61,7 @@ class Map implements Drawable {
         // TODO: Add random terrain generation.
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
-               /* int k = (int) (Math.random() * 4);
+               int k = (int) (Math.random() * 4);
                 switch(k) {
                     case 0:
                         TILE_ARRAY[i][j] = GRASS;
@@ -75,8 +75,7 @@ class Map implements Drawable {
                     case 3:
                         TILE_ARRAY[i][j] = SNOW;
                         break;
-                }*/
-                TILE_ARRAY[i][j] = GRASS;
+                }
             }
         }
         // Divide the map into smaller chunks.
@@ -144,8 +143,6 @@ class Map implements Drawable {
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
                         Vector2f textureCoordinates = tile.getTEXTURE_COORDINATES();
-                        //textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.01f, -0.01f));
-                        System.out.println(textureCoordinates);
                         Vector2f[] positions = new Vector2f[4];
                         positions[0] = textureCoordinates;
                         positions[1] = Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE));
@@ -170,19 +167,17 @@ class Map implements Drawable {
                                 temp = positions[2];
                                 positions[2] = positions[3];
                                 positions[3] = temp;
+                                // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
                                 for(int k = 0; k < 4; k++) {
                                     positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
                                 }
                             }
-                        }
-                        /* {
+                        } else {
                             // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
-                            positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
-                        }*/
-                        /*for(int k = 0; k < 4; k++) {
-                            positions[k] = Position.round(positions[k]);
-                        }*/
-                        System.out.println(Arrays.toString(positions));
+                            for(int k = 0; k < 4; k++) {
+                                positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                            }
+                        }
                         // Create and add a vertex for the bottom left corner of the tile.
                         VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), positions[0]));
                         // Create and add a vertex for the top left corner of the tile.

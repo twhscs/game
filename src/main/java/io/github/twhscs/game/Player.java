@@ -70,7 +70,6 @@ class Player implements Drawable {
        // spritePosition = Position.ceil(spritePosition);
         // Update the sprite's position.
         SPRITE.setPosition(spritePosition);
-        System.out.println(SPRITE.getPosition());
         // Apply the appropriate texture based on direction and animation.
         SPRITE.setTextureRect(getTextureRect());
         // Add half of the sprite's width and height to the view in order to center the sprite.
