@@ -1,10 +1,12 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.util.Position;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,11 +17,15 @@ class Map implements Drawable {
     private final int CHUNK_SIZE;
     private final Texture TILE_SHEET;
     private final RenderWindow WINDOW;
-    private final int[][] TILE_ARRAY;
+    private final Terrain[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
     private Player player;
+    private final Terrain GRASS;
+    private final Terrain WATER;
+    private final Terrain SAND;
+    private final Terrain SNOW;
 
 
     Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
@@ -29,7 +35,7 @@ class Map implements Drawable {
         this.CHUNK_SIZE = CHUNK_SIZE;
         this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
-        TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
+        TILE_ARRAY = new Terrain[DIMENSIONS.x][DIMENSIONS.y];
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         // Calculate the amount of vertical chunks.
@@ -37,6 +43,10 @@ class Map implements Drawable {
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
+        GRASS = new Terrain(true, new Vector2f(0, 352), true);
+        WATER = new Terrain(false, new Vector2f(864, 160), false);
+        SAND = new Terrain(true, new Vector2f(576, 352), true);
+        SNOW = new Terrain(true, new Vector2f(576, 544), true);
         // Load the tiles into the map.
         load();
     }
@@ -51,7 +61,22 @@ class Map implements Drawable {
         // TODO: Add random terrain generation.
         for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
-                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
+               /* int k = (int) (Math.random() * 4);
+                switch(k) {
+                    case 0:
+                        TILE_ARRAY[i][j] = GRASS;
+                        break;
+                    case 1:
+                        TILE_ARRAY[i][j] = WATER;
+                        break;
+                    case 2:
+                        TILE_ARRAY[i][j] = SAND;
+                        break;
+                    case 3:
+                        TILE_ARRAY[i][j] = SNOW;
+                        break;
+                }*/
+                TILE_ARRAY[i][j] = GRASS;
             }
         }
         // Divide the map into smaller chunks.
@@ -116,36 +141,56 @@ class Map implements Drawable {
                     // Make sure the current tile is valid.
                     if (isValidPosition(new Vector2f(i, j))) {
                         // Get the current tile.
-                        int tile = TILE_ARRAY[i][j];
+                        final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates;
-                        switch (tile) {
-                            case 0:
-                                textureCoordinates = new Vector2f(576, 352);
-                                break;
-                            case 1:
-                                textureCoordinates = new Vector2f(192, 352);
-                                break;
-                            case 2:
-                                textureCoordinates = new Vector2f(480, 544);
-                                break;
-                            case 3:
-                                textureCoordinates = new Vector2f(576, 544);
-                                break;
-                            default:
-                                textureCoordinates = new Vector2f(0, 0);
-                                break;
+                        Vector2f textureCoordinates = tile.getTEXTURE_COORDINATES();
+                        textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.01f, -0.01f));
+                        System.out.println(textureCoordinates);
+                        Vector2f[] positions = new Vector2f[4];
+                        positions[0] = textureCoordinates;
+                        positions[1] = Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE));
+                        positions[2] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE));
+                        positions[3] = Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0));
+                        if(tile.isRANDOMIZED()) {
+                            int rotations = (int) (Math.random() * 3) + 1;
+                            for(int k = 0; k < rotations; k++) {
+                                Vector2f temp;
+                                temp = positions[3];
+                                positions[3] = positions[2];
+                                positions[2] = positions[1];
+                                positions[1] = positions[0];
+                                positions[0] = temp;
+                            }
+                            boolean flipped = (Math.random() < 0.5);
+                            if(flipped) {
+                                Vector2f temp;
+                                temp = positions[0];
+                                positions[0] = positions[1];
+                                positions[1] = temp;
+                                temp = positions[2];
+                                positions[2] = positions[3];
+                                positions[3] = temp;
+                            }
+                            for(int k = 0; k < 4; k++) {
+                                //positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                            }
                         }
-                        // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
-                        textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.0f, -0.01f));
+                        /* {
+                            // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
+                            positions[k] = Vector2f.add(positions[k], new Vector2f(0.01f, -0.01f));
+                        }*/
+                        /*for(int k = 0; k < 4; k++) {
+                            positions[k] = Position.round(positions[k]);
+                        }*/
+                        System.out.println(Arrays.toString(positions));
                         // Create and add a vertex for the bottom left corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), textureCoordinates));
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), positions[0]));
                         // Create and add a vertex for the top left corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE))));
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[1]));
                         // Create and add a vertex for the top right corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE))));
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[2]));
                         // Create and add a vertex for the bottom right corner of the tile.
-                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0))));
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), positions[3]));
                     }
                 }
             }
