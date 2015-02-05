@@ -1,5 +1,6 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.util.Terrain;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -13,25 +14,24 @@ class Map implements Drawable {
     private final int TILE_SIZE;
     private final float ZOOM;
     private final int CHUNK_SIZE;
-    private final Texture[] TILE_SHEETS;
+    private final Texture TILE_SHEET;
     private final RenderWindow WINDOW;
     private final int[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
     private Player player;
-    private float sheetIndex;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture[] TILE_SHEETS, RenderWindow WINDOW) {
+    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
         this.CHUNK_SIZE = CHUNK_SIZE;
-        this.TILE_SHEETS = TILE_SHEETS;
+        this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
-        sheetIndex = 0;
-        TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
+        //TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
+        TILE_ARRAY = Terrain.generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 3);
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         // Calculate the amount of vertical chunks.
@@ -51,11 +51,11 @@ class Map implements Drawable {
     private void load() {
         // Initialize each tile with a random number for now.
         // TODO: Add random terrain generation.
-        for (int i = 0; i < DIMENSIONS.x; i++) {
+        /*for (int i = 0; i < DIMENSIONS.x; i++) {
             for (int j = 0; j < DIMENSIONS.y; j++) {
                 TILE_ARRAY[i][j] = (int) (Math.random() * 4);
             }
-        }
+        }*/
         // Divide the map into smaller chunks.
         partition();
     }
@@ -155,8 +155,6 @@ class Map implements Drawable {
     }
 
     public void update() {
-        sheetIndex += 0.1f;
-        sheetIndex = sheetIndex >= TILE_SHEETS.length ? 0 : sheetIndex;
     }
 
 
@@ -164,7 +162,7 @@ class Map implements Drawable {
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
         // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the start of the chunk.
         // Apply the tile sheet to the tiles.
-        RenderStates states = new RenderStates(TILE_SHEETS[(int)sheetIndex]);
+        RenderStates states = new RenderStates(TILE_SHEET);
         // Get the player's current position.
         Vector2f playerPosition = player.getPosition();
         // Get the window's current size.

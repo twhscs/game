@@ -11,7 +11,7 @@ import org.jsfml.window.event.Event;
 
 class App {
     private final int TILE_SIZE = 32;
-    private final float ZOOM = 0.5f;
+    private final float ZOOM = 3f;
     private final RenderWindow WINDOW;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
@@ -30,7 +30,7 @@ class App {
         RESOURCE_MANAGER.loadImages(imageNames);
         // Set the window icon.
         WINDOW.setIcon(RESOURCE_MANAGER.getImage("icon"));
-        String[] textureNames = {"player", "tiles", "tiles2", "leviathan", "ryuk", "drax", "hulk"};
+        String[] textureNames = {"player", "tiles", "leviathan", "ryuk", "drax", "hulk"};
         RESOURCE_MANAGER.loadTextures(textureNames);
         String[] fontNames = {"free_mono", "free_sans", "free_serif"};
         RESOURCE_MANAGER.loadFonts(fontNames);
@@ -43,7 +43,7 @@ class App {
                 TILE_SIZE,
                 ZOOM,
                 25,
-                new Texture[]{RESOURCE_MANAGER.getTexture("tiles"), RESOURCE_MANAGER.getTexture("tiles2")},
+                RESOURCE_MANAGER.getTexture("tiles"),
                 WINDOW
         );
         MAP.setPlayer(PLAYER);
