@@ -43,7 +43,7 @@ class App {
         String[] soundBufferNames = {};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("player"), GAME_VIEW, TILE_SIZE, 4, 2);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, 3, 6);
+        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW, 3, 10);
         MAP.setPlayer(PLAYER);
 
         // Start the main loop.

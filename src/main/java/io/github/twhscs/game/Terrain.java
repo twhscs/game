@@ -9,20 +9,18 @@ class Terrain {
     
      */
     private final boolean TRAVERSABLE;
-    private final Vector2f[] TEXTURE_COORDINATES;
+    private final Vector2f TEXTURE_COORDINATES;
     private final boolean RANDOMIZED;
+    private final boolean ANIMATED;
 
-    public Terrain(boolean TRAVERSABLE, Vector2f[] TEXTURE_COORDINATES, boolean RANDOMIZED) {
+    public Terrain(boolean TRAVERSABLE, Vector2f TEXTURE_COORDINATES, boolean RANDOMIZED, boolean ANIMATED) {
         this.TRAVERSABLE = TRAVERSABLE;
         this.TEXTURE_COORDINATES = TEXTURE_COORDINATES;
         this.RANDOMIZED = RANDOMIZED;
+        this.ANIMATED = ANIMATED;
     }
 
-    public Terrain(boolean TRAVERSABLE, Vector2f TEXTURE_COORDINATES, boolean RANDOMIZED) {
-        this(TRAVERSABLE, new Vector2f[]{TEXTURE_COORDINATES}, RANDOMIZED);
-    }
-
-    public Vector2f[] getTextureCoordinates() {
+    public Vector2f getTextureCoordinates() {
         return TEXTURE_COORDINATES;
     }
 
@@ -34,7 +32,7 @@ class Terrain {
         return RANDOMIZED;
     }
 
-    public int getTextureCount() {
-        return TEXTURE_COORDINATES.length;
+    public boolean isAnimated() {
+        return ANIMATED;
     }
 }
