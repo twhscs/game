@@ -1,5 +1,7 @@
 Game
 ====
+A 2D tile-based RPG inspired by classic games and written in Java by three High School classmates.
+
 **NOTE:** Mac OS X currently unsupported due to a limitation of the JSFML library.
 
 Team
