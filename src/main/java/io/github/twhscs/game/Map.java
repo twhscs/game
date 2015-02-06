@@ -31,7 +31,7 @@ class Map implements Drawable {
         this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
         //TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
-        TILE_ARRAY = Terrain.generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 3);
+        TILE_ARRAY = Terrain.generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 5);
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         // Calculate the amount of vertical chunks.
