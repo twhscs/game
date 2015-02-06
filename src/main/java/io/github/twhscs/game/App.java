@@ -11,7 +11,7 @@ import org.jsfml.window.event.Event;
 
 class App {
     private final int TILE_SIZE = 32;
-    private final float ZOOM = 3f;
+    private final float ZOOM = 5f;
     private final RenderWindow WINDOW;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
