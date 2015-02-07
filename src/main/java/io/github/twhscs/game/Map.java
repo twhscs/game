@@ -132,7 +132,7 @@ class Map implements Drawable {
                                 textureCoordinates = new Vector2f(480 + (int)(Math.random() * 3) * 32, 544);
                                 break;
                             case 3:
-                                textureCoordinates = new Vector2f(576, 544);
+                                textureCoordinates = new Vector2f(576, 544); //Water must always stay as the last case.
                                 break;
                             default:
                                 textureCoordinates = new Vector2f(0, 0);
