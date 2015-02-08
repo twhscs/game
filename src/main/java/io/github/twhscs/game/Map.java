@@ -8,8 +8,21 @@ import org.jsfml.system.Vector2i;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 class Map implements Drawable {
+    private final Vector2f[] TILE_TEXTURES = new Vector2f[] {
+            new Vector2f(576, 352),
+            new Vector2f(192, 352),
+            new Vector2f(480, 544),
+            new Vector2f(576, 544)
+    };
+    private final Vector2f[] TILE_ORIGINS = new Vector2f[] {
+            new Vector2f(576, 256),
+            new Vector2f(192, 256),
+            new Vector2f(480, 448),
+            new Vector2f(576, 448)
+    };
     private final Vector2i DIMENSIONS;
     private final int TILE_SIZE;
     private final float ZOOM;
@@ -119,25 +132,24 @@ class Map implements Drawable {
                     if (isValidPosition(new Vector2f(i, j))) {
                         // Get the current tile.
                         int tile = TILE_ARRAY[i][j];
+                        // Get the up index
+                        int ui = j > 0 ? j - 1 : 0;
+                        // Get the down index
+                        int di = j < DIMENSIONS.y - 1 ? j + 1 : DIMENSIONS.y - 1;
+                        // Get the left index
+                        int li = i > 0 ? i - 1 : 0;
+                        // Get the right index
+                        int ri = i < DIMENSIONS.x - 1 ? i + 1 : DIMENSIONS.x - 1;
+                        // Get the up tile
+                        int up_tile = TILE_ARRAY[i][ui];
+                        // Get the down tile
+                        int down_tile = TILE_ARRAY[i][di];
+                        // Get the left tile
+                        int left_tile = TILE_ARRAY[li][j];
+                        // Get the right tile
+                        int right_tile = TILE_ARRAY[ri][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates;
-                        switch (tile) {
-                            case 0:
-                                textureCoordinates = new Vector2f(576, 352);
-                                break;
-                            case 1:
-                                textureCoordinates = new Vector2f(192, 352);
-                                break;
-                            case 2:
-                                textureCoordinates = new Vector2f(480 + (int)(Math.random() * 3) * 32, 544);
-                                break;
-                            case 3:
-                                textureCoordinates = new Vector2f(576, 544); //Water must always stay as the last case.
-                                break;
-                            default:
-                                textureCoordinates = new Vector2f(0, 0);
-                                break;
-                        }
+                        Vector2f textureCoordinates = TILE_TEXTURES[tile];
                         // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
                         textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.0f, -0.01f));
                         // Create and add a vertex for the bottom left corner of the tile.
