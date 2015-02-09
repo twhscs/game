@@ -16,7 +16,7 @@ public class Perlin {
         //Generate base noise
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                if ((y < 10 || y > h - 10) || (x < 10 || x > w - 10))
+                if ((y < h/10 || y > h - h/10) || (x < w/10 || x > w - w/10))
                     noise[x][y] = 0.9999f;
                 else
                     noise[x][y] = (float) Math.random();

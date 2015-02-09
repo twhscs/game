@@ -1,6 +1,6 @@
 package io.github.twhscs.game;
 
-import io.github.twhscs.game.util.Terrain;
+import io.github.twhscs.game.util.Perlin;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -8,31 +8,22 @@ import org.jsfml.system.Vector2i;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 class Map implements Drawable {
-    private final Vector2f[] TILE_TEXTURES = new Vector2f[] {
-            new Vector2f(576, 352),
-            new Vector2f(192, 352),
-            new Vector2f(480, 544),
-            new Vector2f(576, 544)
-    };
-    private final Vector2f[] TILE_ORIGINS = new Vector2f[] {
-            new Vector2f(576, 256),
-            new Vector2f(192, 256),
-            new Vector2f(480, 448),
-            new Vector2f(576, 448)
-    };
     private final Vector2i DIMENSIONS;
     private final int TILE_SIZE;
     private final float ZOOM;
     private final int CHUNK_SIZE;
     private final Texture TILE_SHEET;
     private final RenderWindow WINDOW;
-    private final int[][] TILE_ARRAY;
+    private final Terrain[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
+    private final Terrain GRASS;
+    private final Terrain WATER;
+    private final Terrain SAND;
+    private final Terrain SNOW;
     private Player player;
 
 
@@ -43,14 +34,17 @@ class Map implements Drawable {
         this.CHUNK_SIZE = CHUNK_SIZE;
         this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
-        //TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
-        TILE_ARRAY = Terrain.generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 5);
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         // Calculate the amount of vertical chunks.
         int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
+        GRASS = new Terrain(true, new Vector2f(0, 352), true, false);
+        WATER = new Terrain(false, new Vector2f(864, 160), false, true);
+        SAND = new Terrain(true, new Vector2f(576, 352), true, false);
+        SNOW = new Terrain(true, new Vector2f(576, 544), true, false);
+        TILE_ARRAY = generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 5);
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
         load();
@@ -61,14 +55,24 @@ class Map implements Drawable {
         player.setMap(this);
     }
 
-    private void load() {
-        // Initialize each tile with a random number for now.
-        // TODO: Add random terrain generation.
-        /*for (int i = 0; i < DIMENSIONS.x; i++) {
-            for (int j = 0; j < DIMENSIONS.y; j++) {
-                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
+    private Terrain[][] generateMap(int w, int h, int min, int max, int octaves) {
+        float[][] noise = Perlin.getNoise(w, h, octaves);
+        Terrain[][] map = new Terrain[w][h];
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                //map[x][y] = (int) (noise[x][y] * (max - min) + min);
+                if (noise[x][y] > 0.8f)
+                    map[x][y] = WATER;
+                else if (noise[x][y] > 0.6f)
+                    map[x][y] = SAND;
+                else
+                    map[x][y] = GRASS;
             }
-        }*/
+        }
+        return map;
+    }
+
+    private void load() {
         // Divide the map into smaller chunks.
         partition();
     }
@@ -131,7 +135,7 @@ class Map implements Drawable {
                     // Make sure the current tile is valid.
                     if (isValidPosition(new Vector2f(i, j))) {
                         // Get the current tile.
-                        int tile = TILE_ARRAY[i][j];
+                        final Terrain tile = TILE_ARRAY[i][j];
                         // Get the up index
                         int ui = j > 0 ? j - 1 : 0;
                         // Get the down index
@@ -140,16 +144,16 @@ class Map implements Drawable {
                         int li = i > 0 ? i - 1 : 0;
                         // Get the right index
                         int ri = i < DIMENSIONS.x - 1 ? i + 1 : DIMENSIONS.x - 1;
-                        // Get the up tile
-                        int up_tile = TILE_ARRAY[i][ui];
-                        // Get the down tile
-                        int down_tile = TILE_ARRAY[i][di];
-                        // Get the left tile
-                        int left_tile = TILE_ARRAY[li][j];
-                        // Get the right tile
-                        int right_tile = TILE_ARRAY[ri][j];
+                        // Get the tile above
+                        final Terrain up_tile = TILE_ARRAY[i][ui];
+                        // Get the tile below
+                        final Terrain down_tile = TILE_ARRAY[i][di];
+                        // Get the tile to the left
+                        final Terrain left_tile = TILE_ARRAY[li][j];
+                        // Get the tile to the right
+                        final Terrain right_tile = TILE_ARRAY[ri][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates = TILE_TEXTURES[tile];
+                        Vector2f textureCoordinates = tile.getTextureCoordinates();
                         // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
                         textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.0f, -0.01f));
                         // Create and add a vertex for the bottom left corner of the tile.
