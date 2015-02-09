@@ -44,7 +44,7 @@ class Map implements Drawable {
         WATER = new Terrain(false, new Vector2f(864, 160), false, true);
         SAND = new Terrain(true, new Vector2f(576, 352), true, false);
         SNOW = new Terrain(true, new Vector2f(576, 544), true, false);
-        TILE_ARRAY = generateMap(DIMENSIONS.x, DIMENSIONS.y, 0, 3, 5);
+        TILE_ARRAY = generateTerrain(DIMENSIONS.x, DIMENSIONS.y, 4);
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
         load();
@@ -55,12 +55,11 @@ class Map implements Drawable {
         player.setMap(this);
     }
 
-    private Terrain[][] generateMap(int w, int h, int min, int max, int octaves) {
+    private Terrain[][] generateTerrain(int w, int h, int octaves) {
         float[][] noise = Perlin.getNoise(w, h, octaves);
         Terrain[][] map = new Terrain[w][h];
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                //map[x][y] = (int) (noise[x][y] * (max - min) + min);
                 if (noise[x][y] > 0.8f)
                     map[x][y] = WATER;
                 else if (noise[x][y] > 0.6f)
