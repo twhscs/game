@@ -44,7 +44,7 @@ class Map implements Drawable {
         WATER = new Terrain(false, new Vector2f(864, 160), false, true);
         SAND = new Terrain(true, new Vector2f(576, 352), true, false);
         SNOW = new Terrain(true, new Vector2f(576, 544), true, false);
-        TILE_ARRAY = generateTerrain(DIMENSIONS.x, DIMENSIONS.y, 4);
+        TILE_ARRAY = generateTerrain(DIMENSIONS.x, DIMENSIONS.y, 3);
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
         load();

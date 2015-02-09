@@ -28,7 +28,7 @@ public class Perlin {
 
         // For each octave generate smooth noise
         for (int i = 0; i < o; i++) {
-            final int period = 1 << o;
+            int period = 1 << o;
             float frequency = 1.0f / period;
             for (int x = 0; x < w; x++) {
                 int x0 = (x / period) * period;
