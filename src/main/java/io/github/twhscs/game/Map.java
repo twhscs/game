@@ -92,8 +92,20 @@ class Map implements Drawable {
         return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
     }
 
+    public boolean isOccupiedPosition(Vector2f position) {
+        if (player != null && position.equals(player.getPosition())) {
+            return true;
+        }
+        for (Entity e : ENTITIES) {
+            if (position.equals(e.getPosition())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isValidPosition(Vector2f position) {
-        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
+        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y && !isOccupiedPosition(position);
     }
 
     private void partition() {
