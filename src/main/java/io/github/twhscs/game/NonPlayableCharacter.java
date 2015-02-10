@@ -78,6 +78,8 @@ class NonPlayableCharacter extends Entity implements Drawable {
 
     @Override
     public void update() {
+        //This randomly chooses when and where to move
+        //We will hopefully replace this with path finding or something more advanced
         randomlyChooseMove();
         // Check if the player is moving.
         if (animating) {
