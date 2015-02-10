@@ -55,6 +55,12 @@ class NonPlayableCharacter extends Entity implements Drawable {
         SPRITE.setTextureRect(getTextureRect());
     }
 
+    public void randomlyChooseMove() {
+        if ((int)(Math.random() * 25) == 1) {
+            this.move(Direction.getRandomCardinalDirection());
+        }
+    }
+
     public void move(Direction direction) {
         // TODO: Allow for faster movement. (Do not have to wait until current move is finished before initiating next move.)
         // Only move the player if they are not already moving.
@@ -72,6 +78,7 @@ class NonPlayableCharacter extends Entity implements Drawable {
 
     @Override
     public void update() {
+        randomlyChooseMove();
         // Check if the player is moving.
         if (animating) {
             // Move the player by the animation step.

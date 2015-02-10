@@ -7,7 +7,6 @@ import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
@@ -130,6 +129,9 @@ class App {
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.zoom(ZOOM);
                     PLAYER.updateSprite();
+                    for (Entity e : ENTITIES) {
+                        e.updateSprite();
+                    }
                     break;
                 case KEY_PRESSED:
                     switch (event.asKeyEvent().key) {
