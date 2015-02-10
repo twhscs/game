@@ -41,6 +41,7 @@ class NonPlayableCharacter extends Entity implements Drawable {
                 '}';
     }
 
+    @Override
     public void updateSprite() {
         // Calculate the sprite position by multiplying the map position by the tile size.
         // Subtract half of the sprite width minus the tile size to center it horizontally.
@@ -69,6 +70,7 @@ class NonPlayableCharacter extends Entity implements Drawable {
         }
     }
 
+    @Override
     public void update() {
         // Check if the player is moving.
         if (animating) {

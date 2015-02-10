@@ -4,9 +4,7 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Map implements Drawable {
     private final Vector2i DIMENSIONS;
@@ -19,6 +17,7 @@ class Map implements Drawable {
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
+    private final List<Entity> ENTITIES;
     private Player player;
 
 
@@ -37,8 +36,14 @@ class Map implements Drawable {
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
+        ENTITIES = new ArrayList<Entity>();
         // Load the tiles into the map.
         load();
+    }
+
+    public void setEntity(Entity entity) {
+        ENTITIES.add(entity);
+        entity.setMap(this);
     }
 
     public void setPlayer(Player player) {
@@ -152,8 +157,14 @@ class Map implements Drawable {
         }
     }
 
-    public void update() {
+    public void updateEntities() {
+        for (Entity e : ENTITIES) {
+            e.update();
+        }
+    }
 
+    public void update() {
+        updateEntities();
     }
 
 
@@ -189,6 +200,9 @@ class Map implements Drawable {
                     renderedChunks.add(chunkID);
                 }
             }
+        }
+        for (Entity e : ENTITIES) {
+            WINDOW.draw(e);
         }
     }
 }

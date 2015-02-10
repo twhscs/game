@@ -7,10 +7,14 @@ import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class App {
     private final int TILE_SIZE = 32;
@@ -21,6 +25,7 @@ class App {
     private final ResourceManager RESOURCE_MANAGER;
     private final Map MAP;
     private final Player PLAYER;
+    private final List<Entity> ENTITIES;
 
     private App() {
         WINDOW = new RenderWindow(new VideoMode(640, 480), "Game");
@@ -40,9 +45,15 @@ class App {
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
+        ENTITIES = new ArrayList<Entity>();
+        ENTITIES.add(
+                new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
+        );
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
-
+        for (Entity e : ENTITIES) {
+            MAP.setEntity(e);
+        }
         // Start the main loop.
         run();
     }
