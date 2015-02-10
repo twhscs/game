@@ -10,8 +10,6 @@ import java.util.List;
 public enum Direction {
     NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST;
 
-    private static List<Direction> CARDINALS = Arrays.asList(NORTH, SOUTH, EAST, WEST);
-
     /**
      * Gets the opposite of a direction.
      *
@@ -54,6 +52,6 @@ public enum Direction {
      * @return a random cardinal direction.
      */
     public static Direction getRandomCardinalDirection() {
-        return CARDINALS.get((int)(Math.random() * CARDINALS.size()));
+        return Direction.values()[(int)(Math.random() * 4)];
     }
 }
