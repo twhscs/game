@@ -44,7 +44,7 @@ class Map implements Drawable {
         WATER = new Terrain(false, new Vector2f(864, 160), false, true);
         SAND = new Terrain(true, new Vector2f(576, 352), true, false);
         SNOW = new Terrain(true, new Vector2f(576, 544), true, false);
-        TILE_ARRAY = generateTerrain(DIMENSIONS.x, DIMENSIONS.y, 3);
+        TILE_ARRAY = generateTerrain(3);
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
         load();
@@ -55,11 +55,11 @@ class Map implements Drawable {
         player.setMap(this);
     }
 
-    private Terrain[][] generateTerrain(int w, int h, int octaves) {
-        float[][] noise = Perlin.getNoise(w, h, octaves);
-        Terrain[][] map = new Terrain[w][h];
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
+    private Terrain[][] generateTerrain(int octaves) {
+        float[][] noise = Perlin.getNoise(DIMENSIONS, octaves);
+        Terrain[][] map = new Terrain[DIMENSIONS.x][DIMENSIONS.y];
+        for (int x = 0; x < DIMENSIONS.x; x++) {
+            for (int y = 0; y < DIMENSIONS.y; y++) {
                 if (noise[x][y] > 0.8f)
                     map[x][y] = WATER;
                 else if (noise[x][y] > 0.6f)
@@ -135,22 +135,6 @@ class Map implements Drawable {
                     if (isValidPosition(new Vector2f(i, j))) {
                         // Get the current tile.
                         final Terrain tile = TILE_ARRAY[i][j];
-                        // Get the up index
-                        int ui = j > 0 ? j - 1 : 0;
-                        // Get the down index
-                        int di = j < DIMENSIONS.y - 1 ? j + 1 : DIMENSIONS.y - 1;
-                        // Get the left index
-                        int li = i > 0 ? i - 1 : 0;
-                        // Get the right index
-                        int ri = i < DIMENSIONS.x - 1 ? i + 1 : DIMENSIONS.x - 1;
-                        // Get the tile above
-                        final Terrain up_tile = TILE_ARRAY[i][ui];
-                        // Get the tile below
-                        final Terrain down_tile = TILE_ARRAY[i][di];
-                        // Get the tile to the left
-                        final Terrain left_tile = TILE_ARRAY[li][j];
-                        // Get the tile to the right
-                        final Terrain right_tile = TILE_ARRAY[ri][j];
                         // Get the correct texture for the current tile.
                         Vector2f textureCoordinates = tile.getTextureCoordinates();
                         // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0

@@ -38,7 +38,6 @@ class App {
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
-        PLAYER.setPosition(new Vector2f(50,50));
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
 
