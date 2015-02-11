@@ -24,7 +24,6 @@ class App {
     private final ResourceManager RESOURCE_MANAGER;
     private final Map MAP;
     private final Player PLAYER;
-    private final List<Entity> ENTITIES;
 
     private App() {
         WINDOW = new RenderWindow(new VideoMode(640, 480), "Game");
@@ -44,15 +43,12 @@ class App {
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
-        ENTITIES = new ArrayList<Entity>();
-        ENTITIES.add(
-                new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
-        );
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
-        for (Entity e : ENTITIES) {
-            MAP.setEntity("test", e);
-        }
+        MAP.setEntity(
+                "Test",
+                new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
+        );
         // Start the main loop.
         run();
     }
@@ -129,9 +125,7 @@ class App {
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.zoom(ZOOM);
                     PLAYER.updateSprite();
-                    for (Entity e : ENTITIES) {
-                        e.updateSprite();
-                    }
+                    MAP.updateSprites();
                     break;
                 case KEY_PRESSED:
                     switch (event.asKeyEvent().key) {

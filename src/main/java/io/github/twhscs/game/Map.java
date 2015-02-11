@@ -46,6 +46,10 @@ class Map implements Drawable {
         entity.setMap(this);
     }
 
+    public Entity getEntity(String name) {
+        return ENTITIES.get(name);
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
         player.setMap(this);
@@ -172,6 +176,12 @@ class Map implements Drawable {
     public void updateEntities() {
         for (Entity e : ENTITIES.values()) {
             e.update();
+        }
+    }
+
+    public void updateSprites() {
+        for (Entity e : ENTITIES.values()) {
+            e.updateSprite();
         }
     }
 
