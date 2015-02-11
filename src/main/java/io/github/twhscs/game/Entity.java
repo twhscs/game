@@ -13,10 +13,12 @@ abstract class Entity implements Drawable {
     protected Direction direction;
     protected Map map;
 
-    Entity() {
-        SPRITE = new Sprite();
+    Entity(Texture entityTexture, int TILE_SIZE) {
+        this.SPRITE = new Sprite(entityTexture);
+        this.TILE_SIZE = TILE_SIZE;
         SPRITE_SIZE = new Vector2i(0,0);
-        TILE_SIZE = 0;
+        position = new Vector2f(0.0f, 0.0f);
+        direction = Direction.NORTH;
     }
 
     public Vector2f getPosition() {

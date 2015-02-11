@@ -12,9 +12,6 @@ import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class App {
     private final int TILE_SIZE = 32;
     private final float ZOOM = 0.5f;
