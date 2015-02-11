@@ -15,7 +15,7 @@ import org.jsfml.window.event.Event;
 
 class App {
     private final int TILE_SIZE = 32;
-    private final float ZOOM = 5f;
+    private final float ZOOM = 0.5f;
     private final RenderWindow WINDOW;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
@@ -47,7 +47,7 @@ class App {
                 "test",
                 new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
         );
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             MAP.setEntity(
                     "test" + i,
                     new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
