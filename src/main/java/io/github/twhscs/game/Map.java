@@ -52,6 +52,7 @@ class Map implements Drawable {
 
     public void setPlayer(Player player) {
         this.player = player;
+        ENTITIES.put("player", player);
         player.setMap(this);
     }
 
@@ -223,7 +224,9 @@ class Map implements Drawable {
                 }
             }
         }
-        for (Entity e : ENTITIES.values()) {
+        List<Entity> drawList = new ArrayList<Entity>(ENTITIES.values());
+        Collections.sort(drawList);
+        for (Entity e : drawList) {
             WINDOW.draw(e);
         }
     }

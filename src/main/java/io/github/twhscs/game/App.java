@@ -43,7 +43,7 @@ class App {
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
         MAP.setEntity(
-                "Test",
+                "test",
                 new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
         );
         // Start the main loop.
@@ -121,7 +121,6 @@ class App {
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.zoom(ZOOM);
-                    PLAYER.updateSprite();
                     MAP.updateSprites();
                     break;
                 case KEY_PRESSED:
@@ -143,15 +142,13 @@ class App {
 
     private void update() {
         MAP.update();
-        PLAYER.update();
     }
 
     private void render(float positionBetweenUpdates) {
         WINDOW.setView(GAME_VIEW);
         WINDOW.clear();
-        WINDOW.draw(MAP);
         PLAYER.interpolate(positionBetweenUpdates);
-        WINDOW.draw(PLAYER);
+        WINDOW.draw(MAP);
         WINDOW.display();
     }
 }
