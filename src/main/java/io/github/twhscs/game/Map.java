@@ -17,7 +17,7 @@ class Map implements Drawable {
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
-    private final List<Entity> ENTITIES;
+    private final HashMap<String, Entity> ENTITIES;
     private Player player;
 
 
@@ -36,13 +36,13 @@ class Map implements Drawable {
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
-        ENTITIES = new ArrayList<Entity>();
+        ENTITIES = new HashMap<String, Entity>();
         // Load the tiles into the map.
         load();
     }
 
-    public void setEntity(Entity entity) {
-        ENTITIES.add(entity);
+    public void setEntity(String name, Entity entity) {
+        ENTITIES.put(name, entity);
         entity.setMap(this);
     }
 
@@ -96,7 +96,7 @@ class Map implements Drawable {
         if (player != null && position.equals(player.getPosition())) {
             return true;
         }
-        for (Entity e : ENTITIES) {
+        for (Entity e : ENTITIES.values()) {
             if (position.equals(e.getPosition())) {
                 return true;
             }
@@ -170,7 +170,7 @@ class Map implements Drawable {
     }
 
     public void updateEntities() {
-        for (Entity e : ENTITIES) {
+        for (Entity e : ENTITIES.values()) {
             e.update();
         }
     }
@@ -213,7 +213,7 @@ class Map implements Drawable {
                 }
             }
         }
-        for (Entity e : ENTITIES) {
+        for (Entity e : ENTITIES.values()) {
             WINDOW.draw(e);
         }
     }

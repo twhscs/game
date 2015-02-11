@@ -51,7 +51,7 @@ class App {
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
         for (Entity e : ENTITIES) {
-            MAP.setEntity(e);
+            MAP.setEntity("test", e);
         }
         // Start the main loop.
         run();

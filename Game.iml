@@ -22,6 +22,8 @@
           <root url="jar://$MODULE_DIR$/lib/jsfml.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/jsfml.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/jsfml.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jsfml.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jsfml.jar!/" />
         </CLASSES>
         <JAVADOC>
           <root url="http://jsfml.org/javadoc/" />
