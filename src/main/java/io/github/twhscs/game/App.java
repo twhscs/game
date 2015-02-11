@@ -43,10 +43,6 @@ class App {
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
-        MAP.setEntity(
-                "test",
-                new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
-        );
         for (int i = 0; i < 10; i++) {
             MAP.setEntity(
                     "test" + i,
