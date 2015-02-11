@@ -4,9 +4,7 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Map implements Drawable {
     private final Vector2i DIMENSIONS;
@@ -19,6 +17,7 @@ class Map implements Drawable {
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
+    private final HashMap<String, Entity> ENTITIES;
     private Player player;
 
 
@@ -37,12 +36,23 @@ class Map implements Drawable {
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
+        ENTITIES = new HashMap<String, Entity>();
         // Load the tiles into the map.
         load();
     }
 
+    public void setEntity(String name, Entity entity) {
+        ENTITIES.put(name, entity);
+        entity.setMap(this);
+    }
+
+    public Entity getEntity(String name) {
+        return ENTITIES.get(name);
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
+        ENTITIES.put("player", player);
         player.setMap(this);
     }
 
@@ -87,8 +97,24 @@ class Map implements Drawable {
         return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
     }
 
+    public boolean isOccupiedPosition(Vector2f position) {
+        if (player != null) {
+            Vector2f playerDifference = Vector2f.sub(position, player.getPosition());
+            if ((Math.abs(playerDifference.x) < 1.0f && Math.abs(playerDifference.y) < 1.0f)) {
+                return true;
+            }
+        }
+        for (Entity e : ENTITIES.values()) {
+            Vector2f entityDifference = Vector2f.sub(position, e.getPosition());
+            if ((Math.abs(entityDifference.x) < 1.0f && Math.abs(entityDifference.y) < 1.0f)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isValidPosition(Vector2f position) {
-        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
+        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y && !isOccupiedPosition(position);
     }
 
     private void partition() {
@@ -152,8 +178,20 @@ class Map implements Drawable {
         }
     }
 
-    public void update() {
+    public void updateEntities() {
+        for (Entity e : ENTITIES.values()) {
+            e.update();
+        }
+    }
 
+    public void updateSprites() {
+        for (Entity e : ENTITIES.values()) {
+            e.updateSprite();
+        }
+    }
+
+    public void update() {
+        updateEntities();
     }
 
 
@@ -189,6 +227,11 @@ class Map implements Drawable {
                     renderedChunks.add(chunkID);
                 }
             }
+        }
+        List<Entity> drawList = new ArrayList<Entity>(ENTITIES.values());
+        Collections.sort(drawList);
+        for (Entity e : drawList) {
+            WINDOW.draw(e);
         }
     }
 }

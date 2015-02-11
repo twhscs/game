@@ -1,5 +1,9 @@
 package io.github.twhscs.game.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Enumeration of the eight cardinal and ordinal directions.
  */
@@ -33,5 +37,21 @@ public enum Direction {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Gets a random direction.
+     * @return a random direction.
+     */
+    public static Direction getRandomDirection() {
+        return Direction.values()[(int)(Math.random() * 8)];
+    }
+
+    /**
+     * Gets a random cardinal direction.
+     * @return a random cardinal direction.
+     */
+    public static Direction getRandomCardinalDirection() {
+        return Direction.values()[(int)(Math.random() * 4)];
     }
 }

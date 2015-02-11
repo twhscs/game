@@ -7,6 +7,7 @@ import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
@@ -42,7 +43,13 @@ class App {
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
         MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
-
+        for (int i = 0; i < 10; i++) {
+            MAP.setEntity(
+                    "test" + i,
+                    new NonPlayableCharacter(RESOURCE_MANAGER.getTexture("ryuk"), TILE_SIZE, 4, 2)
+            );
+            MAP.getEntity("test" + i).setPosition(new Vector2f(20,20));
+        }
         // Start the main loop.
         run();
     }
@@ -118,7 +125,7 @@ class App {
                     Vector2i size = event.asSizeEvent().size;
                     GAME_VIEW.reset(new FloatRect(0.0f, 0.0f, size.x, size.y));
                     GAME_VIEW.zoom(ZOOM);
-                    PLAYER.updateSprite();
+                    MAP.updateSprites();
                     break;
                 case KEY_PRESSED:
                     switch (event.asKeyEvent().key) {
@@ -139,15 +146,13 @@ class App {
 
     private void update() {
         MAP.update();
-        PLAYER.update();
     }
 
     private void render(float positionBetweenUpdates) {
         WINDOW.setView(GAME_VIEW);
         WINDOW.clear();
-        WINDOW.draw(MAP);
         PLAYER.interpolate(positionBetweenUpdates);
-        WINDOW.draw(PLAYER);
+        WINDOW.draw(MAP);
         WINDOW.display();
     }
 }
