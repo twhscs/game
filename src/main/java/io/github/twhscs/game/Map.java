@@ -98,11 +98,15 @@ class Map implements Drawable {
     }
 
     public boolean isOccupiedPosition(Vector2f position) {
-        if (player != null && position.equals(player.getPosition())) {
-            return true;
+        if (player != null) {
+            Vector2f playerDifference = Vector2f.sub(position, player.getPosition());
+            if ((Math.abs(playerDifference.x) < 1.0f && Math.abs(playerDifference.y) < 1.0f)) {
+                return true;
+            }
         }
         for (Entity e : ENTITIES.values()) {
-            if (position.equals(e.getPosition())) {
+            Vector2f entityDifference = Vector2f.sub(position, e.getPosition());
+            if ((Math.abs(entityDifference.x) < 1.0f && Math.abs(entityDifference.y) < 1.0f)) {
                 return true;
             }
         }
