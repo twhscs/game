@@ -3,7 +3,7 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 
-class Player extends Character implements Drawable {
+class Player extends Character {
     private final View GAME_VIEW;
 
     Player(Texture playerTexture, View GAME_VIEW, int TILE_SIZE, int ANIMATION_FRAMES, int ANIMATION_SPEED) {

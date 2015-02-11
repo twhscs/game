@@ -3,7 +3,7 @@ package io.github.twhscs.game;
 import io.github.twhscs.game.util.Direction;
 import org.jsfml.graphics.*;
 
-class NonPlayableCharacter extends Character implements Drawable {
+class NonPlayableCharacter extends Character {
 
     NonPlayableCharacter(Texture npcTexture, int TILE_SIZE, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
         super(npcTexture, TILE_SIZE, ANIMATION_FRAMES, ANIMATION_SPEED);
