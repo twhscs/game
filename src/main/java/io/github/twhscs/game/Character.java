@@ -52,14 +52,18 @@ class Character extends Entity {
         SPRITE.setTextureRect(getTextureRect());
     }
 
+    public boolean nextPositionIsValid(Direction direction) {
+        // Calculate the position to move towards.
+        Vector2f newPosition = Position.getRelativePosition(position, direction, 1.0f);
+        return map.isValidPosition(newPosition);
+    }
+
     public void move(Direction direction) {
         // TODO: Allow for faster movement. (Do not have to wait until current move is finished before initiating next move.)
         // Only move the player if they are not already moving.
         if (!animating) {
-            // Calculate the position to move towards.
-            Vector2f newPosition = Position.getRelativePosition(position, direction, 1.0f);
             // Make sure the new position is valid.
-            if (map.isValidPosition(newPosition)) {
+            if (nextPositionIsValid(direction)) {
                 // If it is valid, update the direction and start moving..
                 super.direction = direction;
                 animating = true;

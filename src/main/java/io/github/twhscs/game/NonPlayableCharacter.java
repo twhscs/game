@@ -25,8 +25,13 @@ class NonPlayableCharacter extends Character {
     }
 
     public void randomlyChooseMove() {
-        if ((int)(Math.random() * 25) == 1) {
-            this.move(Direction.getRandomCardinalDirection());
+        if ((int)(Math.random() * 10) == 1) {
+            for (int i = 0; i < 10; i++) {
+                Direction newDirection = Direction.getRandomCardinalDirection();
+                if (nextPositionIsValid(newDirection)) {
+                    this.move(newDirection);
+                }
+            }
         }
     }
 
