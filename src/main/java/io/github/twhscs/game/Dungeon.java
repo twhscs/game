@@ -1,6 +1,5 @@
 package io.github.twhscs.game;
 
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 class Dungeon {
@@ -13,7 +12,10 @@ class Dungeon {
         this.MAP = new int[DIMENSIONS.x][DIMENSIONS.y];
     }
     public void generate() {
-
+        createRoom(Vector2i.div(DIMENSIONS, 2), new Vector2i(1, 1));
+    }
+    public boolean isInBounds(Vector2i position) {
+        return position.x >= 0 && position.y >= 0 && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
     }
     public void createRoom(Vector2i start, Vector2i direction) {
         Vector2i size = new Vector2i(
@@ -23,13 +25,13 @@ class Dungeon {
         Vector2i end;
         do {
             end = Vector2i.add(start, Vector2i.componentwiseMul(size, direction));
-            if (end.x < 0 || end.x > DIMENSIONS.x)
-                Vector2i.sub(size, new Vector2i(1,0));
-            if (end.y < 0 || end.y > DIMENSIONS.y)
-                Vector2i.sub(size, new Vector2i(0,1));
+            if (end.x < 0 || end.x >= DIMENSIONS.x)
+                size = Vector2i.sub(size, new Vector2i(1,0));
+            if (end.y < 0 || end.y >= DIMENSIONS.y)
+                size = Vector2i.sub(size, new Vector2i(0,1));
         }
-        while (end.x < 0 || end.y < 0 || end.x > DIMENSIONS.x || end.y > DIMENSIONS.y);
-        if (size.x > 3 || size.y > 3) {
+        while (!isInBounds(end));
+        if (size.x >= ROOMSIZE.x && size.y >= ROOMSIZE.x) {
             fillRoom(start, end);
             Vector2i center = Vector2i.add(start, Vector2i.componentwiseMul(Vector2i.div(size, 2), direction));
             Vector2i side = new Vector2i(
@@ -37,12 +39,20 @@ class Dungeon {
                     (int)(Math.random() * 2 - 1)
             );
             Vector2i pathStart = Vector2i.add(center, Vector2i.componentwiseMul(Vector2i.div(size, 2), direction));
-            Vector2i pathDirection = new Vector2i(~(pathStart.x ^ pathStart.y), pathStart.x ^ pathStart.y);
-            createPath(pathStart, side);
+            Vector2i pathDirection = new Vector2i(~(side.x ^ side.y), side.x ^ side.y);
+            createPath(pathStart, pathDirection);
         }
     }
     public void createPath(Vector2i start, Vector2i direction) {
-
+        Vector2i pathPosition = new Vector2i(0,0);
+        for (int i = 0; i < 3; i++) {
+            pathPosition = Vector2i.add(start, Vector2i.mul(direction, i));
+            System.out.println(pathPosition);
+            if (isInBounds(pathPosition)) {
+                MAP[pathPosition.x][pathPosition.y] = 1;
+            }
+        }
+        createRoom(pathPosition, direction);
     }
     public void fillRoom(Vector2i start, Vector2i end) {
         if (start.x > end.x) {
@@ -55,5 +65,15 @@ class Dungeon {
                 MAP[x][y] = 1;
             }
         }
+    }
+    public String toString() {
+        String returnString = "";
+        for (int x = 0; x < DIMENSIONS.x; x++) {
+            for (int y = 0; y < DIMENSIONS.y; y++) {
+                returnString += MAP[x][y];
+            }
+            returnString += "\n";
+        }
+        return returnString;
     }
 }

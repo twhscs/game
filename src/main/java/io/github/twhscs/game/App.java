@@ -48,6 +48,9 @@ class App {
     }
 
     public static void main(String[] args) {
+        Dungeon ayy = new Dungeon(new Vector2i(30, 30), new Vector2i(4, 7));
+        ayy.generate();
+        System.out.println(ayy);
         new App();
     }
 
