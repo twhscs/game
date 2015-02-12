@@ -20,15 +20,13 @@ class Map implements Drawable {
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
-    private final Terrain GRASS;
-    private final Terrain WATER;
-    private final Terrain SAND;
-    private final Terrain SNOW;
     private Player player;
+    private final Generatable GENERATOR;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
-        this.DIMENSIONS = new Vector2i(x, y);
+    Map(Generatable GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
+        this.GENERATOR = GENERATOR;
+        this.DIMENSIONS = GENERATOR.getDimensions();
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
         this.CHUNK_SIZE = CHUNK_SIZE;
@@ -40,40 +38,15 @@ class Map implements Drawable {
         int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
-        GRASS = new Terrain(true, new Vector2f(0, 352), true, false);
-        WATER = new Terrain(false, new Vector2f(864, 160), false, true);
-        SAND = new Terrain(true, new Vector2f(576, 352), true, false);
-        SNOW = new Terrain(true, new Vector2f(576, 544), true, false);
-        TILE_ARRAY = generateTerrain(3);
+        TILE_ARRAY = GENERATOR.generate();
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
-        load();
+        partition();
     }
 
     public void setPlayer(Player player) {
         this.player = player;
         player.setMap(this);
-    }
-
-    private Terrain[][] generateTerrain(int octaves) {
-        float[][] noise = Perlin.getNoise(DIMENSIONS, octaves);
-        Terrain[][] map = new Terrain[DIMENSIONS.x][DIMENSIONS.y];
-        for (int x = 0; x < DIMENSIONS.x; x++) {
-            for (int y = 0; y < DIMENSIONS.y; y++) {
-                if (noise[x][y] > 0.8f)
-                    map[x][y] = WATER;
-                else if (noise[x][y] > 0.6f)
-                    map[x][y] = SAND;
-                else
-                    map[x][y] = GRASS;
-            }
-        }
-        return map;
-    }
-
-    private void load() {
-        // Divide the map into smaller chunks.
-        partition();
     }
 
     private Vector2f chunkIDToPosition(int chunkID) {

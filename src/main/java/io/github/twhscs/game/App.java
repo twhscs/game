@@ -12,7 +12,7 @@ import org.jsfml.window.event.Event;
 
 class App {
     private final int TILE_SIZE = 32;
-    private final float ZOOM = 0.5f;
+    private final float ZOOM = 5.0f;
     private final RenderWindow WINDOW;
     private final ConstView DEFAULT_VIEW;
     private final View GAME_VIEW;
@@ -38,7 +38,7 @@ class App {
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
+        MAP = new Map(new IslandGenerator(new Vector2i(100, 100), 3), TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
 
         // Start the main loop.
