@@ -1,5 +1,6 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.util.Perlin;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -15,47 +16,37 @@ class Map implements Drawable {
     private final int CHUNK_SIZE;
     private final Texture TILE_SHEET;
     private final RenderWindow WINDOW;
-    private final int[][] TILE_ARRAY;
+    private final Terrain[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[] VERTEX_ARRAYS;
     private Player player;
+    private final Generatable GENERATOR;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
-        this.DIMENSIONS = new Vector2i(x, y);
+    Map(Generatable GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
+        this.GENERATOR = GENERATOR;
+        this.DIMENSIONS = GENERATOR.getDimensions();
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
         this.CHUNK_SIZE = CHUNK_SIZE;
         this.TILE_SHEET = TILE_SHEET;
         this.WINDOW = WINDOW;
-        TILE_ARRAY = new int[DIMENSIONS.x][DIMENSIONS.y];
         // Calculate the amount of horizontal chunks.
         X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
         // Calculate the amount of vertical chunks.
         int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
+        TILE_ARRAY = GENERATOR.generate();
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         // Load the tiles into the map.
-        load();
+        partition();
     }
 
     public void setPlayer(Player player) {
         this.player = player;
         player.setMap(this);
-    }
-
-    private void load() {
-        // Initialize each tile with a random number for now.
-        // TODO: Add random terrain generation.
-        for (int i = 0; i < DIMENSIONS.x; i++) {
-            for (int j = 0; j < DIMENSIONS.y; j++) {
-                TILE_ARRAY[i][j] = (int) (Math.random() * 4);
-            }
-        }
-        // Divide the map into smaller chunks.
-        partition();
     }
 
     private Vector2f chunkIDToPosition(int chunkID) {
@@ -116,26 +107,9 @@ class Map implements Drawable {
                     // Make sure the current tile is valid.
                     if (isValidPosition(new Vector2f(i, j))) {
                         // Get the current tile.
-                        int tile = TILE_ARRAY[i][j];
+                        final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
-                        Vector2f textureCoordinates;
-                        switch (tile) {
-                            case 0:
-                                textureCoordinates = new Vector2f(576, 352);
-                                break;
-                            case 1:
-                                textureCoordinates = new Vector2f(192, 352);
-                                break;
-                            case 2:
-                                textureCoordinates = new Vector2f(480, 544);
-                                break;
-                            case 3:
-                                textureCoordinates = new Vector2f(576, 544);
-                                break;
-                            default:
-                                textureCoordinates = new Vector2f(0, 0);
-                                break;
-                        }
+                        Vector2f textureCoordinates = tile.getTextureCoordinates();
                         // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
                         textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.0f, -0.01f));
                         // Create and add a vertex for the bottom left corner of the tile.
@@ -153,7 +127,6 @@ class Map implements Drawable {
     }
 
     public void update() {
-
     }
 
 

@@ -2,11 +2,9 @@ package io.github.twhscs.game;
 
 import io.github.twhscs.game.util.Direction;
 import io.github.twhscs.game.util.ResourceManager;
-import org.jsfml.graphics.ConstView;
-import org.jsfml.graphics.FloatRect;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.View;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
@@ -40,7 +38,7 @@ class App {
         String[] soundBufferNames = {"collision", "interact_failure", "interact_success"};
         RESOURCE_MANAGER.loadSoundBuffers(soundBufferNames);
         PLAYER = new Player(RESOURCE_MANAGER.getTexture("ryuk"), GAME_VIEW, TILE_SIZE, 4, 2);
-        MAP = new Map(100, 100, TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
+        MAP = new Map(new IslandGenerator(new Vector2i(100, 100), 3), TILE_SIZE, ZOOM, 25, RESOURCE_MANAGER.getTexture("tiles"), WINDOW);
         MAP.setPlayer(PLAYER);
 
         // Start the main loop.
