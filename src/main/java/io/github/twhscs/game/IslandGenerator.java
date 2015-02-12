@@ -3,7 +3,7 @@ package io.github.twhscs.game;
 import io.github.twhscs.game.util.Perlin;
 import org.jsfml.system.Vector2i;
 
-public class IslandGenerator implements Generatable {
+class IslandGenerator implements Generatable {
     private final Vector2i dimensions;
     private final int octaves;
 
