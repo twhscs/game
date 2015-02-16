@@ -37,7 +37,7 @@ class App {
         map = new Map(new IslandGenerator(new Vector2i(100, 100), 3), TILE_SIZE, ZOOM, 25,
                       ResourceManager.getTexture("tiles"), window, 3, 3);
         map.setPlayer(player);
-        
+
         // Start the main loop.
         run();
     }
@@ -50,26 +50,27 @@ class App {
         
         /*
         
-        Game Loop: http://gameprogrammingpatterns.com/game-loop.html
+        Game Loop
+        =========
         
-        The game loop runs as long as the window is open.
-        Each iteration the elapsed time of the previous iteration is measured in seconds and stored in 'elapsed'.
-        This elapsed time is added to both 'lag' and 'frameTime'.
+        See: http://gameprogrammingpatterns.com/game-loop.html
+        
+        ------------------------------------------------------
+        
+        The game loop runs as long as the window is open. Each iteration the elapsed time of the previous iteration 
+        is measured in seconds and stored in 'elapsed'. This elapsed time is added to both 'lag' and 'frameTime'. 
         Both 'lag' and 'frameTime' keep running totals of elapsed seconds in order to determine when to update the 
-        game or calculate FPS.
-        The user input is then processed.
-        Now it is time to determine whether or not to update.
-        If 'lag' is less than secondsPerUpdate, it is not time to update yet because not enough time has passed.
-        If 'lag' is equal to or slightly greater than secondsPerUpdate, it is time to update.
-        If 'lag' is twice as large as secondsPerUpdate or even greater, the game is behind by more than one update.
-        To remedy this the game updates multiple times until caught up.
-        Finally, the game is rendered.
-        If one second has passed, the FPS is calculated.
+        game or calculate FPS. The user input is then processed. Now it is time to determine whether or not to update.
+        If 'lag' is less than 'secondsPerUpdate', it is not time to update yet because not enough time has passed. If
+        'lag' is equal to or slightly greater than 'secondsPerUpdate', it is time to update. If 'lag' is twice as 
+        large as 'secondsPerUpdate' or even greater, the game is behind by more than one update. To remedy this the 
+        game updates multiple times until caught up. Finally, the game is rendered. If one second has passed, the FPS
+        is calculated.
         
-         */
+        */
 
         // Fixed rate at which the game updates.
-        // 1 / 20.0f = 20 Hz = 20 updates per second.
+        // 1 / 20.0f = 20 Hz or 20 updates per second.
         final float secondsPerUpdate = 1 / 20.0f;
         Clock clock = new Clock();
         float lag = 0.0f;
@@ -90,14 +91,14 @@ class App {
 
             // Render the game, passing in a float between 0.0f and 1.0f.
             // 0.0f represents the last update while 1.0f represents the next update.
-            // 'betweenUpdates' represents how far between updates the game is.
+            // 'positionBetweenUpdates' represents how far between updates the game is.
             render(lag / secondsPerUpdate);
             framesDrawn++;
 
             if (frameTime >= 1.0) {
                 // FPS = frames per second.
                 int fps = (int) (framesDrawn / frameTime);
-                System.out.println("FPS: " + fps);
+//                System.out.println("FPS: " + fps);
                 framesDrawn = 0;
                 frameTime = 0.0f;
             }
@@ -116,12 +117,9 @@ class App {
                     gameView.zoom(ZOOM);
                     player.updateSprite();
                     break;
-                case KEY_PRESSED:
-                    switch (event.asKeyEvent().key) {
-                    }
-                    break;
             }
         }
+
         if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
             player.move(Direction.NORTH);
         } else if (Keyboard.isKeyPressed(Keyboard.Key.A)) {

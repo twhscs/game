@@ -1,6 +1,6 @@
 package io.github.twhscs.game;
 
-import io.github.twhscs.game.util.Position;
+import io.github.twhscs.game.util.VectorHelper;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -20,13 +20,13 @@ class Map implements Drawable {
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
     private final VertexArray[][] VERTEX_ARRAYS;
-    private final Generatable GENERATOR;
+    private final Generator GENERATOR;
     private final int ANIMATION_FRAMES;
     private final int ANIMATION_SPEED;
     private Player player;
     private int animationFrame;
 
-    Map(Generatable GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW,
+    Map(Generator GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW,
         int ANIMATION_FRAMES, int ANIMATION_SPEED) {
         this.GENERATOR = GENERATOR;
         this.DIMENSIONS = GENERATOR.getDimensions();
@@ -54,7 +54,7 @@ class Map implements Drawable {
         this.player = player;
         player.setMap(this);
         System.out.println(DIMENSIONS);
-        player.setPosition(Position.round(new Vector2f(DIMENSIONS.x / 2, DIMENSIONS.y / 2)));
+        player.setPosition(VectorHelper.round(new Vector2f(DIMENSIONS.x / 2, DIMENSIONS.y / 2)));
         System.out.println(player.getPosition());
     }
 

@@ -1,7 +1,7 @@
 package io.github.twhscs.game;
 
 import io.github.twhscs.game.util.Direction;
-import io.github.twhscs.game.util.Position;
+import io.github.twhscs.game.util.VectorHelper;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -87,8 +87,9 @@ class Player implements Drawable {
         SPRITE.setTextureRect(getTextureRect());
         // Add half of the sprite's width and height to the view in order to center the sprite and then round to
         // prevent graphical errors.
-        GAME_VIEW.setCenter(Position.round(Vector2f.add(spritePosition, Vector2f.div(new Vector2f(SPRITE_SIZE), 2.0f)
-                                                       )));
+        GAME_VIEW.setCenter(
+                VectorHelper.round(Vector2f.add(spritePosition, Vector2f.div(new Vector2f(SPRITE_SIZE), 2.0f)
+                                               )));
     }
 
     public void move(Direction direction) {
@@ -97,7 +98,7 @@ class Player implements Drawable {
         // Only move the player if they are not already moving.
         if (!animating) {
             // Calculate the position to move towards.
-            Vector2f newPosition = Position.getRelativePosition(position, direction, 1.0f);
+            Vector2f newPosition = VectorHelper.relativePosition(position, direction, 1.0f);
             // Make sure the new position is valid.
             if (map.isEmptyPosition(newPosition)) {
                 // If it is valid, update the direction and start moving..
@@ -111,14 +112,14 @@ class Player implements Drawable {
         // Check if the player is moving.
         if (animating) {
             // Move the player by the animation step.
-            position = Position.getRelativePosition(position, direction, ANIMATION_STEP);
+            position = VectorHelper.relativePosition(position, direction, ANIMATION_STEP);
             // Check if it is time to stop moving.
             if (animationFrame + 1 >= ANIMATION_FRAMES * ANIMATION_SPEED) {
                 // Reset the animation frame and stop moving.
                 animationFrame = 0;
                 animating = false;
                 // Round the position to prevent float rounding errors.
-                position = Position.round(position);
+                position = VectorHelper.round(position);
             } else {
                 // If it is not time to stop, keep going.
                 animationFrame++;
@@ -136,7 +137,7 @@ class Player implements Drawable {
             Vector2f currentPosition = position;
             // Temporarily update the position with the interpolation step applied, update the sprite, then revert
             // the position.
-            position = Position.getRelativePosition(position, direction, interpolationStep);
+            position = VectorHelper.relativePosition(position, direction, interpolationStep);
             updateSprite();
             position = currentPosition;
         }

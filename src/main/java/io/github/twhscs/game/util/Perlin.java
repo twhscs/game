@@ -1,7 +1,7 @@
 package io.github.twhscs.game.util;
 import org.jsfml.system.Vector2i;
 
-public class Perlin {
+public final class Perlin {
     /**
      * See: http://mrl.nyu.edu/~perlin/doc/oscar.html
      *
