@@ -100,7 +100,7 @@ class Player implements Drawable {
             // Calculate the position to move towards.
             Vector2f newPosition = VectorHelper.relativePosition(position, direction, 1.0f);
             // Make sure the new position is valid.
-            if (map.isEmptyPosition(newPosition)) {
+            if (map.isEmptyPosition(new Vector2i(newPosition))) {
                 // If it is valid, update the direction and start moving..
                 this.direction = direction;
                 animating = true;

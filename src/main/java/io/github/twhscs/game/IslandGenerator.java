@@ -30,4 +30,11 @@ class IslandGenerator extends Generator {
         return map;
     }
 
+    @Override
+    public String toString() {
+        return "IslandGenerator{" +
+               "octaves=" + octaves +
+               '}';
+    }
+
 }

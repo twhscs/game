@@ -14,8 +14,8 @@ import org.jsfml.window.event.Event;
 
 class App {
 
-    private static final int TILE_SIZE = 32;
-    private static final float ZOOM = 0.5f;
+    public static final int TILE_SIZE = 32;
+    public static final float ZOOM = 0.5f;
     private final RenderWindow window;
     private final ConstView defaultView;
     private final View gameView;
@@ -34,9 +34,8 @@ class App {
         gameView.zoom(ZOOM);
 
         player = new Player(ResourceManager.getTexture("ryuk"), gameView, TILE_SIZE, 4, 2);
-        map = new Map(new IslandGenerator(new Vector2i(100, 100), 3), TILE_SIZE, ZOOM, 25,
-                      ResourceManager.getTexture("tiles"), window, 3, 3);
-        map.setPlayer(player);
+
+        map = new Map(window, new IslandGenerator(new Vector2i(100, 100), 3), player);
 
         // Start the main loop.
         run();

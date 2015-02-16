@@ -17,4 +17,11 @@ abstract class Generator {
 
     public abstract Terrain[][] generate();
 
+    @Override
+    public String toString() {
+        return "Generator{" +
+               "dimensions=" + dimensions +
+               '}';
+    }
+
 }

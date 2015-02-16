@@ -1,77 +1,141 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.util.ResourceManager;
 import io.github.twhscs.game.util.VectorHelper;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 class Map implements Drawable {
-    private final Vector2i DIMENSIONS;
-    private final int TILE_SIZE;
-    private final float ZOOM;
-    private final int CHUNK_SIZE;
-    private final Texture TILE_SHEET;
-    private final RenderWindow WINDOW;
-    private final Terrain[][] TILE_ARRAY;
-    private final int TOTAL_CHUNKS;
-    private final int X_CHUNKS;
-    private final VertexArray[][] VERTEX_ARRAYS;
-    private final Generator GENERATOR;
-    private final int ANIMATION_FRAMES;
-    private final int ANIMATION_SPEED;
+
+    private static final int CHUNK_SIZE = 25;
+    private static final int ANIMATION_FRAMES = 3;
+    private static final int ANIMATION_SPEED = 3;
+    private final Texture tileSheet;
+    private final Vector2i dimensions;
+    private final RenderWindow window;
+    private final Terrain[][] tiles;
+    private final int totalChunks;
+    private final int xChunks;
+    private final VertexArray[] vertexArrayBase;
+    private final VertexArray[][] vertexArrayFrames;
+    private final Generator generator;
     private Player player;
     private int animationFrame;
 
-    Map(Generator GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW,
-        int ANIMATION_FRAMES, int ANIMATION_SPEED) {
-        this.GENERATOR = GENERATOR;
-        this.DIMENSIONS = GENERATOR.getDimensions();
-        this.TILE_SIZE = TILE_SIZE;
-        this.ZOOM = ZOOM;
-        this.CHUNK_SIZE = CHUNK_SIZE;
-        this.TILE_SHEET = TILE_SHEET;
-        this.WINDOW = WINDOW;
-        // Calculate the amount of horizontal chunks.
-        X_CHUNKS = (int) Math.ceil((double) DIMENSIONS.x / CHUNK_SIZE);
-        // Calculate the amount of vertical chunks.
-        int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
-        // Calculate the total amount of chunks.
-        TOTAL_CHUNKS = X_CHUNKS * yChunks;
-        TILE_ARRAY = GENERATOR.generate();
-        VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS][ANIMATION_FRAMES];
-        this.ANIMATION_FRAMES = ANIMATION_FRAMES;
-        this.ANIMATION_SPEED = ANIMATION_SPEED;
+    public Map(RenderWindow window, Generator generator, Player player) {
+        this.window = window;
+        this.generator = generator;
+        this.player = player;
+        tileSheet = ResourceManager.getTexture("tiles");
         animationFrame = 0;
-        // Load the tiles into the map.
+        dimensions = generator.getDimensions();
+        tiles = generator.generate();
+        xChunks = (int) Math.ceil((double) dimensions.x / CHUNK_SIZE);
+        int yChunks = (int) Math.ceil((double) dimensions.y / CHUNK_SIZE);
+        totalChunks = xChunks * yChunks;
+        vertexArrayBase = new VertexArray[totalChunks];
+        vertexArrayFrames = new VertexArray[totalChunks][ANIMATION_FRAMES];
+        player.setMap(this);
+        player.setPosition(VectorHelper.round(Vector2f.div(new Vector2f(dimensions), 2)));
         partition();
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-        player.setMap(this);
-        System.out.println(DIMENSIONS);
-        player.setPosition(VectorHelper.round(new Vector2f(DIMENSIONS.x / 2, DIMENSIONS.y / 2)));
-        System.out.println(player.getPosition());
+    private Vector2f chunkToPosition(int chunk) {
+        return new Vector2f(chunk % xChunks * CHUNK_SIZE, chunk / xChunks * CHUNK_SIZE);
+    }
+
+    private int positionToChunk(Vector2f position) {
+        return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * xChunks);
+    }
+
+    private Terrain getTile(Vector2i position) {
+        if (position.x >= 0 && position.x < dimensions.x && position.y >= 0 && position.y < dimensions.y) {
+            return tiles[position.x][position.y];
+        } else {
+            return null;
+        }
+
+    }
+
+    public boolean isEmptyPosition(Vector2i position) {
+        return true;
     }
 
     private void partition() {
-        // TODO: Improve partitioning efficiency. Currently O(n^3).
 
         /*
 
-        Partition the map into multiple vertex arrays for rendering.
-        Vertex arrays speed up rendering time.
-        We create these arrays only once as opposed to every frame for even greater optimization.
+        Partition the map into multiple vertex arrays for rendering. Vertex arrays speed up rendering time. We create
+        these arrays only once as opposed to every frame for even greater optimization.
 
         See: http://www.sfml-dev.org/tutorials/2.0/graphics-vertex-array.php
 
          */
 
-        // Loop through each chunk.
+        for (int currentChunk = 0; currentChunk < totalChunks; currentChunk++) {
+            vertexArrayBase[currentChunk] = new VertexArray(PrimitiveType.QUADS);
+
+            Vector2f position = chunkToPosition(currentChunk);
+
+            for (int i = (int) position.x; i < position.x + CHUNK_SIZE; i++) {
+                for (int j = (int) position.y; j < position.y + CHUNK_SIZE; j++) {
+                    final Terrain tile = getTile(new Vector2i(i, j));
+                    if (tile != null && !tile.isAnimated()) {
+                        Vector2f textureCoordinates = tile.getTextureCoordinates();
+                        Vector2f[] corners = new Vector2f[4];
+                        corners[0] = textureCoordinates;
+                        corners[1] = Vector2f.add(textureCoordinates, new Vector2f(0, App.TILE_SIZE));
+                        corners[2] = Vector2f.add(textureCoordinates, new Vector2f(App.TILE_SIZE, App.TILE_SIZE));
+                        corners[3] = Vector2f.add(textureCoordinates, new Vector2f(App.TILE_SIZE, 0));
+                        boolean randomized = tile.isRandomized();
+                        boolean flipped = false;
+                        if (randomized) {
+                            int rotations = (int) (Math.random() * 3) + 1;
+                            for (int rotation = 0; rotation < rotations; rotation++) {
+                                Vector2f temp = corners[3];
+                                corners[3] = corners[2];
+                                corners[2] = corners[1];
+                                corners[1] = corners[0];
+                                corners[0] = temp;
+                            }
+
+                            flipped = (Math.round(Math.random()) == 0);
+                            if (flipped) {
+                                Vector2f temp = corners[0];
+                                corners[0] = corners[1];
+                                corners[1] = temp;
+                                temp = corners[2];
+                                corners[2] = corners[3];
+                                corners[3] = temp;
+                            }
+                        }
+                        if (!randomized || flipped) {
+                            for (int corner = 0; corner < 4; corner++) {
+                                corners[corner] = Vector2f.add(corners[corner], new Vector2f(0.01f, -0.01f));
+                            }
+                        }
+                        // Create and add a vertex for the bottom left corner of the tile.
+                        vertexArrayBase[currentChunk]
+                                .add(new Vertex(new Vector2f(i * App.TILE_SIZE, j * App.TILE_SIZE), corners[0]));
+                        vertexArrayBase[currentChunk]
+                                .add(new Vertex(new Vector2f(i * App.TILE_SIZE, j * App.TILE_SIZE + App.TILE_SIZE),
+                                                corners[1]));
+                        vertexArrayBase[currentChunk].add(new Vertex(
+                                new Vector2f(i * App.TILE_SIZE + App.TILE_SIZE, j * App.TILE_SIZE + App.TILE_SIZE),
+                                corners[2]));
+                        vertexArrayBase[currentChunk]
+                                .add(new Vertex(new Vector2f(i * App.TILE_SIZE + App.TILE_SIZE, j * App.TILE_SIZE),
+                                                corners[3]));
+                    }
+                }
+            }
+        }
+
+        /*// Loop through each chunk.
         for (int chunkID = 0; chunkID < TOTAL_CHUNKS; chunkID++) {
             // Initialize the chunk's vertex array.
             for (int i = 0; i < ANIMATION_FRAMES; i++) {
@@ -159,32 +223,17 @@ class Map implements Drawable {
                     }
                 }
             }
-        }
-    }
-
-    private Vector2f chunkIDToPosition(int chunkID) {
-        // Use math to convert a chunkID to its top left position.
-        // Chunk IDs start at 0
-        return new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
-    }
-
-    public boolean isValidPosition(Vector2f position) {
-        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
-    }
-
-    public boolean isEmptyPosition(Vector2f position) {
-        return isValidPosition(position) && TILE_ARRAY[(int) position.x][(int) position.y].isTraversable();
-
+        }*/
     }
 
     public void update() {
-        animationFrame++;
+        /*animationFrame++;
         if (animationFrame + 1 >= ANIMATION_FRAMES * ANIMATION_SPEED) {
             animationFrame = 0;
-        }
+        }*/
     }
 
-    private int positionToChunkID(Vector2f position) {
+    /*private int positionToChunkID(Vector2f position) {
         // Use math to convert a position on the map to its corresponding chunk ID
         // Chunk IDs start at 0
         return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
@@ -192,58 +241,48 @@ class Map implements Drawable {
 
     private boolean isValidChunkID(int chunkID) {
         return chunkID >= 0 && chunkID < TOTAL_CHUNKS;
-    }
+    }*/
 
-    @Override
-    public String toString() {
-        return "Map{" +
-               "TILE_SIZE=" + TILE_SIZE +
-               ", DIMENSIONS=" + DIMENSIONS +
-               ", ZOOM=" + ZOOM +
-               ", CHUNK_SIZE=" + CHUNK_SIZE +
-               ", TOTAL_CHUNKS=" + TOTAL_CHUNKS +
-               ", X_CHUNKS=" + X_CHUNKS +
-               ", VERTEX_ARRAYS=" + Arrays.toString(VERTEX_ARRAYS) +
-               '}';
+    private boolean isValidChunk(int chunk) {
+        return chunk >= 0 && chunk < totalChunks;
     }
 
     @Override
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
-        int adjustedFrame = Math.round((animationFrame * ANIMATION_FRAMES) / (ANIMATION_FRAMES * ANIMATION_SPEED));
+        //int adjustedFrame = Math.round((animationFrame * ANIMATION_FRAMES) / (ANIMATION_FRAMES * ANIMATION_SPEED));
         // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the
         // start of the chunk.
         // Apply the tile sheet to the tiles.
-        RenderStates states = new RenderStates(TILE_SHEET);
+        RenderStates states = new RenderStates(tileSheet);
         // Get the player's current position.
         Vector2f playerPosition = player.getPosition();
         // Get the window's current size.
-        Vector2i windowSize = WINDOW.getSize();
+        Vector2i windowSize = window.getSize();
 
         // Determine how many tiles fit the window horizontally and vertically taking zoom into account, then halve
         // both values.
-        int xDistance = (int) Math.ceil(windowSize.x / (TILE_SIZE * 2 / ZOOM));
-        int yDistance = (int) Math.ceil(windowSize.y / (TILE_SIZE * 2 / ZOOM));
+        int xDistance = (int) Math.ceil(windowSize.x / (App.TILE_SIZE * 2 / App.ZOOM));
+        int yDistance = (int) Math.ceil(windowSize.y / (App.TILE_SIZE * 2 / App.ZOOM));
         Vector2f distance = new Vector2f(xDistance + 1, yDistance + 1);
 
         // Create a rectangle representing the positions currently viewable by the player.
-        FloatRect visibleArea = new FloatRect(playerPosition.x - distance.x, playerPosition.y - distance.y, distance
-                                                                                                                    .x *
-                                                                                                            2,
-                                              distance.y * 2);
+        FloatRect visibleArea =
+                new FloatRect(playerPosition.x - distance.x, playerPosition.y - distance.y, distance.x * 2,
+                              distance.y * 2);
         // Create a set to keep track of the already rendered chunks.
         Set<Integer> renderedChunks = new HashSet<Integer>();
         // Loop through every position currently in view.
         for (float i = visibleArea.left; i <= visibleArea.left + visibleArea.width; i++) {
             for (float j = visibleArea.top; j <= visibleArea.top + visibleArea.height; j++) {
                 // Convert the current position to a chunk ID.
-                int chunkID = positionToChunkID(new Vector2f(i, j));
+                int chunkID = positionToChunk(new Vector2f(i, j));
                 // If the chunk is valid and hasn't been drawn yet, draw it.
-                if (isValidChunkID(chunkID) && !renderedChunks.contains(chunkID)) {
+                if (isValidChunk(chunkID) && !renderedChunks.contains(chunkID)) {
                     // Draw the chunk vertex array with the tile sheet.
-                    VERTEX_ARRAYS[chunkID][0].draw(renderTarget, states);
-                    if (adjustedFrame > 0) {
+                    vertexArrayBase[chunkID].draw(renderTarget, states);
+                    /*if (adjustedFrame > 0) {
                         VERTEX_ARRAYS[chunkID][adjustedFrame].draw(renderTarget, states);
-                    }
+                    }*/
                     // Add the drawn chunk ID to the set to check against in order to save resources by not drawing
                     // it twice.
                     renderedChunks.add(chunkID);
