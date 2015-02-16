@@ -6,6 +6,8 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
+import java.util.HashMap;
+
 class Player implements Drawable {
     private final Sprite SPRITE;
     private final View GAME_VIEW;
@@ -18,8 +20,8 @@ class Player implements Drawable {
     private Direction direction;
     private int animationFrame;
     private boolean animating;
+    private java.util.Map<String, String> stringStringMap = new HashMap<String, String>();
     private Map map;
-
     Player(Texture playerTexture, View GAME_VIEW, int TILE_SIZE, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
         // Create a new sprite with the specified texture.
         this.SPRITE = new Sprite(playerTexture);
@@ -37,6 +39,10 @@ class Player implements Drawable {
         animating = false;
         // Initialize the sprite.
         updateSprite();
+    }
+
+    public java.util.Map<String, String> getStringStringMap() {
+        return stringStringMap;
     }
 
     private IntRect getTextureRect() {
