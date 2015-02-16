@@ -27,7 +27,8 @@ class App {
         GAME_VIEW = new View(DEFAULT_VIEW.getCenter(), DEFAULT_VIEW.getSize());
         GAME_VIEW.zoom(ZOOM);
         // Construct resource manager with main package.
-        RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
+        RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts",
+                "ttf", "sound_buffers", "wav");
         //String[] imageNames = {"icon", "kyle"};
         String[] imageNames = {"icon"};
         RESOURCE_MANAGER.loadImages(imageNames);
@@ -50,20 +51,17 @@ class App {
         run();
     }
 
-    public static void main(String[] args) {
-        new App();
-    }
-
     private void run() {
-        
+
         /*
-        
+
         Game Loop: http://gameprogrammingpatterns.com/game-loop.html
-        
+
         The game loop runs as long as the window is open.
         Each iteration the elapsed time of the previous iteration is measured in seconds and stored in 'elapsed'.
         This elapsed time is added to both 'lag' and 'frameTime'.
-        Both 'lag' and 'frameTime' keep running totals of elapsed seconds in order to determine when to update the game or calculate FPS.
+        Both 'lag' and 'frameTime' keep running totals of elapsed seconds in order to determine when to update the
+        game or calculate FPS.
         The user input is then processed.
         Now it is time to determine whether or not to update.
         If 'lag' is less than SECONDS_PER_UPDATE, it is not time to update yet because not enough time has passed.
@@ -72,7 +70,7 @@ class App {
         To remedy this the game updates multiple times until caught up.
         Finally, the game is rendered.
         If one second has passed, the FPS is calculated.
-        
+
          */
 
         // Fixed rate at which the game updates.
@@ -151,5 +149,9 @@ class App {
         PLAYER.interpolate(positionBetweenUpdates);
         WINDOW.draw(PLAYER);
         WINDOW.display();
+    }
+
+    public static void main(String[] args) {
+        new App();
     }
 }
