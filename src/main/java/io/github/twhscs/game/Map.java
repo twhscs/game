@@ -1,5 +1,6 @@
 package io.github.twhscs.game;
 
+import io.github.twhscs.game.util.Perlin;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
@@ -18,17 +19,15 @@ class Map implements Drawable {
     private final Terrain[][] TILE_ARRAY;
     private final int TOTAL_CHUNKS;
     private final int X_CHUNKS;
-    private final VertexArray[][] VERTEX_ARRAYS;
-    private final Terrain GRASS;
-    private final Terrain WATER;
-    private final Terrain SAND;
-    private final Terrain SNOW;
-    private final int ANIMATION_FRAMES;
-    private final int ANIMATION_SPEED;
+    private final VertexArray[] VERTEX_ARRAYS;
     private Player player;
+    private final Generatable GENERATOR;
     private int animationFrame;
 
 
+    Map(Generatable GENERATOR, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW) {
+        this.GENERATOR = GENERATOR;
+        this.DIMENSIONS = GENERATOR.getDimensions();
     Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW, int
             ANIMATION_FRAMES, int ANIMATION_SPEED) {
         this.DIMENSIONS = new Vector2i(x, y);
@@ -44,6 +43,8 @@ class Map implements Drawable {
         int yChunks = (int) Math.ceil((double) DIMENSIONS.y / CHUNK_SIZE);
         // Calculate the total amount of chunks.
         TOTAL_CHUNKS = X_CHUNKS * yChunks;
+        TILE_ARRAY = GENERATOR.generate();
+        VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS];
         VERTEX_ARRAYS = new VertexArray[TOTAL_CHUNKS][ANIMATION_FRAMES];
         GRASS = new Terrain(true, new Vector2f(0, 352), true, false);
         WATER = new Terrain(false, new Vector2f(864, 160), false, true);
@@ -53,7 +54,7 @@ class Map implements Drawable {
         this.ANIMATION_SPEED = ANIMATION_SPEED;
         animationFrame = 0;
         // Load the tiles into the map.
-        load();
+        partition();
     }
 
     public void setPlayer(Player player) {
@@ -61,30 +62,37 @@ class Map implements Drawable {
         player.setMap(this);
     }
 
-    private void load() {
-        // Initialize each tile with a random number for now.
-        // TODO: Add random terrain generation.
-        for (int i = 0; i < DIMENSIONS.x; i++) {
-            for (int j = 0; j < DIMENSIONS.y; j++) {
-                int k = (int) (Math.random() * 4);
-                switch (k) {
-                    case 0:
-                        TILE_ARRAY[i][j] = GRASS;
-                        break;
-                    case 1:
-                        TILE_ARRAY[i][j] = WATER;
-                        break;
-                    case 2:
-                        TILE_ARRAY[i][j] = SAND;
-                        break;
-                    case 3:
-                        TILE_ARRAY[i][j] = SNOW;
-                        break;
-                }
-            }
-        }
-        // Divide the map into smaller chunks.
-        partition();
+    private Vector2f chunkIDToPosition(int chunkID) {
+        // Use math to convert a chunkID to its top left position.
+        // Chunk IDs start at 0
+        return new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
+    }
+
+    @Override
+    public String toString() {
+        return "Map{" +
+                "TILE_SIZE=" + TILE_SIZE +
+                ", DIMENSIONS=" + DIMENSIONS +
+                ", ZOOM=" + ZOOM +
+                ", CHUNK_SIZE=" + CHUNK_SIZE +
+                ", TOTAL_CHUNKS=" + TOTAL_CHUNKS +
+                ", X_CHUNKS=" + X_CHUNKS +
+                ", VERTEX_ARRAYS=" + Arrays.toString(VERTEX_ARRAYS) +
+                '}';
+    }
+
+    private boolean isValidChunkID(int chunkID) {
+        return chunkID >= 0 && chunkID < TOTAL_CHUNKS;
+    }
+
+    private int positionToChunkID(Vector2f position) {
+        // Use math to convert a position on the map to its corresponding chunk ID
+        // Chunk IDs start at 0
+        return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
+    }
+
+    public boolean isValidPosition(Vector2f position) {
+        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
     }
 
     private void partition() {
@@ -116,6 +124,17 @@ class Map implements Drawable {
                         // Get the current tile.
                         final Terrain tile = TILE_ARRAY[i][j];
                         // Get the correct texture for the current tile.
+                        Vector2f textureCoordinates = tile.getTextureCoordinates();
+                        // Fix for a JSFML bug. See: http://en.sfml-dev.org/forums/index.php?topic=15889.0
+                        textureCoordinates = Vector2f.add(textureCoordinates, new Vector2f(0.0f, -0.01f));
+                        // Create and add a vertex for the bottom left corner of the tile.
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), textureCoordinates));
+                        // Create and add a vertex for the top left corner of the tile.
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(0, TILE_SIZE))));
+                        // Create and add a vertex for the top right corner of the tile.
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, TILE_SIZE))));
+                        // Create and add a vertex for the bottom right corner of the tile.
+                        VERTEX_ARRAYS[chunkID].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), Vector2f.add(textureCoordinates, new Vector2f(TILE_SIZE, 0))));
                         Vector2f textureCoordinates = tile.getTextureCoordinates();
                         for (int frame = 0; frame < ANIMATION_FRAMES; frame++) {
                             Vector2f animatedTexture;
