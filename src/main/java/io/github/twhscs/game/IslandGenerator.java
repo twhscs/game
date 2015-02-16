@@ -14,7 +14,7 @@ class IslandGenerator extends Generator {
 
     @Override
     public Terrain[][] generate() {
-        float[][] noise = Perlin.getNoise(dimensions, octaves);
+        float[][] noise = Perlin.noise(dimensions, octaves);
         Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
         for (int i = 0; i < dimensions.x; i++) {
             for (int j = 0; j < dimensions.y; j++) {
