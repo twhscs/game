@@ -1,18 +1,28 @@
 package io.github.twhscs.game.util;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Enumeration of the eight cardinal and ordinal directions.
  */
 public enum Direction {
+
     NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST;
 
+    private static final List<Direction> VALUES = Collections.unmodifiableList(Arrays.asList(values()));
+    private static final int SIZE = VALUES.size();
+    private static final Random RANDOM = new Random();
+
     /**
-     * Gets the opposite of a direction.
+     * Returns the opposite direction of the given direction.
      *
      * @param direction the {@link Direction} to get the opposite of.
      * @return the opposite {@link Direction}
      */
-    public static Direction getOppositeDirection(Direction direction) {
+    public static Direction oppositeDirection(Direction direction) {
         switch (direction) {
             case NORTH:
                 return SOUTH;
@@ -33,5 +43,32 @@ public enum Direction {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Returns one of the eight cardinal and ordinal directions randomly.
+     *
+     * @return a random direction.
+     */
+    public static Direction randomDirection() {
+        return VALUES.get(RANDOM.nextInt(SIZE));
+    }
+
+    /**
+     * Returns one of the four cardinal directions randomly.
+     *
+     * @return a random cardinal direction.
+     */
+    public static Direction randomCardinalDirection() {
+        return VALUES.get(RANDOM.nextInt(4));
+    }
+
+    /**
+     * Returns one of the four ordinal directions randomly.
+     *
+     * @return a random ordinal direction.
+     */
+    public static Direction randomOrdinalDirection() {
+        return VALUES.get(RANDOM.nextInt(4) + 4);
     }
 }

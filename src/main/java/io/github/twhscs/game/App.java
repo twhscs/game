@@ -46,7 +46,9 @@ class App {
                 ("tiles"),
                       WINDOW, 3, 3);
         MAP.setPlayer(PLAYER);
-
+        System.out.println("Cardinal " + Direction.randomCardinalDirection());
+        System.out.println("Direction " + Direction.randomDirection());
+        System.out.println("Ordinal " + Direction.randomOrdinalDirection());
         // Start the main loop.
         run();
     }
