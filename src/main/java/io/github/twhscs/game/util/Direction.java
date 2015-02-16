@@ -19,8 +19,8 @@ public enum Direction {
     /**
      * Returns the opposite direction of the given direction.
      *
-     * @param direction the {@link Direction} to get the opposite of.
-     * @return the opposite {@link Direction}
+     * @param direction the {@link io.github.twhscs.game.util.Direction} to get the opposite of.
+     * @return the opposite {@link io.github.twhscs.game.util.Direction}
      */
     public static Direction oppositeDirection(Direction direction) {
         switch (direction) {
@@ -48,7 +48,7 @@ public enum Direction {
     /**
      * Returns one of the eight cardinal and ordinal directions randomly.
      *
-     * @return a random direction.
+     * @return a random {@link io.github.twhscs.game.util.Direction}
      */
     public static Direction randomDirection() {
         return VALUES.get(RANDOM.nextInt(SIZE));
@@ -57,7 +57,7 @@ public enum Direction {
     /**
      * Returns one of the four cardinal directions randomly.
      *
-     * @return a random cardinal direction.
+     * @return a random cardinal {@link io.github.twhscs.game.util.Direction}
      */
     public static Direction randomCardinalDirection() {
         return VALUES.get(RANDOM.nextInt(4));
@@ -66,9 +66,10 @@ public enum Direction {
     /**
      * Returns one of the four ordinal directions randomly.
      *
-     * @return a random ordinal direction.
+     * @return a random ordinal {@link io.github.twhscs.game.util.Direction}
      */
     public static Direction randomOrdinalDirection() {
         return VALUES.get(RANDOM.nextInt(4) + 4);
     }
+
 }
