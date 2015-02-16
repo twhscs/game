@@ -18,7 +18,8 @@ public class ResourceManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        resourceManager = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts", "ttf", "sound_buffers", "wav");
+        resourceManager = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts",
+                                              "ttf", "sound_buffers", "wav");
     }
 
     @Test

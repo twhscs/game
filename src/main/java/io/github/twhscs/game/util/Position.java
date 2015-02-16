@@ -12,10 +12,12 @@ public final class Position {
     }
 
     /**
-     * Gets a new {@link org.jsfml.system.Vector2f} in the specified {@link io.github.twhscs.game.util.Direction} relative to the current {@link org.jsfml.system.Vector2f}
+     * Gets a new {@link org.jsfml.system.Vector2f} in the specified {@link io.github.twhscs.game.util.Direction}
+     * * relative to the current {@link org.jsfml.system.Vector2f}
      *
      * @param position  the current {@link org.jsfml.system.Vector2f}
-     * @param direction the {@link io.github.twhscs.game.util.Direction} of the new {@link org.jsfml.system.Vector2f} relative to the current {@link org.jsfml.system.Vector2f}
+     * @param direction the {@link io.github.twhscs.game.util.Direction} of the new {@link org.jsfml.system.Vector2f}
+     *                  *                  relative to the current {@link org.jsfml.system.Vector2f}
      * @param step      the distance between the two vectors.
      * @return the new {@link org.jsfml.system.Vector2f}
      */
@@ -53,7 +55,8 @@ public final class Position {
     }
 
     /**
-     * Performs {@link java.lang.Math#ceil} on both the x and y coordinates of the specified {@link org.jsfml.system.Vector2f}
+     * Performs {@link java.lang.Math#ceil} on both the x and y coordinates of the specified {@link org.jsfml.system
+     * * .Vector2f}
      *
      * @param position the {@link org.jsfml.system.Vector2f} to ceil.
      * @return the ceiled {@link org.jsfml.system.Vector2f}
@@ -63,7 +66,8 @@ public final class Position {
     }
 
     /**
-     * Performs {@link java.lang.Math#floor} on both the x and y coordinates of the specified {@link org.jsfml.system.Vector2f}
+     * Performs {@link java.lang.Math#floor} on both the x and y coordinates of the specified {@link org.jsfml.system
+     * * .Vector2f}
      *
      * @param position the {@link org.jsfml.system.Vector2f} to floor.
      * @return the floored {@link org.jsfml.system.Vector2f}

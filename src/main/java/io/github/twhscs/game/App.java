@@ -28,7 +28,7 @@ class App {
         GAME_VIEW.zoom(ZOOM);
         // Construct resource manager with main package.
         RESOURCE_MANAGER = new ResourceManager("io.github.twhscs.game", "images", "png", "textures", "png", "fonts",
-                "ttf", "sound_buffers", "wav");
+                                               "ttf", "sound_buffers", "wav");
         //String[] imageNames = {"icon", "kyle"};
         String[] imageNames = {"icon"};
         RESOURCE_MANAGER.loadImages(imageNames);
@@ -49,6 +49,10 @@ class App {
 
         // Start the main loop.
         run();
+    }
+
+    public static void main(String[] args) {
+        new App();
     }
 
     private void run() {
@@ -149,9 +153,5 @@ class App {
         PLAYER.interpolate(positionBetweenUpdates);
         WINDOW.draw(PLAYER);
         WINDOW.display();
-    }
-
-    public static void main(String[] args) {
-        new App();
     }
 }

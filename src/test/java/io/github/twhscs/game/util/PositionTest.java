@@ -10,16 +10,26 @@ public class PositionTest {
     @Test
     public void testGetRelativePosition() throws Exception {
         Vector2f position = new Vector2f(2.0f, 3.0f);
-        assertEquals("Position (2, 2) should be north of (2, 3).", new Vector2f(2.0f, 2.0f), Position.getRelativePosition(position, Direction.NORTH, 1.0f));
-        assertEquals("Position (2, 4) should be south of (2, 3).", new Vector2f(2.0f, 4.0f), Position.getRelativePosition(position, Direction.SOUTH, 1.0f));
-        assertEquals("Position (1, 3) should be west of (2, 3).", new Vector2f(1.0f, 3.0f), Position.getRelativePosition(position, Direction.WEST, 1.0f));
-        assertEquals("Position (3, 3) should be east of (2, 3).", new Vector2f(3.0f, 3.0f), Position.getRelativePosition(position, Direction.EAST, 1.0f));
-        assertEquals("Position (1, 2) should be north west of (2, 3).", new Vector2f(1.0f, 2.0f), Position.getRelativePosition(position, Direction.NORTH_WEST, 1.0f));
-        assertEquals("Position (3, 2) should be north east of (2, 3).", new Vector2f(3.0f, 2.0f), Position.getRelativePosition(position, Direction.NORTH_EAST, 1.0f));
-        assertEquals("Position (1, 4) should be south west of (2, 3).", new Vector2f(1.0f, 4.0f), Position.getRelativePosition(position, Direction.SOUTH_WEST, 1.0f));
-        assertEquals("Position (3, 4) should be south east of (2, 3).", new Vector2f(3.0f, 4.0f), Position.getRelativePosition(position, Direction.SOUTH_EAST, 1.0f));
-        assertEquals("Position (2, 2.5) should be north of (2, 3) with a step of 0.5.", new Vector2f(2.0f, 2.5f), Position.getRelativePosition(position, Direction.NORTH, 0.5f));
-        assertEquals("Position (2, 5) should be south of (2, 3) with a step of 2.", new Vector2f(2.0f, 5.0f), Position.getRelativePosition(position, Direction.SOUTH, 2.0f));
+        assertEquals("Position (2, 2) should be north of (2, 3).", new Vector2f(2.0f, 2.0f), Position
+                .getRelativePosition(position, Direction.NORTH, 1.0f));
+        assertEquals("Position (2, 4) should be south of (2, 3).", new Vector2f(2.0f, 4.0f), Position
+                .getRelativePosition(position, Direction.SOUTH, 1.0f));
+        assertEquals("Position (1, 3) should be west of (2, 3).", new Vector2f(1.0f, 3.0f), Position
+                .getRelativePosition(position, Direction.WEST, 1.0f));
+        assertEquals("Position (3, 3) should be east of (2, 3).", new Vector2f(3.0f, 3.0f), Position
+                .getRelativePosition(position, Direction.EAST, 1.0f));
+        assertEquals("Position (1, 2) should be north west of (2, 3).", new Vector2f(1.0f, 2.0f), Position
+                .getRelativePosition(position, Direction.NORTH_WEST, 1.0f));
+        assertEquals("Position (3, 2) should be north east of (2, 3).", new Vector2f(3.0f, 2.0f), Position
+                .getRelativePosition(position, Direction.NORTH_EAST, 1.0f));
+        assertEquals("Position (1, 4) should be south west of (2, 3).", new Vector2f(1.0f, 4.0f), Position
+                .getRelativePosition(position, Direction.SOUTH_WEST, 1.0f));
+        assertEquals("Position (3, 4) should be south east of (2, 3).", new Vector2f(3.0f, 4.0f), Position
+                .getRelativePosition(position, Direction.SOUTH_EAST, 1.0f));
+        assertEquals("Position (2, 2.5) should be north of (2, 3) with a step of 0.5.", new Vector2f(2.0f, 2.5f),
+                     Position.getRelativePosition(position, Direction.NORTH, 0.5f));
+        assertEquals("Position (2, 5) should be south of (2, 3) with a step of 2.", new Vector2f(2.0f, 5.0f),
+                     Position.getRelativePosition(position, Direction.SOUTH, 2.0f));
     }
 
     @Test

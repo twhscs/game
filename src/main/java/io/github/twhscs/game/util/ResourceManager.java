@@ -41,7 +41,9 @@ public final class ResourceManager {
      * @param SOUND_BUFFER_DIRECTORY the directory containing sound buffers.
      * @param SOUND_BUFFER_EXTENSION the filename extension for sound buffers.
      */
-    public ResourceManager(String ROOT_PACKAGE, String IMAGE_DIRECTORY, String IMAGE_EXTENSION, String TEXTURE_DIRECTORY, String TEXTURE_EXTENSION, String FONT_DIRECTORY, String FONT_EXTENSION, String SOUND_BUFFER_DIRECTORY, String SOUND_BUFFER_EXTENSION) {
+    public ResourceManager(String ROOT_PACKAGE, String IMAGE_DIRECTORY, String IMAGE_EXTENSION, String
+            TEXTURE_DIRECTORY, String TEXTURE_EXTENSION, String FONT_DIRECTORY, String FONT_EXTENSION, String
+                                   SOUND_BUFFER_DIRECTORY, String SOUND_BUFFER_EXTENSION) {
         IMAGE_MAP = new HashMap<String, Image>();
         TEXTURE_MAP = new HashMap<String, Texture>();
         FONT_MAP = new HashMap<String, Font>();
@@ -76,7 +78,8 @@ public final class ResourceManager {
         for (String imageName : imageNames) {
             final Image IMAGE = new Image();
             try {
-                IMAGE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + IMAGE_DIRECTORY + "/" + imageName + "." + IMAGE_EXTENSION));
+                IMAGE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + IMAGE_DIRECTORY + "/" + imageName + "." +
+                                                  IMAGE_EXTENSION));
                 IMAGE_MAP.put(imageName, IMAGE);
             } catch (IOException e) {
                 System.out.println("Error loading image " + imageName);
@@ -94,7 +97,8 @@ public final class ResourceManager {
         for (String textureName : textureNames) {
             final Texture TEXTURE = new Texture();
             try {
-                TEXTURE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + TEXTURE_DIRECTORY + "/" + textureName + "." + TEXTURE_EXTENSION));
+                TEXTURE.loadFromStream(loadResource(ROOT_PACKAGE + "/" + TEXTURE_DIRECTORY + "/" + textureName + "."
+                                                    + TEXTURE_EXTENSION));
                 TEXTURE_MAP.put(textureName, TEXTURE);
             } catch (IOException e) {
                 System.out.println("Error loading texture " + textureName);
@@ -112,7 +116,8 @@ public final class ResourceManager {
         for (String fontName : fontNames) {
             final Font FONT = new Font();
             try {
-                FONT.loadFromStream(loadResource(ROOT_PACKAGE + "/" + FONT_DIRECTORY + "/" + fontName + "." + FONT_EXTENSION));
+                FONT.loadFromStream(loadResource(ROOT_PACKAGE + "/" + FONT_DIRECTORY + "/" + fontName + "." +
+                                                 FONT_EXTENSION));
                 FONT_MAP.put(fontName, FONT);
             } catch (IOException e) {
                 System.out.println("Error loading font " + fontName);
@@ -130,7 +135,8 @@ public final class ResourceManager {
         for (String soundBufferName : soundBufferNames) {
             final SoundBuffer SOUND_BUFFER = new SoundBuffer();
             try {
-                SOUND_BUFFER.loadFromStream(loadResource(ROOT_PACKAGE + "/" + SOUND_BUFFER_DIRECTORY + "/" + soundBufferName + "." + SOUND_BUFFER_EXTENSION));
+                SOUND_BUFFER.loadFromStream(loadResource(ROOT_PACKAGE + "/" + SOUND_BUFFER_DIRECTORY + "/" +
+                                                         soundBufferName + "." + SOUND_BUFFER_EXTENSION));
                 SOUND_BUFFER_MAP.put(soundBufferName, SOUND_BUFFER);
             } catch (IOException e) {
                 System.out.println("Error loading sound buffer " + soundBufferName);
@@ -182,19 +188,19 @@ public final class ResourceManager {
     @Override
     public String toString() {
         return "ResourceManager{" +
-                "IMAGE_MAP=" + IMAGE_MAP +
-                ", TEXTURE_MAP=" + TEXTURE_MAP +
-                ", FONT_MAP=" + FONT_MAP +
-                ", SOUND_BUFFER_MAP=" + SOUND_BUFFER_MAP +
-                ", ROOT_PACKAGE='" + ROOT_PACKAGE + '\'' +
-                ", IMAGE_DIRECTORY='" + IMAGE_DIRECTORY + '\'' +
-                ", TEXTURE_DIRECTORY='" + TEXTURE_DIRECTORY + '\'' +
-                ", FONT_DIRECTORY='" + FONT_DIRECTORY + '\'' +
-                ", SOUND_BUFFER_DIRECTORY='" + SOUND_BUFFER_DIRECTORY + '\'' +
-                ", IMAGE_EXTENSION='" + IMAGE_EXTENSION + '\'' +
-                ", TEXTURE_EXTENSION='" + TEXTURE_EXTENSION + '\'' +
-                ", FONT_EXTENSION='" + FONT_EXTENSION + '\'' +
-                ", SOUND_BUFFER_EXTENSION='" + SOUND_BUFFER_EXTENSION + '\'' +
-                '}';
+               "IMAGE_MAP=" + IMAGE_MAP +
+               ", TEXTURE_MAP=" + TEXTURE_MAP +
+               ", FONT_MAP=" + FONT_MAP +
+               ", SOUND_BUFFER_MAP=" + SOUND_BUFFER_MAP +
+               ", ROOT_PACKAGE='" + ROOT_PACKAGE + '\'' +
+               ", IMAGE_DIRECTORY='" + IMAGE_DIRECTORY + '\'' +
+               ", TEXTURE_DIRECTORY='" + TEXTURE_DIRECTORY + '\'' +
+               ", FONT_DIRECTORY='" + FONT_DIRECTORY + '\'' +
+               ", SOUND_BUFFER_DIRECTORY='" + SOUND_BUFFER_DIRECTORY + '\'' +
+               ", IMAGE_EXTENSION='" + IMAGE_EXTENSION + '\'' +
+               ", TEXTURE_EXTENSION='" + TEXTURE_EXTENSION + '\'' +
+               ", FONT_EXTENSION='" + FONT_EXTENSION + '\'' +
+               ", SOUND_BUFFER_EXTENSION='" + SOUND_BUFFER_EXTENSION + '\'' +
+               '}';
     }
 }

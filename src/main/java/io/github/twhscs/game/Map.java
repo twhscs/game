@@ -29,7 +29,8 @@ class Map implements Drawable {
     private int animationFrame;
 
 
-    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW, int ANIMATION_FRAMES, int ANIMATION_SPEED) {
+    Map(int x, int y, int TILE_SIZE, float ZOOM, int CHUNK_SIZE, Texture TILE_SHEET, RenderWindow WINDOW, int
+            ANIMATION_FRAMES, int ANIMATION_SPEED) {
         this.DIMENSIONS = new Vector2i(x, y);
         this.TILE_SIZE = TILE_SIZE;
         this.ZOOM = ZOOM;
@@ -84,44 +85,6 @@ class Map implements Drawable {
         }
         // Divide the map into smaller chunks.
         partition();
-    }
-
-    private Vector2f chunkIDToPosition(int chunkID) {
-        // Use math to convert a chunkID to its top left position.
-        // Chunk IDs start at 0
-        return new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
-    }
-
-    @Override
-    public String toString() {
-        return "Map{" +
-                "TILE_SIZE=" + TILE_SIZE +
-                ", DIMENSIONS=" + DIMENSIONS +
-                ", ZOOM=" + ZOOM +
-                ", CHUNK_SIZE=" + CHUNK_SIZE +
-                ", TOTAL_CHUNKS=" + TOTAL_CHUNKS +
-                ", X_CHUNKS=" + X_CHUNKS +
-                ", VERTEX_ARRAYS=" + Arrays.toString(VERTEX_ARRAYS) +
-                '}';
-    }
-
-    private boolean isValidChunkID(int chunkID) {
-        return chunkID >= 0 && chunkID < TOTAL_CHUNKS;
-    }
-
-    private int positionToChunkID(Vector2f position) {
-        // Use math to convert a position on the map to its corresponding chunk ID
-        // Chunk IDs start at 0
-        return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
-    }
-
-    public boolean isValidPosition(Vector2f position) {
-        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
-    }
-
-    public boolean isEmptyPosition(Vector2f position) {
-        return isValidPosition(position) && TILE_ARRAY[(int) position.x][(int) position.y].isTraversable();
-
     }
 
     private void partition() {
@@ -204,19 +167,43 @@ class Map implements Drawable {
                                     }
                                 }
                                 // Create and add a vertex for the bottom left corner of the tile.
-                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE), positions[0]));
+                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j *
+                                                                                                         TILE_SIZE),
+                                                                             positions[0]));
                                 // Create and add a vertex for the top left corner of the tile.
-                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[1]));
+                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE, j *
+                                                                                                         TILE_SIZE +
+                                                                                                         TILE_SIZE),
+                                                                             positions[1]));
                                 // Create and add a vertex for the top right corner of the tile.
-                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE), positions[2]));
+                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE,
+                                                                                          j * TILE_SIZE + TILE_SIZE),
+                                                                             positions[2]));
                                 // Create and add a vertex for the bottom right corner of the tile.
-                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE), positions[3]));
+                                VERTEX_ARRAYS[chunkID][frame].add(new Vertex(new Vector2f(i * TILE_SIZE + TILE_SIZE,
+                                                                                          j * TILE_SIZE),
+                                                                             positions[3]));
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private Vector2f chunkIDToPosition(int chunkID) {
+        // Use math to convert a chunkID to its top left position.
+        // Chunk IDs start at 0
+        return new Vector2f(chunkID % X_CHUNKS * CHUNK_SIZE, chunkID / X_CHUNKS * CHUNK_SIZE);
+    }
+
+    public boolean isValidPosition(Vector2f position) {
+        return position.x >= 0.0f && position.y >= 0.0f && position.x < DIMENSIONS.x && position.y < DIMENSIONS.y;
+    }
+
+    public boolean isEmptyPosition(Vector2f position) {
+        return isValidPosition(position) && TILE_ARRAY[(int) position.x][(int) position.y].isTraversable();
+
     }
 
     public void update() {
@@ -226,11 +213,34 @@ class Map implements Drawable {
         }
     }
 
+    private int positionToChunkID(Vector2f position) {
+        // Use math to convert a position on the map to its corresponding chunk ID
+        // Chunk IDs start at 0
+        return ((int) position.x / CHUNK_SIZE) + (((int) position.y / CHUNK_SIZE) * X_CHUNKS);
+    }
+
+    private boolean isValidChunkID(int chunkID) {
+        return chunkID >= 0 && chunkID < TOTAL_CHUNKS;
+    }
+
+    @Override
+    public String toString() {
+        return "Map{" +
+               "TILE_SIZE=" + TILE_SIZE +
+               ", DIMENSIONS=" + DIMENSIONS +
+               ", ZOOM=" + ZOOM +
+               ", CHUNK_SIZE=" + CHUNK_SIZE +
+               ", TOTAL_CHUNKS=" + TOTAL_CHUNKS +
+               ", X_CHUNKS=" + X_CHUNKS +
+               ", VERTEX_ARRAYS=" + Arrays.toString(VERTEX_ARRAYS) +
+               '}';
+    }
 
     @Override
     public void draw(RenderTarget renderTarget, RenderStates renderStates) {
         int adjustedFrame = Math.round((animationFrame * ANIMATION_FRAMES) / (ANIMATION_FRAMES * ANIMATION_SPEED));
-        // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the start of the chunk.
+        // TODO: Improve efficiency if required. There is no use in looping through tiles immediately adjacent to the
+        // start of the chunk.
         // Apply the tile sheet to the tiles.
         RenderStates states = new RenderStates(TILE_SHEET);
         // Get the player's current position.
@@ -238,13 +248,17 @@ class Map implements Drawable {
         // Get the window's current size.
         Vector2i windowSize = WINDOW.getSize();
 
-        // Determine how many tiles fit the window horizontally and vertically taking zoom into account, then halve both values.
+        // Determine how many tiles fit the window horizontally and vertically taking zoom into account, then halve
+        // both values.
         int xDistance = (int) Math.ceil(windowSize.x / (TILE_SIZE * 2 / ZOOM));
         int yDistance = (int) Math.ceil(windowSize.y / (TILE_SIZE * 2 / ZOOM));
         Vector2f distance = new Vector2f(xDistance + 1, yDistance + 1);
 
         // Create a rectangle representing the positions currently viewable by the player.
-        FloatRect visibleArea = new FloatRect(playerPosition.x - distance.x, playerPosition.y - distance.y, distance.x * 2, distance.y * 2);
+        FloatRect visibleArea = new FloatRect(playerPosition.x - distance.x, playerPosition.y - distance.y, distance
+                                                                                                                    .x *
+                                                                                                            2,
+                                              distance.y * 2);
         // Create a set to keep track of the already rendered chunks.
         Set<Integer> renderedChunks = new HashSet<Integer>();
         // Loop through every position currently in view.
@@ -259,7 +273,8 @@ class Map implements Drawable {
                     if (adjustedFrame > 0) {
                         VERTEX_ARRAYS[chunkID][adjustedFrame].draw(renderTarget, states);
                     }
-                    // Add the drawn chunk ID to the set to check against in order to save resources by not drawing it twice.
+                    // Add the drawn chunk ID to the set to check against in order to save resources by not drawing
+                    // it twice.
                     renderedChunks.add(chunkID);
                 }
             }
