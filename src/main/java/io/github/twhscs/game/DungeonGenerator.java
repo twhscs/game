@@ -30,7 +30,7 @@ class DungeonGenerator implements Generatable {
                     random.nextInt(maxSize - minSize) + minSize,
                     random.nextInt(maxSize - minSize) + minSize
             );
-            if (isValid(roomRect, roomList)) {
+            if (!isInvalid(roomRect, roomList)) {
                 roomList.add(roomRect);
                 for (int x = roomRect.left; x < roomRect.left + roomRect.width; x++) {
                     for (int y = roomRect.top; y < roomRect.top + roomRect.height; y++) {
@@ -54,23 +54,13 @@ class DungeonGenerator implements Generatable {
             IntRect roomB = roomList.get(j + 1);
             Vector2i centerA = new Vector2i(roomA.left + roomA.width/2, roomA.top + roomA.height/2);
             Vector2i centerB = new Vector2i(roomB.left + roomB.width/2, roomB.top + roomB.height/2);
-            if (centerA.y > centerB.y) {
-                for (int y = centerA.y; y >= centerB.y; y--) {
-                    map[centerA.x][y] = Terrain.SNOW;
-                }
-            } else {
-                for (int y = centerA.y; y < centerB.y; y++) {
-                    map[centerA.x][y] = Terrain.SNOW;
-                }
+            int yDirection = centerA.y > centerB.y ? -1 : 1;
+            int xDirection = centerA.x > centerB.x ? -1 : 1;
+            for (int i = 0; i < Math.abs(centerA.y - centerB.y); i++) {
+                map[centerA.x][centerA.y + (yDirection * i)] = Terrain.SNOW;
             }
-            if (centerA.x > centerB.x) {
-                for (int x = centerA.x; x >= centerB.x; x--) {
-                    map[x][centerB.y] = Terrain.SNOW;
-                }
-            } else {
-                for (int x = centerA.x; x < centerB.x; x++) {
-                    map[x][centerB.y] = Terrain.SNOW;
-                }
+            for (int i = 0; i < Math.abs(centerA.x - centerB.x); i++) {
+                map[centerA.x + (xDirection * i)][centerB.y] = Terrain.SNOW;
             }
         }
         return map;
@@ -104,7 +94,7 @@ class DungeonGenerator implements Generatable {
         return var10 <= var12 && var11 <= var13 ? new IntRect(var10, var11, var12 - var10, var13 - var11) : null;
     }
 
-    private boolean isValid(IntRect intRect, ArrayList<IntRect> intRectList) {
+    private boolean isInvalid(IntRect intRect, ArrayList<IntRect> intRectList) {
         for (IntRect i : intRectList) {
             if (i != null && intersection(intRect, i) != null) {
                 return true;
