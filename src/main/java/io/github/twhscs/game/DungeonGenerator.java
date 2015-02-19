@@ -17,7 +17,6 @@ class DungeonGenerator implements Generatable {
     @Override
     public Terrain[][] generate() {
         Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
-        Terrain[][] paths = new Terrain[dimensions.x][dimensions.y];
         int attempts = 50;
         int minSize = 5;
         int maxSize = 10;
@@ -31,6 +30,11 @@ class DungeonGenerator implements Generatable {
             );
             if (!hasConflicts(room, rooms)) {
                 rooms.add(room);
+                for (int x = room.left; x < room.left + room.width; x++) {
+                    for (int y = room.top; y < room.top + room.height; y++) {
+                        map[x][y] = Terrain.SNOW;
+                    }
+                }
             }
         }
         Comparator<IntRect> comparator = new Comparator<IntRect>(){
@@ -50,30 +54,20 @@ class DungeonGenerator implements Generatable {
             Vector2i center2 = new Vector2i(room2.left + room2.width/2, room2.top + room2.height/2);
             if (center1.y > center2.y) {
                 for (int y = center1.y; y >= center2.y; y--) {
-                    paths[center1.x][y] = Terrain.SNOW;
+                    map[center1.x][y] = Terrain.SNOW;
                 }
             } else {
                 for (int y = center1.y; y < center2.y; y++) {
-                    paths[center1.x][y] = Terrain.SNOW;
+                    map[center1.x][y] = Terrain.SNOW;
                 }
             }
             if (center1.x > center2.x) {
                 for (int x = center1.x; x >= center2.x; x--) {
-                    paths[x][center2.y] = Terrain.SNOW;
+                    map[x][center2.y] = Terrain.SNOW;
                 }
             } else {
                 for (int x = center1.x; x < center2.x; x++) {
-                    paths[x][center2.y] = Terrain.SNOW;
-                }
-            }
-        }
-        for (int x = 0; x < dimensions.x; x++) {
-            for (int y = 0; y < dimensions.y; y++) {
-                map[x][y] = paths[x][y];
-                for (IntRect r : rooms) {
-                    if (r.contains(new Vector2i(x,y))) {
-                        map[x][y] = Terrain.SNOW;
-                    }
+                    map[x][center2.y] = Terrain.SNOW;
                 }
             }
         }
