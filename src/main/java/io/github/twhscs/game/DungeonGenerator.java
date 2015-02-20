@@ -6,10 +6,12 @@ import org.jsfml.system.Vector2i;
 import java.util.*;
 
 class DungeonGenerator implements Generatable {
-    private final Vector2i dimensions;
+    private final Vector2i DIMENSIONS;
+    private final Random RANDOM;
 
-    public DungeonGenerator(Vector2i dimensions) {
-        this.dimensions = dimensions;
+    public DungeonGenerator(Vector2i DIMENSIONS) {
+        this.DIMENSIONS = DIMENSIONS;
+        RANDOM = new Random();
     }
     
     @Override
@@ -18,16 +20,15 @@ class DungeonGenerator implements Generatable {
         int minSize = 5;
         int maxSize = 10;
 
-        Random random = new Random();
-        Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
+        Terrain[][] map = new Terrain[DIMENSIONS.x][DIMENSIONS.y];
         List<IntRect> roomList = new ArrayList<IntRect>();
 
         for (int i = 0; i < attempts; i++) {
             IntRect roomRect = new IntRect(
-                    random.nextInt(dimensions.x),
-                    random.nextInt(dimensions.y),
-                    random.nextInt(maxSize - minSize) + minSize,
-                    random.nextInt(maxSize - minSize) + minSize
+                    RANDOM.nextInt(DIMENSIONS.x),
+                    RANDOM.nextInt(DIMENSIONS.y),
+                    RANDOM.nextInt(maxSize - minSize) + minSize,
+                    RANDOM.nextInt(maxSize - minSize) + minSize
             );
             if (isValid(roomRect, roomList)) {
                 roomList.add(roomRect);
@@ -67,7 +68,7 @@ class DungeonGenerator implements Generatable {
 
     @Override
     public Vector2i getDimensions() {
-        return dimensions;
+        return DIMENSIONS;
     }
 
     private boolean roomsCollide(IntRect o1, IntRect o2) {
@@ -86,7 +87,7 @@ class DungeonGenerator implements Generatable {
         }
         return intRect.left > 0 &&
                intRect.top > 0 &&
-               intRect.left + intRect.width < dimensions.x &&
-               intRect.top + intRect.height < dimensions.y;
+               intRect.left + intRect.width < DIMENSIONS.x &&
+               intRect.top + intRect.height < DIMENSIONS.y;
     }
 }

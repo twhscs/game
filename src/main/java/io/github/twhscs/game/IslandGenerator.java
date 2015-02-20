@@ -4,20 +4,20 @@ import io.github.twhscs.game.util.Perlin;
 import org.jsfml.system.Vector2i;
 
 class IslandGenerator implements Generatable {
-    private final Vector2i dimensions;
-    private final int octaves;
+    private final Vector2i DIMENSIONS;
+    private final int OCTAVES;
 
-    public IslandGenerator(Vector2i dimensions, int octaves) {
-        this.dimensions = dimensions;
-        this.octaves = octaves;
+    public IslandGenerator(Vector2i DIMENSIONS, int OCTAVES) {
+        this.DIMENSIONS = DIMENSIONS;
+        this.OCTAVES = OCTAVES;
     }
 
     @Override
     public Terrain[][] generate() {
-        float[][] noise = Perlin.getNoise(dimensions, octaves);
-        Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
-        for (int x = 0; x < dimensions.x; x++) {
-            for (int y = 0; y < dimensions.y; y++) {
+        float[][] noise = Perlin.getNoise(DIMENSIONS, OCTAVES);
+        Terrain[][] map = new Terrain[DIMENSIONS.x][DIMENSIONS.y];
+        for (int x = 0; x < DIMENSIONS.x; x++) {
+            for (int y = 0; y < DIMENSIONS.y; y++) {
                 if (noise[x][y] > 0.8f)
                     map[x][y] = Terrain.WATER;
                 else if (noise[x][y] > 0.6f)
@@ -31,6 +31,6 @@ class IslandGenerator implements Generatable {
     }
 
     public Vector2i getDimensions() {
-        return dimensions;
+        return DIMENSIONS;
     }
 }
