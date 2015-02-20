@@ -3,10 +3,7 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2i;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 class DungeonGenerator implements Generatable {
     private final Vector2i dimensions;
@@ -17,12 +14,14 @@ class DungeonGenerator implements Generatable {
     
     @Override
     public Terrain[][] generate() {
-        Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
         int attempts = 50;
         int minSize = 5;
         int maxSize = 10;
+
         Random random = new Random();
-        ArrayList<IntRect> roomList = new ArrayList<IntRect>();
+        Terrain[][] map = new Terrain[dimensions.x][dimensions.y];
+        List<IntRect> roomList = new ArrayList<IntRect>();
+
         for (int i = 0; i < attempts; i++) {
             IntRect roomRect = new IntRect(
                     random.nextInt(dimensions.x),
@@ -30,7 +29,7 @@ class DungeonGenerator implements Generatable {
                     random.nextInt(maxSize - minSize) + minSize,
                     random.nextInt(maxSize - minSize) + minSize
             );
-            if (!isInvalid(roomRect, roomList)) {
+            if (isValid(roomRect, roomList)) {
                 roomList.add(roomRect);
                 for (int x = roomRect.left; x < roomRect.left + roomRect.width; x++) {
                     for (int y = roomRect.top; y < roomRect.top + roomRect.height; y++) {
@@ -49,18 +48,18 @@ class DungeonGenerator implements Generatable {
             }
         };
         Collections.sort(roomList, comparator);
-        for (int j = 0; j < roomList.size() - 1; j++) {
-            IntRect roomA = roomList.get(j);
-            IntRect roomB = roomList.get(j + 1);
+        for (int i = 0; i < roomList.size() - 1; i++) {
+            IntRect roomA = roomList.get(i);
+            IntRect roomB = roomList.get(i + 1);
             Vector2i centerA = new Vector2i(roomA.left + roomA.width/2, roomA.top + roomA.height/2);
             Vector2i centerB = new Vector2i(roomB.left + roomB.width/2, roomB.top + roomB.height/2);
             int yDirection = centerA.y > centerB.y ? -1 : 1;
             int xDirection = centerA.x > centerB.x ? -1 : 1;
-            for (int i = 0; i < Math.abs(centerA.y - centerB.y); i++) {
-                map[centerA.x][centerA.y + (yDirection * i)] = Terrain.SNOW;
+            for (int j = 0; j < Math.abs(centerA.y - centerB.y); j++) {
+                map[centerA.x][centerA.y + (yDirection * j)] = Terrain.SNOW;
             }
-            for (int i = 0; i < Math.abs(centerA.x - centerB.x); i++) {
-                map[centerA.x + (xDirection * i)][centerB.y] = Terrain.SNOW;
+            for (int j = 0; j < Math.abs(centerA.x - centerB.x); j++) {
+                map[centerA.x + (xDirection * j)][centerB.y] = Terrain.SNOW;
             }
         }
         return map;
@@ -71,35 +70,23 @@ class DungeonGenerator implements Generatable {
         return dimensions;
     }
 
-    private boolean isInBounds(IntRect intRect) {
+    private boolean roomsCollide(IntRect o1, IntRect o2) {
+        int minX = Math.max(Math.min(o1.left, o1.left + o1.width), Math.min(o2.left, o2.left + o2.width));
+        int minY = Math.max(Math.min(o1.top, o1.top + o1.height), Math.min(o2.top, o2.top + o2.height));
+        int maxX = Math.min(Math.max(o1.left, o1.left + o1.width), Math.max(o2.left, o2.left + o2.width));
+        int maxY = Math.min(Math.max(o1.top, o1.top + o1.height), Math.max(o2.top, o2.top + o2.height));
+        return minX <= maxX && minY <= maxY;
+    }
+
+    private boolean isValid(IntRect intRect, List<IntRect> intRectList) {
+        for (IntRect i : intRectList) {
+            if (roomsCollide(intRect, i)) {
+                return false;
+            }
+        }
         return intRect.left > 0 &&
                intRect.top > 0 &&
                intRect.left + intRect.width < dimensions.x &&
                intRect.top + intRect.height < dimensions.y;
-    }
-
-    private IntRect intersection(IntRect o1, IntRect o2) {
-        int var2 = Math.min(o1.left, o1.left + o1.width);
-        int var3 = Math.max(o1.left, o1.left + o1.width);
-        int var4 = Math.min(o1.top, o1.top + o1.height);
-        int var5 = Math.max(o1.top, o1.top + o1.height);
-        int var6 = Math.min(o2.left, o2.left + o2.width);
-        int var7 = Math.max(o2.left, o2.left + o2.width);
-        int var8 = Math.min(o2.top, o2.top + o2.height);
-        int var9 = Math.max(o2.top, o2.top + o2.height);
-        int var10 = Math.max(var2, var6);
-        int var11 = Math.max(var4, var8);
-        int var12 = Math.min(var3, var7);
-        int var13 = Math.min(var5, var9);
-        return var10 <= var12 && var11 <= var13 ? new IntRect(var10, var11, var12 - var10, var13 - var11) : null;
-    }
-
-    private boolean isInvalid(IntRect intRect, ArrayList<IntRect> intRectList) {
-        for (IntRect i : intRectList) {
-            if (i != null && intersection(intRect, i) != null) {
-                return true;
-            }
-        }
-        return !isInBounds(intRect);
     }
 }
